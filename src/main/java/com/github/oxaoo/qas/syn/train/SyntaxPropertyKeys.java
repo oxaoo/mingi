@@ -15,16 +15,20 @@ public final class SyntaxPropertyKeys {
                -l liblinear
      */
 
+    //TODO: to replace the full path to a relative path
+
+    public static final String CONFIG_WORKINGDIR_FLAG = " -w ";
+    public static final String CONFIG_WORKINGDIR_PATH = "src/main/resources/model";
+
     public static final String CONFIG_NAME_FLAG = " -c ";
     public static final String CONFIG_NAME_MODEL = "qas_model";
 
-    //TODO: replace the full path to a relative path
     public static final String INPUT_FORMAT_FLAG = " -if ";
-//    public static final String INPUT_FORMAT_MALTTAB = "\\appdata\\dataformat\\malttab.xml";
+    //    public static final String INPUT_FORMAT_MALTTAB = "\\appdata\\dataformat\\malttab.xml";
     public static final String INPUT_FORMAT_MALTTAB = "Z:\\java\\STUDY\\qas\\src\\main\\resources\\dateformat\\malttab.xml";
 
     public static final String INPUT_INFILE_FLAG = " -i ";
-//    public static final String INPUT_INFILE_PATH = "syn_training_texts/malttab/train_bank.malttab";
+    //    public static final String INPUT_INFILE_PATH = "syn_training_texts/malttab/train_bank.malttab";
     public static final String INPUT_INFILE_PATH = "Z:\\java\\STUDY\\qas\\src\\main\\resources\\syn_training_texts\\malttab\\train_bank.malttab";
 
     public static final String CONFIG_FLOWCHART_FLAG = " -m ";
@@ -35,5 +39,4 @@ public final class SyntaxPropertyKeys {
 
 
     public static final int OPTION_CONTAINER = 0;
-
 }
