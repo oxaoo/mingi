@@ -23,11 +23,5 @@ hs_err_pid*
 ### Custom configuration
 # Disable logging
 logs/
-
-
-### Not public data sources
-# This folder contains a training text (from SynTagRus) for syntactic classifier.
-src/main/resources/syn_training_texts/
-
-# MaltParse API Examples
-src/examples
+# Exclude libs
+lib/

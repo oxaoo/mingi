@@ -10,7 +10,8 @@
     <name>Question Answering System</name>
 
     <properties>
-        <maltparser.version>1.9.0</maltparser.version>
+        <maltparser.version>1.5.1</maltparser.version>
+        <liblinear.version>1.7.1</liblinear.version>
         <slf4j.version>1.7.21</slf4j.version>
     </properties>
 
@@ -23,6 +24,30 @@
             <version>${maltparser.version}</version>
         </dependency>
 
+        <!-- Syntax Analyzer Depends -->
+        <dependency>
+            <groupId>de.bwaldvogel</groupId>
+            <artifactId>liblinear</artifactId>
+            <version>${liblinear.version}</version>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>stax</groupId>-->
+            <!--<artifactId>stax</artifactId>-->
+            <!--<version>1.2.0</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>tw.edu.ntu.csie</groupId>-->
+            <!--<artifactId>libsvm</artifactId>-->
+            <!--<version>3.1</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>javax.xml</groupId>-->
+            <!--<artifactId>jsr173</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
 
         <!-- Logging -->
         <dependency>
@@ -43,4 +68,12 @@
             <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
+
+
+    <repositories>
+        <repository>
+            <id>localrepo</id>
+            <url>${basedir}/lib</url>
+        </repository>
+    </repositories>
 </project>
