@@ -29,8 +29,8 @@ public class SyntaxAnalyzer {
 
         try {
             maltParserService.runExperiment(command.trim());
-        } catch (final MaltChainedException e) {
-            LOG.error("Failed to syntax analyze: [{}]", e);
+        } catch (final MaltChainedException | OutOfMemoryError e) {
+            LOG.error("Failed to syntax analyze: [{}]", e.toString());
             return false;
         }
         return true;

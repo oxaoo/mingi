@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
+    //is necessary to use the vm option -Xmx6g
     public static void main(String[] args) throws MaltChainedException {
         final SyntaxAnalyzer syntax = new SyntaxAnalyzer();
         final boolean resultSyntax = syntax.analyze();
