@@ -5,9 +5,9 @@ import org.maltparser.core.exception.MaltChainedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-
 /**
+ * The syntax analyzer.
+ *
  * @author oxaoo
  * @since 25/09/16
  */
@@ -20,7 +20,19 @@ public class SyntaxAnalyzer {
         maltParserService = new MaltParserService(SyntaxPropertyKeys.OPTION_CONTAINER);
     }
 
+    /**
+     * Syntax analyze by means of MaltParser.
+     *
+     * @return <tt>true</tt> if analyze is successful
+     */
     public boolean analyze() {
+
+        /**
+         * TODO: implement formation LEMMA;
+         * TODO: implement formation CPOSTAG;
+         * TODO: implement formation POSTAG;
+         * TODO: implement formation FEATS.
+         */
         final String command = SyntaxPropertyKeys.CONFIG_WORKINGDIR_PATH
                 + SyntaxPropertyKeys.CONFIG_NAME_MODEL
                 + SyntaxPropertyKeys.INPUT_INFILE_PATH
