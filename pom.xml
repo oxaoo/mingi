@@ -18,6 +18,7 @@
 
     <dependencies>
         <!-- Syntax Analyzer -->
+        <!--mvn install:install-file -Dfile=malt.jar -DgroupId=org.maltparser -DartifactId=maltparser -Dversion=1.5.1 -Dpackaging=jar-->
         <dependency>
             <groupId>org.maltparser</groupId>
             <artifactId>maltparser</artifactId>
