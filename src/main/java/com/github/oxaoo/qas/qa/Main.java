@@ -14,9 +14,9 @@ public class Main {
     //is necessary to use the vm option -Xmx6g
     public static void main(String[] args) throws MaltChainedException {
         final SyntaxAnalyzer syntax = new SyntaxAnalyzer();
-//        final boolean resultSyntax = syntax.analyze();
-//        LOG.info("Result of syntax analyze: {}", resultSyntax);
-        simpleTextConverter();
+        final boolean resultSyntax = syntax.analyze();
+        LOG.info("Result of syntax analyze: {}", resultSyntax);
+//        simpleTextConverter();
     }
 
     public static void simpleTextConverter() {

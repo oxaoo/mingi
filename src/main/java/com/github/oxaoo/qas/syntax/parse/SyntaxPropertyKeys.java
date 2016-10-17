@@ -18,7 +18,7 @@ public final class SyntaxPropertyKeys {
      */
     //TODO: to replace the full path to a relative path
     public static final String CONFIG_WORKINGDIR_PATH = " -w src/main/resources/model/";
-    public static final String CONFIG_NAME_MODEL = " -c rus-test";
+    public static final String CONFIG_NAME_MODEL = " -c russian";
     //input conll format by default.
     public static final String INPUT_FORMAT_MALTTAB = " -if Z:/java/STUDY/qas/src/main/resources/dateformat/malttab.xml";
 //    public static final String INPUT_INFILE_PATH = " -i Z:/java/STUDY/qas/src/main/resources/syn_training_texts/malttab/train_bank.malttab";

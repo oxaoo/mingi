@@ -32,6 +32,8 @@ public class SyntaxAnalyzer {
          * TODO: implement formation CPOSTAG;
          * TODO: implement formation POSTAG;
          * TODO: implement formation FEATS.
+         *
+         * @link #Russian tagging resources: http://corpus.leeds.ac.uk/mocky/
          */
         final String command = SyntaxPropertyKeys.CONFIG_WORKINGDIR_PATH
                 + SyntaxPropertyKeys.CONFIG_NAME_MODEL
@@ -43,6 +45,7 @@ public class SyntaxAnalyzer {
             maltParserService.runExperiment(command.trim());
         } catch (final MaltChainedException | OutOfMemoryError e) {
             LOG.error("Failed to syntax analyze: [{}]", e.toString());
+            e.printStackTrace();
             return false;
         }
         return true;
