@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.syntax.conv;
+package com.github.oxaoo.qas.syntax.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class TextConverter {
-    private static final Logger LOG = LoggerFactory.getLogger(TextConverter.class);
+public class SyntaxUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(SyntaxUtils.class);
     private final static String TEXT_FILE = "src/main/resources/input/text.txt";
 
     /**
@@ -40,10 +40,8 @@ public class TextConverter {
      * @param text a input text
      * @return list of words
      */
-    public List<String> getWords(String text) {
-        LOG.info("List of words:");
-        List<String> words = Arrays.asList(text.split("[—«»\",;:.!?\\s]+"));
-        for (String word : words) LOG.info(word);
-        return words;
+    public List<String> tokenization(String text) {
+        LOG.debug("List of words:");
+        return Arrays.asList(text.split("[—«»\"`‚„‘’“”%,;:.!?\\s]+"));
     }
 }

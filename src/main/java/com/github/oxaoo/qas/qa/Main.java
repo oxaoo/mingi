@@ -1,6 +1,6 @@
 package com.github.oxaoo.qas.qa;
 
-import com.github.oxaoo.qas.syntax.conv.TextConverter;
+import com.github.oxaoo.qas.syntax.utils.SyntaxUtils;
 import com.github.oxaoo.qas.syntax.parse.SyntaxAnalyzer;
 import org.maltparser.core.exception.MaltChainedException;
 import org.slf4j.Logger;
@@ -16,14 +16,14 @@ public class Main {
         final SyntaxAnalyzer syntax = new SyntaxAnalyzer();
         final boolean resultSyntax = syntax.analyze();
         LOG.info("Result of syntax analyze: {}", resultSyntax);
-//        simpleTextConverter();
+        simpleTextConverter();
     }
 
     public static void simpleTextConverter() {
-        TextConverter converter = new TextConverter();
-        String text = converter.readText();
-        List<String> words = converter.getWords(text);
-//        for (String word : words) LOG.info(word);
+        SyntaxUtils syntaxUtils = new SyntaxUtils();
+        String text = syntaxUtils.readText();
+        List<String> words = syntaxUtils.tokenization(text);
+        for (String word : words) LOG.info(word);
 //        LOG.info(words.toString());
     }
 }
