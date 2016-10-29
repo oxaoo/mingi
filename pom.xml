@@ -23,8 +23,15 @@
             <version>${maltparser.version}</version>
         </dependency>
 
+        <!-- Part-of-speech tagging -->
+        <dependency>
+            <groupId>org.annolab.tt4j</groupId>
+            <artifactId>org.annolab.tt4j</artifactId>
+            <version>1.2.1</version>
+        </dependency>
 
-        <!-- Log -->
+
+        <!-- Logging -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
