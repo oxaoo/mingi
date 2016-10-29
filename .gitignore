@@ -24,4 +24,5 @@ hs_err_pid*
 # Disable logging
 logs/
 # Exclude libs
-lib/
+src/main/resources/TreeTagger/bin/*
+src/main/resources/TreeTagger/lib/russian-big-utf8.par

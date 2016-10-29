@@ -23,7 +23,7 @@
             <version>${maltparser.version}</version>
         </dependency>
 
-        <!-- Part-of-speech tagging -->
+        <!-- Part-of-speech tagging (the wrapper of the TreeTagger) -->
         <dependency>
             <groupId>org.annolab.tt4j</groupId>
             <artifactId>org.annolab.tt4j</artifactId>
@@ -50,14 +50,6 @@
             <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
-
-
-    <repositories>
-        <repository>
-            <id>localrepo</id>
-            <url>${basedir}/lib</url>
-        </repository>
-    </repositories>
 
 
     <build>
