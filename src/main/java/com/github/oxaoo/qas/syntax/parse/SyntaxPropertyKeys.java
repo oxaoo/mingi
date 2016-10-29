@@ -22,8 +22,8 @@ public final class SyntaxPropertyKeys {
     //input conll format by default.
     public static final String INPUT_FORMAT_MALTTAB = " -if Z:/java/STUDY/qas/src/main/resources/dateformat/malttab.xml";
 //    public static final String INPUT_INFILE_PATH = " -i Z:/java/STUDY/qas/src/main/resources/syn_training_texts/malttab/train_bank.malttab";
-    public static final String INPUT_INFILE_PATH = " -i Z:/java/STUDY/qas/src/main/resources/input/text.conll";
-    public static final String OUTPUT_OUTFILE_PATH = " -o Z:/java/STUDY/qas/src/main/resources/output/text.parse";
+    public static final String INPUT_INFILE_PATH = " -i E:/Study/dev/qas/src/main/resources/input/text.conll";
+    public static final String OUTPUT_OUTFILE_PATH = " -o E:/Study/dev/qas/src/main/resources/output/text.parse";
     public static final String CONFIG_FLOWCHART_LEARN = " -m learn";
     public static final String CONFIG_FLOWCHART_PARSE = " -m parse";
     //liblinear learner by default.
