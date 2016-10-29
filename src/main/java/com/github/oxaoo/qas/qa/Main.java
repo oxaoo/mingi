@@ -1,8 +1,8 @@
 package com.github.oxaoo.qas.qa;
 
-import com.github.oxaoo.qas.syntax.parse.SyntaxAnalyzer;
 import com.github.oxaoo.qas.syntax.tagging.PosTagging;
-import com.github.oxaoo.qas.syntax.utils.SyntaxUtils;
+import com.github.oxaoo.qas.syntax.tagging.PosTuple;
+import com.github.oxaoo.qas.syntax.tokenize.SimpleTokenizer;
 import org.annolab.tt4j.TreeTaggerException;
 import org.maltparser.core.exception.MaltChainedException;
 import org.slf4j.Logger;
@@ -15,18 +15,12 @@ public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws MaltChainedException, IOException, TreeTaggerException {
-//        final SyntaxAnalyzer syntax = new SyntaxAnalyzer();
-//        final boolean resultSyntax = syntax.analyze();
-//        LOG.info("Result of syntax analyze: {}", resultSyntax);
-//        simpleTextConverter();
-        PosTagging pos = new PosTagging();
-        pos.tagging();
-    }
+        SimpleTokenizer tokenizer = new SimpleTokenizer();
+        String text = tokenizer.readText();
+        List<String> words = tokenizer.tokenization(text);
 
-    public static void simpleTextConverter() {
-        SyntaxUtils syntaxUtils = new SyntaxUtils();
-        String text = syntaxUtils.readText();
-        List<String> words = syntaxUtils.tokenization(text);
-        for (String word : words) LOG.info(word);
+        PosTagging pos = new PosTagging();
+        List<PosTuple<String>> tokens = pos.tagging(words);
+        for(PosTuple token : tokens) LOG.info(token.toString());
     }
 }

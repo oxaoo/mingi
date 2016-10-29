@@ -1,38 +1,35 @@
 package com.github.oxaoo.qas.syntax.tagging;
 
-import org.annolab.tt4j.TokenHandler;
 import org.annolab.tt4j.TreeTaggerException;
 import org.annolab.tt4j.TreeTaggerWrapper;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
- * The class represent the Part-of-Speech tagging
+ * The class represent the Part-of-Speech tagging.
  */
 public class PosTagging {
+    private final String pathModel = "src/main/resources/TreeTagger/lib/russian-utf8.par";
 
-    // Point TT4J to the TreeTagger installation directory. The executable is expected
-    // in the "bin" subdirectory - in this example at "/opt/treetagger/bin/tree-tagger"
-    public void tagging() throws IOException, TreeTaggerException {
-//        System.setProperty("treetagger.home", "E:/Study/dev/TreeTagger");
+    static {
         System.setProperty("treetagger.home", "src/main/resources/TreeTagger");
-        TreeTaggerWrapper<String> tt = new TreeTaggerWrapper<String>();
+    }
+
+    public List<PosTuple<String>> tagging(List<String> tokens) throws IOException, TreeTaggerException {
+        TreeTaggerWrapper<String> tt = new TreeTaggerWrapper<>();
+        StatefulTokenHandler<String> tokenHandler = new StatefulTokenHandler<>();
         try {
-//            tt.setModel("E:/Study/dev/TreeTagger/lib/english-utf8.par:iso8859-1");
-            tt.setModel("src/main/resources/TreeTagger/lib/russian-utf8.par");
-            tt.setHandler(new TokenHandler<String>()
-            {
-                public void token(String token, String pos, String lemma)
-                {
-                    System.out.println(token + "\t" + pos + "\t" + lemma);
-                }
-            });
-//            tt.process(new String[] { "This", "is", "a", "test", "." });
-//            tt.process(new String[] { "Это", "простой", "текстик", "." });
-            tt.process(new String[] { "Данное", "программное", "обеспечение", "работает", "корректно", "." });
+            tt.setModel(this.pathModel);
+            tt.setHandler(tokenHandler);
+            tt.process(tokens);
         }
         finally {
             tt.destroy();
         }
+
+        return tokenHandler.getTokens();
     }
 }
+//TODO: read about the locating executables and models: https://reckart.github.io/tt4j/usage.html
+

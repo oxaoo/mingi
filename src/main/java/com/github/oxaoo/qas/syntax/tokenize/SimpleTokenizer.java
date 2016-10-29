@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.syntax.utils;
+package com.github.oxaoo.qas.syntax.tokenize;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class SyntaxUtils {
-    private static final Logger LOG = LoggerFactory.getLogger(SyntaxUtils.class);
+public class SimpleTokenizer {
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleTokenizer.class);
     private final static String TEXT_FILE = "src/main/resources/input/text.txt";
 
     /**
@@ -45,3 +45,5 @@ public class SyntaxUtils {
         return Arrays.asList(text.split("[—«»\"`‚„‘’“”%,;:.!?\\s]+"));
     }
 }
+
+//TODO: view about tokenization: https://reckart.github.io/tt4j/tokenizer.html
