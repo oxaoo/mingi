@@ -3,10 +3,10 @@ package com.github.oxaoo.qas.syntax.parse;
 /**
  * Property keys for syntax analyzer.
  *
- * @author oxaoo
- * @since 25/09/16
- *
+ * @author Alexander Kuleshov
+ * @version 2.0
  * @link http://www.maltparser.org/userguide.html#config
+ * @since 25.09.2016
  */
 final class SyntaxPropertyKeys {
     static final String CONFIG_WORKINGDIR_PATH = " -w src/main/resources/model/";

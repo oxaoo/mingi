@@ -8,8 +8,9 @@ import org.slf4j.LoggerFactory;
 /**
  * The syntax analyzer.
  *
- * @author oxaoo
- * @since 25/09/16
+ * @author Alexander Kuleshov
+ * @version 2.0
+ * @since 25.09.2016
  */
 public class SyntaxAnalyzer {
     private static final Logger LOG = LoggerFactory.getLogger(SyntaxAnalyzer.class);

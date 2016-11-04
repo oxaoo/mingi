@@ -1,7 +1,7 @@
 package com.github.oxaoo.qas.qa;
 
 import com.github.oxaoo.qas.syntax.tagging.PosTagging;
-import com.github.oxaoo.qas.syntax.tagging.PosTuple;
+import com.github.oxaoo.qas.syntax.tagging.Conll;
 import com.github.oxaoo.qas.syntax.tokenize.SimpleTokenizer;
 import org.annolab.tt4j.TreeTaggerException;
 import org.maltparser.core.exception.MaltChainedException;
@@ -20,7 +20,7 @@ public class Main {
         List<String> words = tokenizer.tokenization(text);
 
         PosTagging pos = new PosTagging();
-        List<PosTuple<String>> tokens = pos.tagging(words);
-        for(PosTuple token : tokens) LOG.info(token.toString());
+        List<Conll> tokens = pos.tagging(words);
+        for(Conll token : tokens) LOG.info(token.toString());
     }
 }

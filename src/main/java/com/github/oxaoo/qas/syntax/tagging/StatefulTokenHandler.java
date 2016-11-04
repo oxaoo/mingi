@@ -7,21 +7,25 @@ import java.util.List;
 
 /**
  * The stateful token handler which implement the TokenHandler class.
+ *
+ * @author Alexander Kuleshov
+ * @version 2.0
+ * @since 29.10.2016
  */
-public class StatefulTokenHandler<T> implements TokenHandler<T> {
-    private List<PosTuple<T>> tokens = new LinkedList<>();
+public class StatefulTokenHandler implements TokenHandler<String> {
+    private List<Conll> tokens = new LinkedList<>();
 
     @Override
-    public void token(T token, String pos, String lemma) {
-        this.tokens.add(new PosTuple<T>(token, pos, lemma));
+    public void token(String token, String pos, String lemma) {
+        this.tokens.add(new Conll(token, lemma, pos));
     }
 
-    public List<PosTuple<T>> peekTokens() {
+    public List<Conll> peekTokens() {
         return this.tokens;
     }
 
-    public List<PosTuple<T>> getTokens() {
-        List<PosTuple<T>> snapshotTokens = this.tokens;
+    public List<Conll> getTokens() {
+        List<Conll> snapshotTokens = this.tokens;
         tokens = new LinkedList<>();
         return snapshotTokens;
     }

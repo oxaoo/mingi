@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The simple tokenizer, breaking the text to the words.
+ */
 public class SimpleTokenizer {
     private static final Logger LOG = LoggerFactory.getLogger(SimpleTokenizer.class);
     private final static String TEXT_FILE = "src/main/resources/input/text.txt";
