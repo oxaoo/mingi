@@ -6,7 +6,7 @@
 
     <groupId>com.github.oxaoo</groupId>
     <artifactId>qas</artifactId>
-    <version>1.0</version>
+    <version>0.1</version>
     <name>Question Answering System</name>
 
     <properties>

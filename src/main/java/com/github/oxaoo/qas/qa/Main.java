@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class Main {
-    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
-
     public static void main(String[] args) throws MaltChainedException, IOException, TreeTaggerException {
         //tokenization.
         SimpleTokenizer tokenizer = new SimpleTokenizer();
@@ -24,7 +22,6 @@ public class Main {
         //morphological analyze.
         PosTagging pos = new PosTagging();
         List<Conll> tokens = pos.tagging(words);
-//        for(Conll token : tokens) LOG.info(token.toString());
         pos.writeTokens(tokens);
 
         //syntactic analyze.

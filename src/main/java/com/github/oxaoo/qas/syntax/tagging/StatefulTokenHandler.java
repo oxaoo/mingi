@@ -9,15 +9,17 @@ import java.util.List;
  * The stateful token handler which implement the TokenHandler class.
  *
  * @author Alexander Kuleshov
- * @version 2.0
+ * @version 0.1
  * @since 29.10.2016
  */
 public class StatefulTokenHandler implements TokenHandler<String> {
     private List<Conll> tokens = new LinkedList<>();
+    private int counter = 0;
 
     @Override
     public void token(String token, String pos, String lemma) {
-        this.tokens.add(new Conll(token, lemma, pos));
+        this.tokens.add(new Conll(++counter, token, lemma, pos));
+        if (this.isTerminateMarks(token)) this.counter = 0;
     }
 
     public List<Conll> peekTokens() {
@@ -28,6 +30,10 @@ public class StatefulTokenHandler implements TokenHandler<String> {
         List<Conll> snapshotTokens = this.tokens;
         tokens = new LinkedList<>();
         return snapshotTokens;
+    }
+
+    private boolean isTerminateMarks(String token) {
+        return token.replaceAll("\\.!?", "").length() == 0;
     }
 }
 

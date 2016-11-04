@@ -6,11 +6,18 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.BreakIterator;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * The simple tokenizer, breaking the text to the words.
+ *
+ * @author Alexander Kuleshov
+ * @version 0.1
+ * @since 17.10.2016
  */
 public class SimpleTokenizer {
     private static final Logger LOG = LoggerFactory.getLogger(SimpleTokenizer.class);
@@ -22,7 +29,7 @@ public class SimpleTokenizer {
      * @return the text
      */
     public String readText() {
-        try(BufferedReader br = new BufferedReader(new FileReader(TEXT_FILE))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(TEXT_FILE))) {
             StringBuilder sb = new StringBuilder();
 
             String line;
@@ -38,15 +45,49 @@ public class SimpleTokenizer {
     }
 
     /**
-     * To split the text on words.
+     * To split the text on words using regular expressions.
      *
-     * @param text a input text
+     * @param text the input text
      * @return list of words
      */
-    public List<String> tokenization(String text) {
+    @Deprecated
+    public List<String> tokenizationRegular(String text) {
         LOG.debug("List of words:");
         return Arrays.asList(text.split("[—«»\"`‚„‘’“”%,;:.!?\\s]+"));
     }
-}
 
-//TODO: view about tokenization: https://reckart.github.io/tt4j/tokenizer.html
+    /**
+     * To split the text on words.
+     *
+     * @param text the input text
+     * @return list of words
+     */
+    public List<String> tokenization(String text) {
+        List<String> tokens = new ArrayList<>();
+        Locale ruLocale = new Locale.Builder().setLanguage("ru").setScript("Cyrl").build();
+        BreakIterator bi = BreakIterator.getWordInstance(ruLocale);
+
+        text = this.trimming(text);
+        bi.setText(text);
+        int cur = bi.first();
+        int prev = 0;
+        while (cur != BreakIterator.DONE) {
+            String token = text.substring(prev, cur);
+            if (token.replaceAll("[—«»\"`‚„‘’“”%;:\\s]+", "").length() > 0)
+                tokens.add(token);
+            prev = cur;
+            cur = bi.next();
+        }
+        return tokens;
+    }
+
+    /**
+     * Deleting characters unrecognizable the BreakIterator.
+     *
+     * @param text the input text
+     * @return the trimmed text
+     */
+    private String trimming(String text) {
+        return text.replace("...", "");
+    }
+}

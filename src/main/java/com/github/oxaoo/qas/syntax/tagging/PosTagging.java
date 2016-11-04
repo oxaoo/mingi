@@ -17,7 +17,7 @@ import static com.github.oxaoo.qas.GlobalPropertyKeys.CONLL_TEXT_FILE;
  * The class represent the Part-of-Speech tagging.
  *
  * @author Alexander Kuleshov
- * @version 2.0
+ * @version 0.1
  * @since 29.10.2016
  */
 public class PosTagging {

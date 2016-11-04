@@ -8,7 +8,7 @@ import static com.github.oxaoo.qas.GlobalPropertyKeys.CONLL_TEXT_FILE;
  * Property keys for syntax analyzer.
  *
  * @author Alexander Kuleshov
- * @version 2.1
+ * @version 0.1
  * @link http://www.maltparser.org/userguide.html#config
  * @since 25.09.2016
  */

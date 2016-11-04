@@ -5,7 +5,7 @@ package com.github.oxaoo.qas.syntax.tagging;
  * The main purpose of which is the multi-lingual dependency parsing.
  *
  * @author Alexander Kuleshov
- * @version 2.0
+ * @version 0.1
  * @see <a href="http://ilk.uvt.nl/conll/#dataformat">CoNLL-X data format</a>
  * @since 29.10.2016
  */
@@ -14,6 +14,7 @@ public class Conll {
     private final static int UNKNOWN_HEAD = -1;
     private final static int UNKNOWN_PROJECTIVE_HEAD = -2;
 
+    @Deprecated
     private static int counter = 0;
 
     /**
@@ -89,7 +90,8 @@ public class Conll {
      * @param lemma the lemma of word
      * @param feats the set of morpho-syntactic features
      */
-    public Conll(String form, String lemma, String feats) {
+    @Deprecated
+    private Conll(String form, String lemma, String feats) {
         char featsPrefix = this.getPrefix(feats);
 
         this.id = ++counter;
@@ -111,14 +113,15 @@ public class Conll {
      * @param form    the word form
      * @param lemma   the lemma of word
      * @param cPosTag the coarse-grained part-of-speech tag
-     * @param posTag  Fine-grained part-of-speech tag
+     * @param posTag  the fine-grained part-of-speech tag
      * @param feats   the set of morpho-syntactic features
      * @param head    the head of the current token
      * @param depRel  the dependency relation to the <code>head</code>
      * @param pHead   the projective head of current token
      * @param pDepRel the dependency relation to the <code>pHead</code>
      */
-    public Conll(String form, String lemma, char cPosTag, char posTag, String feats, int head, String depRel, int pHead,
+    @Deprecated
+    private Conll(String form, String lemma, char cPosTag, char posTag, String feats, int head, String depRel, int pHead,
                  String pDepRel) {
         this.id = ++counter;
         this.form = form;
@@ -130,6 +133,29 @@ public class Conll {
         this.depRel = depRel;
         this.pHead = pHead;
         this.pDepRel = pDepRel;
+    }
+
+    /**
+     * The constructor suitable for use after the morphological analysis.
+     *
+     * @param form  the word form
+     * @param lemma the lemma of word
+     * @param feats the set of morpho-syntactic features
+     */
+    public Conll(int id, String form, String lemma, String feats) {
+        char featsPrefix = this.getPrefix(feats);
+
+        this.id = id;
+        this.form = form;
+        this.lemma = lemma;
+        this.cPosTag = featsPrefix;
+        this.posTag = featsPrefix;
+        this.feats = feats;
+
+        this.head = UNKNOWN_HEAD;
+        this.depRel = String.valueOf(UNDERSCORE);
+        this.pHead = UNKNOWN_PROJECTIVE_HEAD;
+        this.pDepRel = String.valueOf(UNDERSCORE);
     }
 
     private char getPrefix(String feats) {
