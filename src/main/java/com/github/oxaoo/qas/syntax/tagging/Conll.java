@@ -139,6 +139,20 @@ public class Conll {
         return feats.charAt(0);
     }
 
+    public String toRow() {
+
+        return id + "\t"
+                + form + "\t"
+                + lemma + "\t"
+                + cPosTag + "\t"
+                + posTag + "\t"
+                + feats + "\t"
+                + (head == UNKNOWN_HEAD ? "_" : head) + "\t"
+                + depRel + "\t"
+                + (pHead == UNKNOWN_PROJECTIVE_HEAD ? "_" : pHead) + "\t"
+                + pDepRel + "\n";
+    }
+
     @Override
     public String toString() {
         return "Conll{" +
