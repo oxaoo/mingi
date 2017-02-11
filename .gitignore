@@ -21,6 +21,8 @@ hs_err_pid*
 
 
 ### Custom configuration
+# Disable target
+target/
 # Disable logging
 logs/
 # Exclude libs
