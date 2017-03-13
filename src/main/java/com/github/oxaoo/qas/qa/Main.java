@@ -1,31 +1,15 @@
 package com.github.oxaoo.qas.qa;
 
-import com.github.oxaoo.qas.syntax.parse.SyntaxAnalyzer;
-import com.github.oxaoo.qas.syntax.tagging.PosTagging;
-import com.github.oxaoo.qas.syntax.tagging.Conll;
-import com.github.oxaoo.qas.syntax.tokenize.SimpleTokenizer;
-import org.annolab.tt4j.TreeTaggerException;
-import org.maltparser.core.exception.MaltChainedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.List;
+import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
+import com.github.oxaoo.mp4ru.syntax.RussianParser;
 
 public class Main {
-    public static void main(String[] args) throws MaltChainedException, IOException, TreeTaggerException {
-        //tokenization.
-        SimpleTokenizer tokenizer = new SimpleTokenizer();
-        String text = tokenizer.readText();
-        List<String> words = tokenizer.tokenization(text);
+    public static void main(String[] args) throws FailedParsingException {
 
-        //morphological analyze.
-        PosTagging pos = new PosTagging();
-        List<Conll> tokens = pos.tagging(words);
-        pos.writeTokens(tokens);
-
-        //syntactic analyze.
-        SyntaxAnalyzer sa = new SyntaxAnalyzer();
-        sa.analyze();
+        String parserDir = "src/main/resources/parser/";
+        String textFilePath = parserDir + "text.txt";
+        String classifierModel = parserDir + "russian-utf8.par";
+        String resultParseFile = new RussianParser().parsing(textFilePath, classifierModel, parserDir, parserDir);
+        System.out.println("Res parse file: " + resultParseFile);
     }
 }
