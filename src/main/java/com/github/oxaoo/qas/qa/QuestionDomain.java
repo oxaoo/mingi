@@ -3,12 +3,14 @@ package com.github.oxaoo.qas.qa;
 /**
  * @author Alexander Kuleshov
  * @version 1.0
- * @see http://cogcomp.cs.illinois.edu/Data/QA/QC/definition.html
+ * @see <a href="http://cogcomp.cs.illinois.edu/Data/QA/QC/definition.html">Definition of Question Classes</a>
  * @since 14.03.2017
  */
 public enum QuestionDomain {
+    //ABBREVIATION
     ABB,
     EXP,
+    //ENTITY
     ANIMAL,
     BODY,
     COLOR,
@@ -31,19 +33,23 @@ public enum QuestionDomain {
     TERM,
     VEHICLE,
     WORD,
+    //DESCRIPTION
     DEFINITION,
     DESCRIPTION,
     MANNER,
     REASON,
+    //HUMAN
     GROUP,
     IND,
     TITLE,
     DESCRIPTION_HUMAN,
+    //LOCATION
     CITY,
     COUNTRY,
     MOUNTAIN,
     OTHER_NUMERIC,
     STATE,
+    //NUMERIC
     CODE,
     COUNT,
     DATE,
