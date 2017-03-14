@@ -4,6 +4,7 @@ import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.qas.training.TrainingModel;
 import com.github.oxaoo.qas.training.TrainingUtils;
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +22,13 @@ public class Main {
         TrainingUtils utils = new TrainingUtils();
         List<TrainingModel> trainingModels = utils.readTrainingSet("src/main/resources/qa/training.parse");
 //        LOG.info("Training set: " + trainingModels.toString());
-        TrainingModel tm = trainingModels.get(0);
-        LOG.info("TM before sort:" + tm.toString());
-        tm.sortByHead();
-        LOG.info("TM after  sort:" + tm.toString());
+//        TrainingModel tm = trainingModels.get(0);
+//        LOG.info("TM before sort:" + tm.toString());
+//        tm.sortByHead();
+//        LOG.info("TM after  sort:" + tm.toString());
+        utils.readTrainingMap("src/main/resources/qa/training_map.txt", trainingModels);
+//        LOG.info("TM: " + trainingModels.toString());
+        LOG.info("TM:" + new GsonBuilder().setPrettyPrinting().create().toJson(trainingModels));
     }
 
     private static void parsing() throws FailedParsingException {

@@ -1,6 +1,7 @@
 package com.github.oxaoo.qas.training;
 
 import com.github.oxaoo.qas.qa.QuestionDomain;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -83,5 +84,9 @@ public class TrainingModel {
                 ", domain=" + domain +
                 ", questionModel=" + questionModel +
                 '}';
+    }
+
+    public String toJson() {
+        return new GsonBuilder().setPrettyPrinting().create().toJson(this);
     }
 }

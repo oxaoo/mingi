@@ -1,15 +1,14 @@
 package com.github.oxaoo.qas.training;
 
 import com.github.oxaoo.qas.exceptions.ErrorId;
+import com.github.oxaoo.qas.qa.QuestionDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Alexander Kuleshov
@@ -43,4 +42,21 @@ public class TrainingUtils {
         }
         return Collections.emptyList();
     }
+
+    public void readTrainingMap(String fileName, List<TrainingModel> trainingModels) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] trainPair = line.split("\\s");
+                if (trainPair.length != 2) continue;
+
+                int id = Integer.valueOf(trainPair[0]);
+                QuestionDomain domain = QuestionDomain.valueOf(trainPair[1]);
+                trainingModels.get(id).setDomain(domain);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
