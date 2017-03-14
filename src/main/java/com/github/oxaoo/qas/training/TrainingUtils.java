@@ -5,9 +5,7 @@ import com.github.oxaoo.qas.qa.QuestionDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -38,7 +36,7 @@ public class TrainingUtils {
             }
             return trainingModels;
         } catch (IOException e) {
-            LOG.error(ErrorId.READ_TRAINING_MODEL_EXCEPTION.getDescription());
+            LOG.error(ErrorId.READ_TRAINING_MODEL_EXCEPTION.getDescription(e));
         }
         return Collections.emptyList();
     }
@@ -55,7 +53,17 @@ public class TrainingUtils {
                 trainingModels.get(id).setDomain(domain);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(ErrorId.READ_TRAINING_MAP_MODEL_EXCEPTION.getDescription(e));
+        }
+    }
+
+    public void makeModel(String fileName, List<TrainingModel> trainingModels) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
+            for (TrainingModel trainingModel : trainingModels) {
+                bw.write(trainingModel.toSvmFormat() + "\n");
+            }
+        } catch (IOException e) {
+            LOG.error(ErrorId.MAKE_SVM_MODEL_EXCEPTION.getDescription(e));
         }
     }
 

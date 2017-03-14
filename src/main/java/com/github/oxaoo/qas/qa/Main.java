@@ -29,6 +29,7 @@ public class Main {
         utils.readTrainingMap("src/main/resources/qa/training_map.txt", trainingModels);
 //        LOG.info("TM: " + trainingModels.toString());
         LOG.info("TM:" + new GsonBuilder().setPrettyPrinting().create().toJson(trainingModels));
+        utils.makeModel("src/main/resources/qa/qa_model.txt", trainingModels);
     }
 
     private static void parsing() throws FailedParsingException {

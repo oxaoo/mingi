@@ -89,4 +89,17 @@ public class TrainingModel {
     public String toJson() {
         return new GsonBuilder().setPrettyPrinting().create().toJson(this);
     }
+
+    public String toSvmFormat() {
+        StringBuilder sb = new StringBuilder(String.valueOf(this.domain.ordinal()));
+        int i = 0;
+        for (ModelInfo modelInfo : this.questionModel) {
+            sb//.append(this.domain.ordinal())
+              .append(" ")
+              .append(++i)
+              .append(":")
+              .append(modelInfo.getPos().getLabel());
+        }
+        return sb.toString();
+    }
 }

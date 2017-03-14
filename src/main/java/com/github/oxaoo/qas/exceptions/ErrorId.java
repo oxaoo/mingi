@@ -6,7 +6,9 @@ package com.github.oxaoo.qas.exceptions;
  * @since 14.03.2017
  */
 public enum ErrorId {
-    READ_TRAINING_MODEL_EXCEPTION(100, "Error while read training model for question classifier");
+    READ_TRAINING_MODEL_EXCEPTION(100, "Error while read training model for question classifier"),
+    READ_TRAINING_MAP_MODEL_EXCEPTION(110, "Error while read training map model for question classifier"),
+    MAKE_SVM_MODEL_EXCEPTION(120, "Error while write SVM model for question classifier");
 
     private int id;
     private String cause;
@@ -18,6 +20,10 @@ public enum ErrorId {
 
     public String getDescription() {
         return this.id + ": " + this.cause;
+    }
+
+    public String getDescription(Throwable e) {
+        return this.id + ": " + this.cause + "[" + e.getMessage() + "]";
     }
 
     public int getId() {
