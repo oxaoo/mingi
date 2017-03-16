@@ -5,6 +5,8 @@ import libsvm.svm_model;
 import libsvm.svm_node;
 import libsvm.svm_parameter;
 import libsvm.svm_problem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Alexander Kuleshov
@@ -13,7 +15,18 @@ import libsvm.svm_problem;
  */
 //todo can be use svm_train & svm_predict from libsvm?
 public class SvmEngine {
-    public svm_model svmTrain(double[][] xtrain, double[][] ytrain) {
+    private static final Logger LOG = LoggerFactory.getLogger(SvmEngine.class);
+
+    public void run(double[][] xtrain, double[][] xtest, double[][] ytrain, double[][] ytest) {
+        svm_model m = svmTrain(xtrain, ytrain);
+        double[] ypred = svmPredict(xtest, m);
+
+        for (int i = 0; i < xtest.length; i++) {
+            LOG.info("(Actual:" + ytest[i][0] + " Prediction:" + ypred[i] + ")");
+        }
+    }
+
+    private svm_model svmTrain(double[][] xtrain, double[][] ytrain) {
         svm_problem prob = new svm_problem();
         int recordCount = xtrain.length;
         int featureCount = xtrain[0].length;
@@ -46,7 +59,7 @@ public class SvmEngine {
         return svm.svm_train(prob, param);
     }
 
-    static double[] svmPredict(double[][] xtest, svm_model model) {
+    private double[] svmPredict(double[][] xtest, svm_model model) {
         double[] yPred = new double[xtest.length];
 
         for (int k = 0; k < xtest.length; k++) {
