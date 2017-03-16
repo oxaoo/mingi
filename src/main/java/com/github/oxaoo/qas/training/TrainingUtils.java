@@ -16,32 +16,32 @@ import java.util.*;
 public class TrainingUtils {
     private static final Logger LOG = LoggerFactory.getLogger(TrainingUtils.class);
 
-    public List<TrainingModel> readTrainingSet(String fileName) {
-        List<TrainingModel> trainingModels = new ArrayList<>();
+    public List<QuestionModel> readTrainingSet(String fileName) {
+        List<QuestionModel> questionModels = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             int questionNumber = 0;
-            TrainingModel trainingModel = new TrainingModel(questionNumber);
+            QuestionModel questionModel = new QuestionModel(questionNumber);
             while ((line = br.readLine()) != null) {
                 if (line.isEmpty()) {
-                    trainingModels.add(trainingModel);
-                    trainingModel = new TrainingModel(++questionNumber);
+                    questionModels.add(questionModel);
+                    questionModel = new QuestionModel(++questionNumber);
                     continue;
                 }
                 String[] conll = line.split("\\s");
                 int tokenId = Integer.valueOf(conll[0]);
                 String pos = conll[4];
                 int head = Integer.valueOf(conll[6]);
-                trainingModel.addModelInfo(new ModelInfo(tokenId, pos, head));
+                questionModel.addModelInfo(new ModelInfo(tokenId, pos, head));
             }
-            return trainingModels;
+            return questionModels;
         } catch (IOException e) {
             LOG.error(ErrorId.READ_TRAINING_MODEL_EXCEPTION.getDescription(e));
         }
         return Collections.emptyList();
     }
 
-    public void readTrainingMap(String fileName, List<TrainingModel> trainingModels) {
+    public void readTrainingMap(String fileName, List<QuestionModel> questionModels) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -50,17 +50,17 @@ public class TrainingUtils {
 
                 int id = Integer.valueOf(trainPair[0]);
                 QuestionDomain domain = QuestionDomain.valueOf(trainPair[1]);
-                trainingModels.get(id).setDomain(domain);
+                questionModels.get(id).setDomain(domain);
             }
         } catch (IOException e) {
             LOG.error(ErrorId.READ_TRAINING_MAP_MODEL_EXCEPTION.getDescription(e));
         }
     }
 
-    public void makeModel(String fileName, List<TrainingModel> trainingModels) {
+    public void makeModel(String fileName, List<QuestionModel> questionModels) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
-            for (TrainingModel trainingModel : trainingModels) {
-                bw.write(trainingModel.toSvmFormat() + "\n");
+            for (QuestionModel questionModel : questionModels) {
+                bw.write(questionModel.toSvmFormat() + "\n");
             }
         } catch (IOException e) {
             LOG.error(ErrorId.MAKE_SVM_MODEL_EXCEPTION.getDescription(e));

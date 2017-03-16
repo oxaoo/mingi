@@ -1,22 +1,103 @@
 package com.github.oxaoo.qas.training;
 
-import libsvm.svm;
-import libsvm.svm_model;
-import libsvm.svm_node;
-import libsvm.svm_parameter;
-import libsvm.svm_problem;
+import com.github.oxaoo.qas.qa.QuestionDomain;
+import libsvm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alexander Kuleshov
  * @version 1.0
  * @since 16.03.2017
  */
-//todo can be use svm_train & svm_predict from libsvm?
 public class SvmEngine {
     private static final Logger LOG = LoggerFactory.getLogger(SvmEngine.class);
 
+    public void run(List<QuestionModel> trainQuestions, List<QuestionModel> testQuestions) {
+        svm_model trainModel = this.svmTrain(trainQuestions);
+        List<QuestionDomain> evaluatedQDomains = this.svmEvaluate(trainModel, testQuestions);
+        this.comparison(evaluatedQDomains, testQuestions);
+    }
+
+    private svm_model svmTrain(List<QuestionModel> trainQuestions) {
+        int recordedCount = trainQuestions.size();
+
+        svm_problem problem = new svm_problem();
+        problem.x = new svm_node[recordedCount][];
+        problem.y = new double[recordedCount];
+        problem.l = recordedCount;
+
+        for (int i = 0; i < recordedCount; i++) {
+            QuestionModel trainQuestion = trainQuestions.get(i);
+            List<ModelInfo> trainQModelInfo = trainQuestion.getQuestionModelInfo();
+            problem.x[i] = new svm_node[trainQModelInfo.size()];
+            problem.y[i] = trainQuestion.getDomain().ordinal();
+            for (int j = 0; j < trainQModelInfo.size(); j++) {
+                svm_node node = new svm_node();
+                node.index = j;
+                node.value = trainQModelInfo.get(j).getPos().getLabel();
+                problem.x[i][j] = node;
+            }
+        }
+
+        svm_parameter parameters = new svm_parameter();
+        parameters.probability = 1;
+        parameters.gamma = 0.5;
+        parameters.nu = 0.5;
+        parameters.C = 100;
+        parameters.svm_type = svm_parameter.C_SVC;
+        parameters.kernel_type = svm_parameter.LINEAR;
+        parameters.cache_size = 20000;
+        parameters.eps = 0.001;
+
+        return svm.svm_train(problem, parameters);
+    }
+
+    private List<QuestionDomain> svmEvaluate(svm_model trainModel, List<QuestionModel> testQuestions) {
+        double[] idQDomains = new double[testQuestions.size()];
+
+        for (int i = 0; i < testQuestions.size(); i++) {
+            List<ModelInfo> modelInfo = testQuestions.get(i).getQuestionModelInfo();
+            svm_node[] nodes = new svm_node[modelInfo.size()];
+            for (int j = 0; j < modelInfo.size(); j++) {
+                svm_node node = new svm_node();
+                node.index = j;
+                node.value = modelInfo.get(j).getPos().getLabel();
+                nodes[j] = node;
+            }
+
+            int totalClasses = svm.svm_get_nr_class(trainModel);
+            int[] labels = new int[totalClasses];
+            svm.svm_get_labels(trainModel, labels);
+
+            double[] prob_estimates = new double[totalClasses];
+            idQDomains[i] = svm.svm_predict_probability(trainModel, nodes, prob_estimates);
+        }
+        return this.mapEvaluateDomains(idQDomains);
+    }
+
+    private List<QuestionDomain> mapEvaluateDomains(double[] idQDomains) {
+        List<QuestionDomain> questionDomains = new ArrayList<>(idQDomains.length);
+        for (double id : idQDomains) {
+            int intDomain = (int) id;
+            questionDomains.add(QuestionDomain.values[intDomain]);
+        }
+        return questionDomains;
+    }
+
+    private void comparison(List<QuestionDomain> evaluatedQDomains, List<QuestionModel> testQuestions) {
+        for (int i = 0; i < evaluatedQDomains.size(); i++) {
+            LOG.info("Actual - {}:{}, Evaluate - {}:{}",
+                    evaluatedQDomains.get(i).name(), evaluatedQDomains.get(i).ordinal(),
+                    testQuestions.get(i).getDomain().name(), testQuestions.get(i).getDomain().ordinal());
+        }
+    }
+
+
+    @Deprecated
     public void run(double[][] xtrain, double[][] xtest, double[][] ytrain, double[][] ytest) {
         svm_model m = svmTrain(xtrain, ytrain);
         double[] ypred = svmPredict(xtest, m);
@@ -26,21 +107,21 @@ public class SvmEngine {
         }
     }
 
+    @Deprecated
     private svm_model svmTrain(double[][] xtrain, double[][] ytrain) {
         svm_problem prob = new svm_problem();
         int recordCount = xtrain.length;
-        int featureCount = xtrain[0].length;
         prob.y = new double[recordCount];
         prob.l = recordCount;
-        prob.x = new svm_node[recordCount][featureCount];
+        prob.x = new svm_node[recordCount][];
 
         for (int i = 0; i < recordCount; i++) {
-            double[] features = xtrain[i];
-            prob.x[i] = new svm_node[features.length];
-            for (int j = 0; j < features.length; j++) {
+            double[] values = xtrain[i];
+            prob.x[i] = new svm_node[values.length];
+            for (int j = 0; j < values.length; j++) {
                 svm_node node = new svm_node();
                 node.index = j;
-                node.value = features[j];
+                node.value = values[j];
                 prob.x[i][j] = node;
             }
             prob.y[i] = ytrain[i][0];
@@ -59,6 +140,7 @@ public class SvmEngine {
         return svm.svm_train(prob, param);
     }
 
+    @Deprecated
     private double[] svmPredict(double[][] xtest, svm_model model) {
         double[] yPred = new double[xtest.length];
 

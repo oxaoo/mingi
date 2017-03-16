@@ -63,4 +63,6 @@ public enum QuestionDomain {
     TEMP,
     SIZE,
     WEIGHT;
+
+    public static final QuestionDomain values[] = values();
 }

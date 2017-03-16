@@ -12,37 +12,37 @@ import java.util.List;
  * @version 1.0
  * @since 14.03.2017
  */
-public class TrainingModel {
+public class QuestionModel {
     private int modelId;
     private QuestionDomain domain;
-    private List<ModelInfo> questionModel = new ArrayList<>();
+    private List<ModelInfo> questionModelInfo = new ArrayList<>();
 
-    public TrainingModel() {
+    public QuestionModel() {
     }
 
-    public TrainingModel(int modelId) {
+    public QuestionModel(int modelId) {
         this.modelId = modelId;
     }
 
-    public TrainingModel(QuestionDomain domain) {
+    public QuestionModel(QuestionDomain domain) {
         this.domain = domain;
     }
 
-    public TrainingModel(QuestionDomain domain, List<ModelInfo> questionModel) {
+    public QuestionModel(QuestionDomain domain, List<ModelInfo> questionModelInfo) {
         this.domain = domain;
-        this.questionModel = questionModel;
+        this.questionModelInfo = questionModelInfo;
     }
 
     //todo check valueOf
-    public TrainingModel(String domainValue, List<ModelInfo> questionModel) {
+    public QuestionModel(String domainValue, List<ModelInfo> questionModelInfo) {
         this.domain = QuestionDomain.valueOf(domainValue);
-        this.questionModel = questionModel;
+        this.questionModelInfo = questionModelInfo;
     }
 
-    public TrainingModel(int modelId, QuestionDomain domain, List<ModelInfo> questionModel) {
+    public QuestionModel(int modelId, QuestionDomain domain, List<ModelInfo> questionModelInfo) {
         this.modelId = modelId;
         this.domain = domain;
-        this.questionModel = questionModel;
+        this.questionModelInfo = questionModelInfo;
     }
 
     public QuestionDomain getDomain() {
@@ -53,12 +53,12 @@ public class TrainingModel {
         this.domain = domain;
     }
 
-    public List<ModelInfo> getQuestionModel() {
-        return questionModel;
+    public List<ModelInfo> getQuestionModelInfo() {
+        return questionModelInfo;
     }
 
-    public void setQuestionModel(List<ModelInfo> questionModel) {
-        this.questionModel = questionModel;
+    public void setQuestionModelInfo(List<ModelInfo> questionModelInfo) {
+        this.questionModelInfo = questionModelInfo;
     }
 
     public int getModelId() {
@@ -70,19 +70,19 @@ public class TrainingModel {
     }
 
     public void addModelInfo(ModelInfo modelInfo) {
-        questionModel.add(modelInfo);
+        questionModelInfo.add(modelInfo);
     }
 
     public void sortByHead() {
-        questionModel.sort(Comparator.comparingInt(ModelInfo::getHead));
+        questionModelInfo.sort(Comparator.comparingInt(ModelInfo::getHead));
     }
 
     @Override
     public String toString() {
-        return "TrainingModel{" +
+        return "QuestionModel{" +
                 "modelId=" + modelId +
                 ", domain=" + domain +
-                ", questionModel=" + questionModel +
+                ", questionModelInfo=" + questionModelInfo +
                 '}';
     }
 
@@ -93,7 +93,7 @@ public class TrainingModel {
     public String toSvmFormat() {
         StringBuilder sb = new StringBuilder(String.valueOf(this.domain.ordinal()));
         int i = 0;
-        for (ModelInfo modelInfo : this.questionModel) {
+        for (ModelInfo modelInfo : this.questionModelInfo) {
             sb//.append(this.domain.ordinal())
               .append(" ")
               .append(++i)
