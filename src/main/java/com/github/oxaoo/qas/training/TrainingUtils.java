@@ -67,4 +67,27 @@ public class TrainingUtils {
         }
     }
 
+
+    public List<QuestionModel> readQTrainingModel(String fileName) {
+        List<QuestionModel> questionModels = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            int questionNumber = 0;
+            QuestionModel questionModel = new QuestionModel(questionNumber);
+            while ((line = br.readLine()) != null) {
+                String[] qModelLine = line.split("\\s");
+                QuestionDomain qd = QuestionDomain.values[Integer.valueOf(qModelLine[0])];
+                List<ModelInfo> mis = new ArrayList<>();
+                for (int i = 1; i < qModelLine.length; i++) {
+                    mis.add(new ModelInfo(i - 1, Integer.valueOf(qModelLine[i]), -1));
+                }
+                questionModels.add(new QuestionModel(qd, mis));
+            }
+            return questionModels;
+        } catch (IOException e) {
+            LOG.error(ErrorId.READ_QUESTION_TRAINING_MODEL_EXCEPTION.getDescription(e));
+        }
+        return Collections.emptyList();
+    }
+
 }

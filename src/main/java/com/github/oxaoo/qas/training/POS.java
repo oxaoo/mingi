@@ -17,6 +17,8 @@ public enum  POS {
     S(6),
     V(7);
 
+    public static final POS values[] = values();
+
     private int label;
 
     POS(int label) {

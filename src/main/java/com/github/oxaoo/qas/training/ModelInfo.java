@@ -23,6 +23,12 @@ public class ModelInfo {
         this.head = head;
     }
 
+    public ModelInfo(int tokenId, int posId, int head) {
+        this.tokenId = tokenId;
+        this.pos = POS.values[posId - 1];
+        this.head = head;
+    }
+
     public int getTokenId() {
         return tokenId;
     }

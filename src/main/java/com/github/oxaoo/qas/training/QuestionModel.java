@@ -96,8 +96,8 @@ public class QuestionModel {
         for (ModelInfo modelInfo : this.questionModelInfo) {
             sb//.append(this.domain.ordinal())
               .append(" ")
-              .append(++i)
-              .append(":")
+//              .append(++i)
+//              .append(":")
               .append(modelInfo.getPos().getLabel());
         }
         return sb.toString();

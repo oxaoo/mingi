@@ -8,7 +8,8 @@ package com.github.oxaoo.qas.exceptions;
 public enum ErrorId {
     READ_TRAINING_MODEL_EXCEPTION(100, "Error while read training model for question classifier"),
     READ_TRAINING_MAP_MODEL_EXCEPTION(110, "Error while read training map model for question classifier"),
-    MAKE_SVM_MODEL_EXCEPTION(120, "Error while write SVM model for question classifier");
+    MAKE_SVM_MODEL_EXCEPTION(120, "Error while write SVM model for question classifier"),
+    READ_QUESTION_TRAINING_MODEL_EXCEPTION(130, "Error while read question training model for question classifier");
 
     private int id;
     private String cause;
