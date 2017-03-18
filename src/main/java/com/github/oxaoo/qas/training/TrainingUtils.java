@@ -32,7 +32,7 @@ public class TrainingUtils {
                 int tokenId = Integer.valueOf(conll[0]);
                 String pos = conll[4];
                 int head = Integer.valueOf(conll[6]);
-                questionModel.addModelInfo(new ModelInfo(tokenId, pos, head));
+                questionModel.addQuestionToken(new QuestionToken(tokenId, pos, head));
             }
             return questionModels;
         } catch (IOException e) {
@@ -41,7 +41,7 @@ public class TrainingUtils {
         return Collections.emptyList();
     }
 
-    public void readTrainingMap(String fileName, List<QuestionModel> questionModels) {
+    public static void readTrainingMap(String fileName, List<QuestionModel> questionModels) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -77,9 +77,9 @@ public class TrainingUtils {
             while ((line = br.readLine()) != null) {
                 String[] qModelLine = line.split("\\s");
                 QuestionDomain qd = QuestionDomain.values[Integer.valueOf(qModelLine[0])];
-                List<ModelInfo> mis = new ArrayList<>();
+                List<QuestionToken> mis = new ArrayList<>();
                 for (int i = 1; i < qModelLine.length; i++) {
-                    mis.add(new ModelInfo(i - 1, Integer.valueOf(qModelLine[i]), -1));
+                    mis.add(new QuestionToken(i - 1, Integer.valueOf(qModelLine[i]), -1));
                 }
                 questionModels.add(new QuestionModel(qd, mis));
             }

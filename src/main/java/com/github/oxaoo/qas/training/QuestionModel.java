@@ -15,7 +15,7 @@ import java.util.List;
 public class QuestionModel {
     private int modelId;
     private QuestionDomain domain;
-    private List<ModelInfo> questionModelInfo = new ArrayList<>();
+    private List<QuestionToken> questionTokens = new ArrayList<>();
 
     public QuestionModel() {
     }
@@ -28,21 +28,21 @@ public class QuestionModel {
         this.domain = domain;
     }
 
-    public QuestionModel(QuestionDomain domain, List<ModelInfo> questionModelInfo) {
+    public QuestionModel(QuestionDomain domain, List<QuestionToken> questionTokens) {
         this.domain = domain;
-        this.questionModelInfo = questionModelInfo;
+        this.questionTokens = questionTokens;
     }
 
     //todo check valueOf
-    public QuestionModel(String domainValue, List<ModelInfo> questionModelInfo) {
+    public QuestionModel(String domainValue, List<QuestionToken> questionTokens) {
         this.domain = QuestionDomain.valueOf(domainValue);
-        this.questionModelInfo = questionModelInfo;
+        this.questionTokens = questionTokens;
     }
 
-    public QuestionModel(int modelId, QuestionDomain domain, List<ModelInfo> questionModelInfo) {
+    public QuestionModel(int modelId, QuestionDomain domain, List<QuestionToken> questionTokens) {
         this.modelId = modelId;
         this.domain = domain;
-        this.questionModelInfo = questionModelInfo;
+        this.questionTokens = questionTokens;
     }
 
     public QuestionDomain getDomain() {
@@ -53,12 +53,12 @@ public class QuestionModel {
         this.domain = domain;
     }
 
-    public List<ModelInfo> getQuestionModelInfo() {
-        return questionModelInfo;
+    public List<QuestionToken> getQuestionTokens() {
+        return questionTokens;
     }
 
-    public void setQuestionModelInfo(List<ModelInfo> questionModelInfo) {
-        this.questionModelInfo = questionModelInfo;
+    public void setQuestionTokens(List<QuestionToken> questionTokens) {
+        this.questionTokens = questionTokens;
     }
 
     public int getModelId() {
@@ -69,12 +69,12 @@ public class QuestionModel {
         this.modelId = modelId;
     }
 
-    public void addModelInfo(ModelInfo modelInfo) {
-        questionModelInfo.add(modelInfo);
+    public void addQuestionToken(QuestionToken questionToken) {
+        questionTokens.add(questionToken);
     }
 
     public void sortByHead() {
-        questionModelInfo.sort(Comparator.comparingInt(ModelInfo::getHead));
+        questionTokens.sort(Comparator.comparingInt(QuestionToken::getHead));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class QuestionModel {
         return "QuestionModel{" +
                 "modelId=" + modelId +
                 ", domain=" + domain +
-                ", questionModelInfo=" + questionModelInfo +
+                ", questionTokens=" + questionTokens +
                 '}';
     }
 
@@ -93,12 +93,12 @@ public class QuestionModel {
     public String toSvmFormat() {
         StringBuilder sb = new StringBuilder(String.valueOf(this.domain.ordinal()));
         int i = 0;
-        for (ModelInfo modelInfo : this.questionModelInfo) {
+        for (QuestionToken questionToken : this.questionTokens) {
             sb//.append(this.domain.ordinal())
               .append(" ")
 //              .append(++i)
 //              .append(":")
-              .append(modelInfo.getPos().getLabel());
+              .append(questionToken.getPos().getLabel());
         }
         return sb.toString();
     }

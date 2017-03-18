@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.qa;
+package com.github.oxaoo.qas;
 
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
@@ -16,7 +16,7 @@ public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(com.github.oxaoo.mp4ru.Main.class);
 
     public static void main(String[] args) throws FailedParsingException {
-//        parsing();
+        parsing();
         training();
     }
 
@@ -44,7 +44,8 @@ public class Main {
         String parserDir = "src/main/resources/parser/";
         String textFilePath = parserDir + "text.txt";
         String classifierModel = parserDir + "russian-utf8.par";
-        String resultParseFile = new RussianParser().parsing(textFilePath, classifierModel, parserDir, parserDir);
+        String parserConfig = parserDir + "russian.mco";
+        String resultParseFile = new RussianParser(classifierModel, parserDir, parserConfig).parseFromFile(textFilePath);
         LOG.info("Result of parse file: " + resultParseFile);
     }
 }

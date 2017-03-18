@@ -5,7 +5,7 @@ package com.github.oxaoo.qas.training;
  * @version 1.0
  * @since 14.03.2017
  */
-public enum  POS {
+public enum PosType {
 //    ADJ (adjective), ADV (adverb), NOUN (noun), PRP (preposition), CARD (cardinal number), CONJ (conjunction),
 // DT (determiner), PRO (pronoun), VERB (verb), I (interjection)
 
@@ -17,11 +17,11 @@ public enum  POS {
     S(6),
     V(7);
 
-    public static final POS values[] = values();
+    public static final PosType values[] = values();
 
     private int label;
 
-    POS(int label) {
+    PosType(int label) {
         this.label = label;
     }
 

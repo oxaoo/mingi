@@ -32,13 +32,13 @@ public class SvmEngine {
 
         for (int i = 0; i < recordedCount; i++) {
             QuestionModel trainQuestion = trainQuestions.get(i);
-            List<ModelInfo> trainQModelInfo = trainQuestion.getQuestionModelInfo();
-            problem.x[i] = new svm_node[trainQModelInfo.size()];
+            List<QuestionToken> trainQQuestionToken = trainQuestion.getQuestionTokens();
+            problem.x[i] = new svm_node[trainQQuestionToken.size()];
             problem.y[i] = trainQuestion.getDomain().ordinal();
-            for (int j = 0; j < trainQModelInfo.size(); j++) {
+            for (int j = 0; j < trainQQuestionToken.size(); j++) {
                 svm_node node = new svm_node();
                 node.index = j;
-                node.value = trainQModelInfo.get(j).getPos().getLabel();
+                node.value = trainQQuestionToken.get(j).getPos().getLabel();
                 problem.x[i][j] = node;
             }
         }
@@ -60,12 +60,12 @@ public class SvmEngine {
         double[] idQDomains = new double[testQuestions.size()];
 
         for (int i = 0; i < testQuestions.size(); i++) {
-            List<ModelInfo> modelInfo = testQuestions.get(i).getQuestionModelInfo();
-            svm_node[] nodes = new svm_node[modelInfo.size()];
-            for (int j = 0; j < modelInfo.size(); j++) {
+            List<QuestionToken> questionToken = testQuestions.get(i).getQuestionTokens();
+            svm_node[] nodes = new svm_node[questionToken.size()];
+            for (int j = 0; j < questionToken.size(); j++) {
                 svm_node node = new svm_node();
                 node.index = j;
-                node.value = modelInfo.get(j).getPos().getLabel();
+                node.value = questionToken.get(j).getPos().getLabel();
                 nodes[j] = node;
             }
 
