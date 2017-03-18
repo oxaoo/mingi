@@ -56,7 +56,7 @@ public class TrainerQuestionModel {
         }
         List<QuestionModel> questionModels = this.formModels(questionTokens);
         TrainingUtils.readTrainingMap(this.domainsQuestionsPath, questionModels);
-        LOG.info("TM:" + new GsonBuilder().setPrettyPrinting().create().toJson(questionModels));
+        LOG.debug("TM:" + new GsonBuilder().setPrettyPrinting().create().toJson(questionModels));
 
         TrainingUtils.makeModel(this.qasModelPath, questionModels);
 

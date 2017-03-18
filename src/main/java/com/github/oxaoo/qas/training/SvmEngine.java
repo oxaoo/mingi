@@ -17,15 +17,19 @@ import java.util.List;
 public class SvmEngine {
     private static final Logger LOG = LoggerFactory.getLogger(SvmEngine.class);
 
+    public static svm_model loadModel(String modelPath) throws IOException {
+        return svm.svm_load_model(modelPath);
+    }
+
+    public static void saveModel(svm_model model, String modelPath) throws IOException {
+//        "src/main/resources/qmod.model"
+        svm.svm_save_model(modelPath, model);
+    }
+
     public void run(List<QuestionModel> trainQuestions, List<QuestionModel> testQuestions) {
         svm_model trainModel = this.svmTrain(trainQuestions);
         List<QuestionDomain> evaluatedQDomains = this.svmEvaluate(trainModel, testQuestions);
         this.comparison(evaluatedQDomains, testQuestions);
-        try {
-            svm.svm_save_model("src/main/resources/qmod.model", trainModel);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private svm_model svmTrain(List<QuestionModel> trainQuestions) {
@@ -112,74 +116,5 @@ public class SvmEngine {
             LOG.info("List of unrecognized questions correctly:");
             for (int eid : errorIds) LOG.info("# " + eid);
         }
-    }
-
-
-    @Deprecated
-    public void run(double[][] xtrain, double[][] xtest, double[][] ytrain, double[][] ytest) {
-        svm_model m = svmTrain(xtrain, ytrain);
-        double[] ypred = svmPredict(xtest, m);
-
-        for (int i = 0; i < xtest.length; i++) {
-            LOG.info("(Actual:" + ytest[i][0] + " Prediction:" + ypred[i] + ")");
-        }
-    }
-
-    @Deprecated
-    private svm_model svmTrain(double[][] xtrain, double[][] ytrain) {
-        svm_problem prob = new svm_problem();
-        int recordCount = xtrain.length;
-        prob.y = new double[recordCount];
-        prob.l = recordCount;
-        prob.x = new svm_node[recordCount][];
-
-        for (int i = 0; i < recordCount; i++) {
-            double[] values = xtrain[i];
-            prob.x[i] = new svm_node[values.length];
-            for (int j = 0; j < values.length; j++) {
-                svm_node node = new svm_node();
-                node.index = j;
-                node.value = values[j];
-                prob.x[i][j] = node;
-            }
-            prob.y[i] = ytrain[i][0];
-        }
-
-        svm_parameter param = new svm_parameter();
-        param.probability = 1;
-        param.gamma = 0.5;
-        param.nu = 0.5;
-        param.C = 100;
-        param.svm_type = svm_parameter.C_SVC;
-        param.kernel_type = svm_parameter.LINEAR;
-        param.cache_size = 20000;
-        param.eps = 0.001;
-
-        return svm.svm_train(prob, param);
-    }
-
-    @Deprecated
-    private double[] svmPredict(double[][] xtest, svm_model model) {
-        double[] yPred = new double[xtest.length];
-
-        for (int k = 0; k < xtest.length; k++) {
-            double[] fVector = xtest[k];
-
-            svm_node[] nodes = new svm_node[fVector.length];
-            for (int i = 0; i < fVector.length; i++) {
-                svm_node node = new svm_node();
-                node.index = i;
-                node.value = fVector[i];
-                nodes[i] = node;
-            }
-
-            int totalClasses = 2;
-            int[] labels = new int[totalClasses];
-            svm.svm_get_labels(model, labels);
-
-            double[] prob_estimates = new double[totalClasses];
-            yPred[k] = svm.svm_predict_probability(model, nodes, prob_estimates);
-        }
-        return yPred;
     }
 }
