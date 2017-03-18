@@ -50,7 +50,7 @@ public class TrainingUtils {
 
                 int id = Integer.valueOf(trainPair[0]);
                 QuestionDomain domain = QuestionDomain.valueOf(trainPair[1]);
-                questionModels.get(id).setDomain(domain);
+                questionModels.get(id - 1).setDomain(domain);
             }
         } catch (IOException e) {
             LOG.error(ErrorId.READ_TRAINING_MAP_MODEL_EXCEPTION.getDescription(e));

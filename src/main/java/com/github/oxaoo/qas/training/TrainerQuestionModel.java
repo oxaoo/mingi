@@ -7,6 +7,9 @@ import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.mp4ru.syntax.utils.ParserUtils;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
+import com.google.gson.GsonBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.List;
  * @since 18.03.2017
  */
 public class TrainerQuestionModel {
+    private static final Logger LOG = LoggerFactory.getLogger(TrainerQuestionModel.class);
 
     private final String sampleQuestionsPath;
     private final String domainsQuestionsPath;
@@ -52,6 +56,8 @@ public class TrainerQuestionModel {
         }
         List<QuestionModel> questionModels = this.formModels(questionTokens);
         TrainingUtils.readTrainingMap(this.domainsQuestionsPath, questionModels);
+        LOG.info("TM:" + new GsonBuilder().setPrettyPrinting().create().toJson(questionModels));
+
     }
 
     private List<QuestionModel> formModels(List<QuestionToken> questionTokens) {
@@ -67,6 +73,10 @@ public class TrainerQuestionModel {
             }
             questionModel.addQuestionToken(token);
             prevTokenId = token.getTokenId();
+        }
+        //add last question
+        if (!questionTokens.isEmpty()) {
+            questionModels.add(questionModel);
         }
         return questionModels;
     }
