@@ -57,7 +57,7 @@ public class TrainingUtils {
         }
     }
 
-    public void makeModel(String fileName, List<QuestionModel> questionModels) {
+    public static void makeModel(String fileName, List<QuestionModel> questionModels) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
             for (QuestionModel questionModel : questionModels) {
                 bw.write(questionModel.toSvmFormat() + "\n");
@@ -68,7 +68,7 @@ public class TrainingUtils {
     }
 
 
-    public List<QuestionModel> readQTrainingModel(String fileName) {
+    public static List<QuestionModel> readQTrainingModel(String fileName) {
         List<QuestionModel> questionModels = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;

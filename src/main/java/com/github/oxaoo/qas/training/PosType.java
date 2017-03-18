@@ -15,7 +15,9 @@ public enum PosType {
     C(4),
     M(5),
     S(6),
-    V(7);
+    V(7),
+    R(8),
+    Q(9);
 
     public static final PosType values[] = values();
 

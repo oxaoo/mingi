@@ -58,6 +58,13 @@ public class TrainerQuestionModel {
         TrainingUtils.readTrainingMap(this.domainsQuestionsPath, questionModels);
         LOG.info("TM:" + new GsonBuilder().setPrettyPrinting().create().toJson(questionModels));
 
+        TrainingUtils.makeModel(this.qasModelPath, questionModels);
+
+        List<QuestionModel> qms = TrainingUtils.readQTrainingModel(this.qasModelPath);
+
+        SvmEngine svmEngine = new SvmEngine();
+        int sizeQms = qms.size();
+        svmEngine.run(qms.subList(0, sizeQms / 3 * 2), qms.subList(sizeQms / 3 * 2, sizeQms));
     }
 
     private List<QuestionModel> formModels(List<QuestionToken> questionTokens) {

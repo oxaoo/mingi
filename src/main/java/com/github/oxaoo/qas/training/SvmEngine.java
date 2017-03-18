@@ -5,6 +5,7 @@ import libsvm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,11 @@ public class SvmEngine {
         svm_model trainModel = this.svmTrain(trainQuestions);
         List<QuestionDomain> evaluatedQDomains = this.svmEvaluate(trainModel, testQuestions);
         this.comparison(evaluatedQDomains, testQuestions);
+        try {
+            svm.svm_save_model("src/main/resources/qmod.model", trainModel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private svm_model svmTrain(List<QuestionModel> trainQuestions) {
@@ -89,10 +95,22 @@ public class SvmEngine {
     }
 
     private void comparison(List<QuestionDomain> evaluatedQDomains, List<QuestionModel> testQuestions) {
+        int error = 0;
+        List<Integer> errorIds = new ArrayList<>();
         for (int i = 0; i < evaluatedQDomains.size(); i++) {
+            if (evaluatedQDomains.get(i).ordinal() != testQuestions.get(i).getDomain().ordinal()) {
+                error++;
+//                errorIds.add(testQuestions.get(i).getModelId());
+                errorIds.add(i);
+            }
             LOG.info("Actual - {}:{}, Evaluate - {}:{}",
                     evaluatedQDomains.get(i).name(), evaluatedQDomains.get(i).ordinal(),
                     testQuestions.get(i).getDomain().name(), testQuestions.get(i).getDomain().ordinal());
+        }
+        LOG.info("Size of test sample: {}, Number of errors: {}", testQuestions.size(), error);
+        if (error != 0) {
+            LOG.info("List of unrecognized questions correctly:");
+            for (int eid : errorIds) LOG.info("# " + eid);
         }
     }
 
