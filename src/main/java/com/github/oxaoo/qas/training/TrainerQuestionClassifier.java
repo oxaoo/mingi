@@ -100,8 +100,8 @@ public class TrainerQuestionClassifier {
         for (int i = 0; i < evaluatedQDomains.size(); i++) {
             if (evaluatedQDomains.get(i).ordinal() != testQuestions.get(i).getDomain().ordinal()) {
                 error++;
-//                errorIds.add(testQuestions.get(i).getModelId());
-                errorIds.add(i);
+                errorIds.add(testQuestions.get(i).getModelId());
+//                errorIds.add(i);
             }
             LOG.info("Actual - {}:{}, Evaluate - {}:{}",
                     evaluatedQDomains.get(i).name(), evaluatedQDomains.get(i).ordinal(),
