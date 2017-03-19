@@ -13,8 +13,8 @@ import java.util.*;
  * @version 1.0
  * @since 14.03.2017
  */
-public class TrainingUtils {
-    private static final Logger LOG = LoggerFactory.getLogger(TrainingUtils.class);
+public class TrainerUtils {
+    private static final Logger LOG = LoggerFactory.getLogger(TrainerUtils.class);
 
     public List<QuestionModel> readTrainingSet(String fileName) {
         List<QuestionModel> questionModels = new ArrayList<>();
@@ -41,7 +41,7 @@ public class TrainingUtils {
         return Collections.emptyList();
     }
 
-    public static void readTrainingMap(String fileName, List<QuestionModel> questionModels) {
+    public static void readDomainsMap(String fileName, List<QuestionModel> questionModels) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {

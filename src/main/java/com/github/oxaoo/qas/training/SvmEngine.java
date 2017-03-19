@@ -1,5 +1,7 @@
 package com.github.oxaoo.qas.training;
 
+import com.github.oxaoo.qas.exceptions.FindSvmModelException;
+import com.github.oxaoo.qas.exceptions.SaveSvmModelException;
 import com.github.oxaoo.qas.qa.QuestionDomain;
 import libsvm.*;
 import org.slf4j.Logger;
@@ -17,22 +19,24 @@ import java.util.List;
 public class SvmEngine {
     private static final Logger LOG = LoggerFactory.getLogger(SvmEngine.class);
 
-    public static svm_model loadModel(String modelPath) throws IOException {
-        return svm.svm_load_model(modelPath);
+    public static svm_model findModel(String modelPath) throws FindSvmModelException {
+        try {
+            return svm.svm_load_model(modelPath);
+        } catch (IOException e) {
+            throw new FindSvmModelException("Failed to find SVM model of question classifier.", e);
+        }
     }
 
-    public static void saveModel(svm_model model, String modelPath) throws IOException {
-//        "src/main/resources/qmod.model"
-        svm.svm_save_model(modelPath, model);
+    public static void saveModel(svm_model model, String modelPath) throws SaveSvmModelException {
+        try {
+            svm.svm_save_model(modelPath, model);
+        } catch (IOException e) {
+            throw new SaveSvmModelException("Failed to save SVM model of question classifier.", e);
+        }
     }
 
-    public void run(List<QuestionModel> trainQuestions, List<QuestionModel> testQuestions) {
-        svm_model trainModel = this.svmTrain(trainQuestions);
-        List<QuestionDomain> evaluatedQDomains = this.svmEvaluate(trainModel, testQuestions);
-        this.comparison(evaluatedQDomains, testQuestions);
-    }
 
-    private svm_model svmTrain(List<QuestionModel> trainQuestions) {
+    public svm_model svmTrain(List<QuestionModel> trainQuestions) {
         int recordedCount = trainQuestions.size();
 
         svm_problem problem = new svm_problem();
@@ -66,7 +70,7 @@ public class SvmEngine {
         return svm.svm_train(problem, parameters);
     }
 
-    private List<QuestionDomain> svmEvaluate(svm_model trainModel, List<QuestionModel> testQuestions) {
+    public List<QuestionDomain> svmEvaluate(svm_model trainModel, List<QuestionModel> testQuestions) {
         double[] idQDomains = new double[testQuestions.size()];
 
         for (int i = 0; i < testQuestions.size(); i++) {
@@ -96,25 +100,5 @@ public class SvmEngine {
             questionDomains.add(QuestionDomain.values[intDomain]);
         }
         return questionDomains;
-    }
-
-    private void comparison(List<QuestionDomain> evaluatedQDomains, List<QuestionModel> testQuestions) {
-        int error = 0;
-        List<Integer> errorIds = new ArrayList<>();
-        for (int i = 0; i < evaluatedQDomains.size(); i++) {
-            if (evaluatedQDomains.get(i).ordinal() != testQuestions.get(i).getDomain().ordinal()) {
-                error++;
-//                errorIds.add(testQuestions.get(i).getModelId());
-                errorIds.add(i);
-            }
-            LOG.info("Actual - {}:{}, Evaluate - {}:{}",
-                    evaluatedQDomains.get(i).name(), evaluatedQDomains.get(i).ordinal(),
-                    testQuestions.get(i).getDomain().name(), testQuestions.get(i).getDomain().ordinal());
-        }
-        LOG.info("Size of test sample: {}, Number of errors: {}", testQuestions.size(), error);
-        if (error != 0) {
-            LOG.info("List of unrecognized questions correctly:");
-            for (int eid : errorIds) LOG.info("# " + eid);
-        }
     }
 }

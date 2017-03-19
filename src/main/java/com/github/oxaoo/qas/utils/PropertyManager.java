@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -18,7 +17,7 @@ import java.util.Properties;
 public class PropertyManager {
     private static final Logger LOG = LoggerFactory.getLogger(PropertyManager.class);
 
-    private static final String PROPERTY_FILE_NAME = "qas.properties";
+    private static final String PROPERTY_FILE_NAME = "src/main/resources/qas.properties";
     private static PropertyManager propertyManager = new PropertyManager();
     private Properties properties;
 
