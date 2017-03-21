@@ -16,7 +16,8 @@ public class Main {
 
     private static void testSearchEngine() {
         SearchEngine engine = new SearchEngine();
-        engine.execute();
+        engine.find("гора эльбрус");
+//        engine.execute();
     }
 
     private static void run() throws LoadQuestionClassifierModelException {
