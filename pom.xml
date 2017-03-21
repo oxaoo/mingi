@@ -24,6 +24,13 @@
             <version>${mp4ru.version}</version>
         </dependency>
 
+        <!--Google Search Engine-->
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-customsearch</artifactId>
+            <version>v1-rev53-1.22.0</version>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>log4j</groupId>

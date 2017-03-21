@@ -18,16 +18,25 @@ public class PropertyManager {
     private static final Logger LOG = LoggerFactory.getLogger(PropertyManager.class);
 
     private static final String PROPERTY_FILE_NAME = "src/main/resources/qas.properties";
+    private static final String PRIVATE_PROPERTY_FILE_NAME = "src/main/resources/qas_private.properties";
     private static PropertyManager propertyManager = new PropertyManager();
     private Properties properties;
+    private Properties privateProperties;
 
     private PropertyManager() {
-        this.properties = new Properties();
-        try (InputStream in = new FileInputStream(PROPERTY_FILE_NAME)) {
-            properties.load(in);
+        this.properties = this.loadProperties(PROPERTY_FILE_NAME);
+        this.privateProperties = this.loadProperties(PRIVATE_PROPERTY_FILE_NAME);
+
+    }
+
+    private Properties loadProperties(String propertyFileName) {
+        Properties prop = new Properties();
+        try (InputStream in = new FileInputStream(propertyFileName)) {
+            prop.load(in);
         } catch (IOException e) {
             LOG.error(ErrorId.FAILED_LOAD_APPLICATION_PROPERTIES.getDescription(e));
         }
+        return prop;
     }
 
     public static Properties getProperties() {
@@ -36,5 +45,9 @@ public class PropertyManager {
 
     public static String getProperty(String key) {
         return propertyManager.properties.getProperty(key);
+    }
+
+    public static String getPrivateProperty(String key) {
+        return propertyManager.privateProperties.getProperty(key);
     }
 }
