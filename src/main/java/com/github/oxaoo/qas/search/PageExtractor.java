@@ -6,15 +6,7 @@ import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 /**
@@ -26,11 +18,6 @@ public class PageExtractor {
     private static final Logger LOG = LoggerFactory.getLogger(PageExtractor.class);
 
     public PageExtractor() {
-        try {
-            enableSSLSocket();
-        } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            LOG.error("Failed to enable ssl socket. Cause: {}", e);
-        }
     }
 
     public void extract(List<Result> snippets) {
@@ -48,23 +35,5 @@ public class PageExtractor {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static void enableSSLSocket() throws KeyManagementException, NoSuchAlgorithmException {
-        HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
-
-        SSLContext context = SSLContext.getInstance("TLS");
-        context.init(null, new X509TrustManager[]{new X509TrustManager() {
-            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-            }
-
-            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-            }
-
-            public X509Certificate[] getAcceptedIssuers() {
-                return new X509Certificate[0];
-            }
-        }}, new SecureRandom());
-        HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
     }
 }
