@@ -16,6 +16,11 @@ public class Main {
     public static void main(String[] args) throws LoadQuestionClassifierModelException {
 //        run();
         testSearchEngine();
+//        testPageExtractor();
+    }
+
+    private static void testPageExtractor() {
+//        new PageExtractor().testExtract();
     }
 
     private static void testSearchEngine() {
