@@ -25,8 +25,8 @@ public class Main {
 
     private static void testSearchEngine() {
         SearchEngine engine = new SearchEngine();
-//        List<Result> snippets = engine.find("гора эльбрус");
-        List<Result> snippets = engine.stubFind();
+        List<Result> snippets = engine.find("где находится эльбрус?");
+//        List<Result> snippets = engine.stubFind();
         PageExtractor pageExtractor = new PageExtractor();
         pageExtractor.extract(snippets);
 //        engine.execute();

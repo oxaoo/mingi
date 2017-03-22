@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +21,8 @@ public class PageExtractor {
     public PageExtractor() {
     }
 
-    public void extract(List<Result> snippets) {
+    public List<String> extract(List<Result> snippets) {
+        List<String> texts = new ArrayList<>();
         for (Result snippet : snippets) {
             String link = snippet.getLink();
             try {
@@ -29,11 +31,13 @@ public class PageExtractor {
                         .get();
 
                 String text = doc.body().text();
-                LOG.info("Link: {}, \nText: {}", link, text);
+                texts.add(text);
+                LOG.info("\nLink: {}, \nText: {}, \nSnippet: {}\n", link, text, snippet.getSnippet());
             } catch (IOException e) {
                 LOG.error("Failed to get page {}. Cause: {}", link, e.getMessage());
                 e.printStackTrace();
             }
         }
+        return texts;
     }
 }
