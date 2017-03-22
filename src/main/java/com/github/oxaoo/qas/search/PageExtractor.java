@@ -53,9 +53,9 @@ public class PageExtractor {
                 continue;
             }*/
             try {
-                Document doc = Jsoup.connect("https://ru.wikipedia.org/wiki/эльбрус")
+                Document doc = Jsoup.connect(link)
                         .proxy("proxy.t-systems.ru", 3128)
-                        .userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21")
+//                        .userAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21")
                         .timeout(10000)
 //                        .userAgent("Mozilla/5.0 (Windows NT 6.2; WOW64; rv:29.0) Gecko/20100101 Firefox/29.0")
 //                        .method(Connection.Method.POST)
