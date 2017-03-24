@@ -38,6 +38,13 @@
             <version>1.10.1</version>
         </dependency>
 
+        <!-- Syntax sugar -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.14</version>
+        </dependency>
+
 
 
         <!-- Logging -->

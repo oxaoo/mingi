@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -55,14 +56,17 @@ public class PageExtractorTest {
         String separateToken = "\\.\\.\\.";
         List<String> snippets = Arrays.stream(stubSnippet.split(separateToken))
                 .map(String::trim)
+                .map(s -> s.replace(String.valueOf((char) 160), "")) // skip the '&nbsp;'
                 .filter(s -> !(s.isEmpty()))
                 .collect(Collectors.toList());
+        LOG.info("### READY SNIPPETS ###");
         snippets.forEach(LOG::info);
-//        Arrays.stream(snippets).forEach(LOG::info);
-//        LOG.info("Snippets: {}");
         String text = pageExtractor.extract(Collections.singletonList(new Result().setLink(link))).get(0);
 
         List<String> sentences = this.sentenceSplitterTest(text);
+        LOG.info("### ALL SENTENCES ###");
+        sentences.forEach(LOG::info);
+
         List<String> relevantSentences = new ArrayList<>();
         for (String snippet : snippets) {
             for (String sentence : sentences) {
@@ -90,7 +94,9 @@ public class PageExtractorTest {
 
     //    @Test
     public List<String> sentenceSplitterTest(String text) {
+        Locale.setDefault(new Locale("ru"));
         List<String> sentences = new ArrayList<>();
+//        Locale ru = new Locale("ru", "RU");
         BreakIterator iterator = BreakIterator.getSentenceInstance();
         iterator.setText(text);
         int start = iterator.first();
@@ -99,6 +105,22 @@ public class PageExtractorTest {
              start = end, end = iterator.next()) {
             sentences.add(text.substring(start, end));
 //            System.out.println(text.substring(start,end));
+        }
+        return sentences;
+    }
+
+    private List<String> sentenceSplitterTest2(String text) {
+        List<String> sentences = new ArrayList<>();
+
+        LOG.debug("List of sentences: ");
+        BreakIterator iterator = BreakIterator.getSentenceInstance();
+        iterator.setText(text);
+        int start = iterator.first();
+        for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator.next()) {
+            String sentence = text.substring(start, end).replace("\r\n", "");
+            if ("null".equals(sentence)) break;
+            sentences.add(sentence);
+            LOG.debug(sentence);
         }
         return sentences;
     }

@@ -25,10 +25,10 @@ public class Main {
 
     private static void testSearchEngine() {
         SearchEngine engine = new SearchEngine();
-        List<Result> snippets = engine.find("где находится эльбрус?");
+        List<Result> results = engine.find("где находится эльбрус?");
 //        List<Result> snippets = engine.stubFind();
         PageExtractor pageExtractor = new PageExtractor();
-        pageExtractor.extract(snippets);
+        pageExtractor.extract(results);
 //        engine.execute();
     }
 
