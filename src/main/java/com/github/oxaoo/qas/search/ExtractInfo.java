@@ -1,8 +1,6 @@
 package com.github.oxaoo.qas.search;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +9,14 @@ import java.util.List;
  * @author <a href="mailto:aleksandr.kuleshov@t-systems.ru">Alexander Kuleshov</a>
  */
 @Data
-@NoArgsConstructor
+//@RequiredArgsConstructor
 @AllArgsConstructor
 public class ExtractInfo {
-    private String snippet;
-    private String text;
-    private List<String> relevantSentences = new ArrayList<>();
+//    @NonNull
+    private final String snippet;
+    private final List<String> relevantSentences;// = new ArrayList<>();
+
+//    public void addRelevantSentence(String sentence) {
+//        this.relevantSentences.add(sentence);
+//    }
 }

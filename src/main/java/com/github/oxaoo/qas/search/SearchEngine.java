@@ -41,9 +41,9 @@ public class SearchEngine {
     }
 
     private void init() {
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("proxy.t-systems.ru", 3128));
-        HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
-//        HttpTransport httpTransport = new NetHttpTransport.Builder().build();
+//        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("proxy.t-systems.ru", 3128));
+//        HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
+        HttpTransport httpTransport = new NetHttpTransport.Builder().build();
         this.customsearch = new Customsearch(httpTransport, new JacksonFactory(), httpRequest -> {
         });
     }

@@ -3,6 +3,7 @@ package com.github.oxaoo.qas;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
 import com.github.oxaoo.qas.qa.QuestionClassifier;
 import com.github.oxaoo.qas.search.PageExtractor;
+import com.github.oxaoo.qas.search.RelevantInfoExtractor;
 import com.github.oxaoo.qas.search.SearchEngine;
 import com.google.api.services.customsearch.model.Result;
 import org.slf4j.Logger;
@@ -26,9 +27,11 @@ public class Main {
     private static void testSearchEngine() {
         SearchEngine engine = new SearchEngine();
         List<Result> results = engine.find("где находится эльбрус?");
+        List<String> relevantFragments = RelevantInfoExtractor.extract(results);
+        LOG.info("Final result of search: \n{}", relevantFragments.toString());
 //        List<Result> snippets = engine.stubFind();
-        PageExtractor pageExtractor = new PageExtractor();
-        pageExtractor.extract(results);
+//        PageExtractor pageExtractor = new PageExtractor();
+//        pageExtractor.extract(results);
 //        engine.execute();
     }
 
