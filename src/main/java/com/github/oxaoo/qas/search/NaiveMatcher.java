@@ -4,9 +4,10 @@ import com.github.oxaoo.mp4ru.syntax.tokenize.SimpleTokenizer;
 import com.github.oxaoo.mp4ru.syntax.tokenize.Tokenizer;
 
 import java.text.BreakIterator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * @author Alexander Kuleshov
@@ -48,7 +49,6 @@ public class NaiveMatcher {
     }
 
     private static List<String> textSplitter(String text) {
-//        Locale.setDefault(new Locale("ru"));
         List<String> sentences = new ArrayList<>();
         BreakIterator iterator = BreakIterator.getSentenceInstance();
         iterator.setText(text);
@@ -60,26 +60,4 @@ public class NaiveMatcher {
         }
         return sentences;
     }
-
-/*    private class SentenceScore {
-//        private int idSentence;
-//        private int score;
-
-        private Map<Integer, Integer> score;
-
-        public SentenceScore(int size) {
-//            this.score = new HashMap<>(size);
-            this.score = IntStream.range(0, size).boxed().collect(Collectors.toMap(i -> i, i -> 0));
-        }
-
-        public int inc(int id) {
-            int scr = this.score.get(id);
-            this.score.put(id, scr + 1);
-            return scr + 1;
-        }
-
-        public List<Integer> getTop(int limit) {
-
-        }
-    }*/
 }

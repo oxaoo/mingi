@@ -68,16 +68,4 @@ public class SearchEngine {
 
         return items;
     }
-
-    public List<Result> stubFind() {
-        List<Result> items = new ArrayList<>(10);
-        items.add(new Result().setLink("https://ru.wikipedia.org/wiki/%D0%AD%D0%BB%D1%8C%D0%B1%D1%80%D1%83%D1%81"));
-        items.add(new Result().setLink("http://udivitelno.com/mesta/item/541-jelbrus-samaja-vysokaja-gora-rossii"));
-        items.add(new Result().setLink("https://tonkosti.ru/%D0%93%D0%BE%D1%80%D0%B0_%D0%AD%D0%BB%D1%8C%D0%B1%D1%80%D1%83%D1%81"));
-        items.add(new Result().setLink("http://prielbrusie-ski.ru/ropeways-slopes/elbrus-azau/"));
-        items.add(new Result().setLink("https://www.youtube.com/watch?v=jCu1ANiXANo"));
-        return items;
-
-
-    }
 }

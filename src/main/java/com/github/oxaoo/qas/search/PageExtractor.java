@@ -24,12 +24,8 @@ import java.util.stream.Collectors;
 public class PageExtractor {
     private static final Logger LOG = LoggerFactory.getLogger(PageExtractor.class);
 
-//    public PageExtractor() {
-//    }
-
     public static List<String> extract(List<Result> results) {
         List<String> texts = new ArrayList<>();
-//        List<ExtractInfo> extractInfoList = new ArrayList<>();
         for (Result result : results) {
             String link = result.getLink();
             try {
@@ -39,12 +35,9 @@ public class PageExtractor {
 
                 String text = doc.body().text();
                 texts.add(text);
-//                extractInfoList = NaiveMatcher.matching(result.getSnippet(), text);
-//                extractInfoList.addAll(this.naiveMatching(result.getSnippet(), text));
                 LOG.debug("\nLink: {}, \nText: {}, \nSnippet: {}\n", link, text, result.getSnippet());
             } catch (IOException e) {
                 LOG.error("Failed to get page {}. Cause: {}", link, e.getMessage());
-//                e.printStackTrace();
             }
         }
         return texts;

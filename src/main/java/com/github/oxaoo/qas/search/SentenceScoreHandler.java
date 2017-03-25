@@ -13,7 +13,6 @@ public class SentenceScoreHandler {
     private List<SentenceScore> sentenceScores;
 
     public SentenceScoreHandler(int size) {
-//        this.sentenceScores = Stream.generate(SentenceScore::new).limit(size).collect(Collectors.toList());
         this.sentenceScores = IntStream.range(0, size).mapToObj(SentenceScore::new).collect(Collectors.toList());
     }
 

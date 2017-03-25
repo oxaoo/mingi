@@ -22,7 +22,6 @@ public class SentenceScore implements Comparable<SentenceScore> {
 
     @Override
     public int compareTo(SentenceScore ss) {
-//        return Integer.compare(this.score, ss.score);
         return Integer.compare(ss.score, this.score);
     }
 }
