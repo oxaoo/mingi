@@ -21,17 +21,17 @@ public class RelevantInfoExtractor {
         for (int i = 0; i < results.size() && i < texts.size(); i++) {
             List<ExtractInfo> extractInfo = NaiveMatcher.matching(results.get(i).getSnippet(), texts.get(i));
             String relevantFragment = "";
-            LOG.info("#{} Page link: {}", i, results.get(i).getLink());
-            LOG.info("-= Relevant Info =-");
+            LOG.debug("#{} Page link: {}", i, results.get(i).getLink());
+            LOG.debug("-= Relevant Info =-");
             for (ExtractInfo info : extractInfo) {
-                LOG.info("Snippet: {} \nRelevant sentences:", info.getSnippet());
+                LOG.debug("Snippet: {} \nRelevant sentences:", info.getSnippet());
                 for (String rs : info.getRelevantSentences()) {
-                    LOG.info(rs);
+                    LOG.debug(rs);
                     relevantFragment += "\n" + rs;
                 }
             }
             relevantFragments.add(relevantFragment);
-            LOG.info("-------------------");
+            LOG.debug("-------------------");
         }
         return relevantFragments;
     }

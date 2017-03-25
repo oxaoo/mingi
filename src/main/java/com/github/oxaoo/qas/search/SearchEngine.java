@@ -62,7 +62,7 @@ public class SearchEngine {
         }
 
         for (Result result : items) {
-            LOG.info("Title: {} \nSnippet: {} \nLink: {} \n\n",
+            LOG.debug("Title: {} \nSnippet: {} \nLink: {} \n\n",
                     result.getTitle(), result.getSnippet(), result.getLink());
         }
 

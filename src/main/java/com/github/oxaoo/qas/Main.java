@@ -21,9 +21,11 @@ public class Main {
 
     private static void testSearchEngine() {
         SearchEngine engine = new SearchEngine();
-        List<Result> results = engine.find("где находится эльбрус?");
+//        List<Result> results = engine.find("где находится эльбрус?");
+        List<Result> results = engine.find("где родился Пушкин?");
         List<String> relevantFragments = RelevantInfoExtractor.extract(results);
-        LOG.info("Final result of search: \n{}", relevantFragments.toString());
+        relevantFragments.forEach(s -> LOG.info("### {}", s));
+//        LOG.info("Final result of search: \n{}", relevantFragments.toString());
     }
 
     private static void run() throws LoadQuestionClassifierModelException {
