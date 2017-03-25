@@ -15,24 +15,13 @@ import java.util.List;
 public class RelevantInfoExtractor {
     private static final Logger LOG = LoggerFactory.getLogger(RelevantInfoExtractor.class);
 
-    public static List<String> extract(List<Result> results) {
+    public static List<DataFragment> extract(List<Result> results) {
         List<String> texts = PageExtractor.extract(results);
-        List<String> relevantFragments = new ArrayList<>();
+        List<DataFragment> dataFragments = new ArrayList<>();
         for (int i = 0; i < results.size() && i < texts.size(); i++) {
-            List<ExtractInfo> extractInfo = NaiveMatcher.matching(results.get(i).getSnippet(), texts.get(i));
-            String relevantFragment = "";
-            LOG.debug("#{} Page link: {}", i, results.get(i).getLink());
-            LOG.debug("-= Relevant Info =-");
-            for (ExtractInfo info : extractInfo) {
-                LOG.debug("Snippet: {} \nRelevant sentences:", info.getSnippet());
-                for (String rs : info.getRelevantSentences()) {
-                    LOG.debug(rs);
-                    relevantFragment += "\n" + rs;
-                }
-            }
-            relevantFragments.add(relevantFragment);
-            LOG.debug("-------------------");
+            List<RelevantInfo> relevantInfo = NaiveMatcher.matching(results.get(i).getSnippet(), texts.get(i));
+            dataFragments.add(new DataFragment(results.get(i).getLink(), relevantInfo));
         }
-        return relevantFragments;
+        return dataFragments;
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class ExtractInfo {
+public class RelevantInfo {
     private final String snippet;
     private final List<String> relevantSentences;
 }

@@ -53,7 +53,7 @@ public class PageExtractorTest {
                 "на Кавказе ... Эльбрус находится в Боковом хребте Большого Кавказа в 10 \n" +
                 "километрах к северу от Главного Кавказского хребта на границе республик ... ";
         Result result = new Result().setLink(link).setSnippet(stubSnippet);
-        List<String> relevantFragments = RelevantInfoExtractor.extract(Collections.singletonList(result));
+        List<DataFragment> relevantFragments = RelevantInfoExtractor.extract(Collections.singletonList(result));
         LOG.info("Relevant fragments:");
         relevantFragments.forEach(s -> LOG.info("{}\n\n", s));
     }

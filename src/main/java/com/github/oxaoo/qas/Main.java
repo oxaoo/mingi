@@ -2,6 +2,7 @@ package com.github.oxaoo.qas;
 
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
 import com.github.oxaoo.qas.qa.QuestionClassifier;
+import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfoExtractor;
 import com.github.oxaoo.qas.search.SearchEngine;
 import com.google.api.services.customsearch.model.Result;
@@ -23,13 +24,13 @@ public class Main {
         SearchEngine engine = new SearchEngine();
 //        List<Result> results = engine.find("где находится эльбрус?");
         List<Result> results = engine.find("где родился Пушкин?");
-        List<String> relevantFragments = RelevantInfoExtractor.extract(results);
+        List<DataFragment> relevantFragments = RelevantInfoExtractor.extract(results);
         relevantFragments.forEach(s -> LOG.info("### {}", s));
 //        LOG.info("Final result of search: \n{}", relevantFragments.toString());
     }
 
     private static void run() throws LoadQuestionClassifierModelException {
         QuestionClassifier questionClassifier = new QuestionClassifier();
-        questionClassifier.init();
+//        questionClassifier.init();
     }
 }

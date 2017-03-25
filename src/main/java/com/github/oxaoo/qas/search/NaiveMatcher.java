@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
  */
 public class NaiveMatcher {
 
-    public static List<ExtractInfo> matching(String snippetsFragment, String text) {
-        List<ExtractInfo> extractInfoList = new ArrayList<>();
+    public static List<RelevantInfo> matching(String snippetsFragment, String text) {
+        List<RelevantInfo> relevantInfoList = new ArrayList<>();
         List<String> snippets = snippetSplitter(snippetsFragment);
         List<String> sentences = textSplitter(text);
         Tokenizer tokenizer = new SimpleTokenizer();
@@ -33,9 +33,9 @@ public class NaiveMatcher {
             List<String> relevantSentences = scores.stream()
                     .map(s -> sentences.get(s.getIdSentence()))
                     .collect(Collectors.toList());
-            extractInfoList.add(new ExtractInfo(snippet, relevantSentences));
+            relevantInfoList.add(new RelevantInfo(snippet, relevantSentences));
         }
-        return extractInfoList;
+        return relevantInfoList;
     }
 
     private static List<String> snippetSplitter(String snippetsFragment) {

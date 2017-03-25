@@ -9,9 +9,14 @@ import libsvm.svm_model;
  * @since 19.03.2017
  */
 public class QuestionClassifier {
-    private svm_model model;
+    private final svm_model model;
 
-    public void init() throws LoadQuestionClassifierModelException {
+    public QuestionClassifier() throws LoadQuestionClassifierModelException {
         this.model = QuestionClassifierModelLoader.load();
+    }
+
+    //todo implement
+    public QuestionDomain classify(String question) {
+        return null;
     }
 }
