@@ -1,5 +1,9 @@
 package com.github.oxaoo.qas;
 
+import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
+import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
+import com.github.oxaoo.qas.core.QasEngine;
+import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
 import com.github.oxaoo.qas.qa.QuestionClassifier;
 import com.github.oxaoo.qas.search.DataFragment;
@@ -14,10 +18,11 @@ import java.util.List;
 public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(com.github.oxaoo.mp4ru.Main.class);
 
-    public static void main(String[] args) throws LoadQuestionClassifierModelException {
+    public static void main(String[] args) throws LoadQuestionClassifierModelException, FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
 //        run();
-        testSearchEngine();
+//        testSearchEngine();
 //        testPageExtractor();
+        qas();
     }
 
     private static void testSearchEngine() {
@@ -32,5 +37,13 @@ public class Main {
     private static void run() throws LoadQuestionClassifierModelException {
         QuestionClassifier questionClassifier = new QuestionClassifier();
 //        questionClassifier.init();
+    }
+
+    private static void qas() throws LoadQuestionClassifierModelException,
+            FailedParsingException,
+            FailedConllMapException,
+            FailedQuestionTokenMapException {
+        QasEngine qasEngine = new QasEngine();
+        qasEngine.answer("где родился Пушкин?");
     }
 }

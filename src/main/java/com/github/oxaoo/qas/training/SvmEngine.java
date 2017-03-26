@@ -71,34 +71,35 @@ public class SvmEngine {
     }
 
     public List<QuestionDomain> svmEvaluate(svm_model trainModel, List<QuestionModel> testQuestions) {
-        double[] idQDomains = new double[testQuestions.size()];
-
-        for (int i = 0; i < testQuestions.size(); i++) {
-            List<QuestionToken> questionToken = testQuestions.get(i).getQuestionTokens();
-            svm_node[] nodes = new svm_node[questionToken.size()];
-            for (int j = 0; j < questionToken.size(); j++) {
-                svm_node node = new svm_node();
-                node.index = j;
-                node.value = questionToken.get(j).getPos().getLabel();
-                nodes[j] = node;
-            }
-
-            int totalClasses = svm.svm_get_nr_class(trainModel);
-            int[] labels = new int[totalClasses];
-            svm.svm_get_labels(trainModel, labels);
-
-            double[] prob_estimates = new double[totalClasses];
-            idQDomains[i] = svm.svm_predict_probability(trainModel, nodes, prob_estimates);
-        }
-        return this.mapEvaluateDomains(idQDomains);
-    }
-
-    private List<QuestionDomain> mapEvaluateDomains(double[] idQDomains) {
-        List<QuestionDomain> questionDomains = new ArrayList<>(idQDomains.length);
-        for (double id : idQDomains) {
-            int intDomain = (int) id;
-            questionDomains.add(QuestionDomain.values[intDomain]);
+        List<QuestionDomain> questionDomains = new ArrayList<>();
+        for (QuestionModel testQuestion : testQuestions) {
+            QuestionDomain questionDomain = this.svmClassify(trainModel, testQuestion);
+            questionDomains.add(questionDomain);
         }
         return questionDomains;
+    }
+
+    public QuestionDomain svmClassify(svm_model trainModel, QuestionModel question) {
+        List<QuestionToken> questionToken = question.getQuestionTokens();
+        svm_node[] nodes = new svm_node[questionToken.size()];
+        for (int j = 0; j < questionToken.size(); j++) {
+            svm_node node = new svm_node();
+            node.index = j;
+            node.value = questionToken.get(j).getPos().getLabel();
+            nodes[j] = node;
+        }
+
+        int totalClasses = svm.svm_get_nr_class(trainModel);
+        int[] labels = new int[totalClasses];
+        svm.svm_get_labels(trainModel, labels);
+
+        double[] prob_estimates = new double[totalClasses];
+        double idDomain = svm.svm_predict_probability(trainModel, nodes, prob_estimates);
+        return this.mapDomain(idDomain);
+    }
+
+    private QuestionDomain mapDomain(double idQDomain) {
+        int intDomain = (int) idQDomain;
+        return QuestionDomain.values[intDomain];
     }
 }

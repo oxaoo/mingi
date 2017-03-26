@@ -25,7 +25,7 @@ public class SearchFacade {
 //        List<Result> results = this.searchEngine.find("где родился Пушкин?");
         List<Result> results = this.searchEngine.find(question);
         List<DataFragment> relevantDataFragments = RelevantInfoExtractor.extract(results);
-        relevantDataFragments.forEach(s -> LOG.info("### {}", s));
+        relevantDataFragments.forEach(s -> LOG.debug("### {}", s));
         return relevantDataFragments;
     }
 }
