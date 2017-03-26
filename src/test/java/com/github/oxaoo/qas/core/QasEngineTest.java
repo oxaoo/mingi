@@ -79,6 +79,7 @@ public class QasEngineTest {
                 QuestionModel questionModel = new QuestionModel();
                 for (String token : tokens) {
                     Conll conll = Conll.map(token);
+                    if (!this.verifyConllToken(conll)) continue;
                     QuestionToken questionToken = QuestionToken.map(conll);
                     questionModel.addQuestionToken(questionToken);
                 }
@@ -89,6 +90,11 @@ public class QasEngineTest {
         }
 
 //        List<DataFragment> dataFragments = this.searchFacade.collectInfo(question);
+    }
+
+    //todo maybe add to real code
+    private boolean verifyConllToken(Conll conll) {
+        return !conll.getDepRel().equals("PUNC");
     }
 
     private DataFragment prepareDataFragment() {
