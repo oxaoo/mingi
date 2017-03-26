@@ -30,6 +30,12 @@ public class QasEngine {
         this.searchFacade = new SearchFacade();
     }
 
+    //for inject
+    public QasEngine(QuestionClassifier questionClassifier, SearchFacade searchFacade) {
+        this.questionClassifier = questionClassifier;
+        this.searchFacade = searchFacade;
+    }
+
     public String answer(String question)
             throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
         QuestionDomain questionDomain = this.questionClassifier.classify(question);

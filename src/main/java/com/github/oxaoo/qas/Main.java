@@ -44,6 +44,6 @@ public class Main {
             FailedConllMapException,
             FailedQuestionTokenMapException {
         QasEngine qasEngine = new QasEngine();
-        qasEngine.answer("где родился Пушкин?");
+        qasEngine.answer("В каком году затонул Титаник?");
     }
 }
