@@ -41,10 +41,15 @@ public class QuestionToken {
         char posChar = conll.getPosTag();
         int head = conll.getHead();
         PosType pos;
-        try {
-            pos = PosType.valueOf(String.valueOf(posChar).toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new FailedQuestionTokenMapException("Invalid POS tag.", e);
+        //feature
+        if (posChar == '-') {
+            pos = PosType.UND;
+        } else {
+            try {
+                pos = PosType.valueOf(String.valueOf(posChar).toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new FailedQuestionTokenMapException("Invalid POS tag.", e);
+            }
         }
 
         return new QuestionToken(id, pos, head);

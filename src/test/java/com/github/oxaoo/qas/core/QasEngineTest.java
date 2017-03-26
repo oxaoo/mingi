@@ -2,22 +2,33 @@ package com.github.oxaoo.qas.core;
 
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
+import com.github.oxaoo.mp4ru.syntax.RussianParser;
+import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.qa.QuestionClassifier;
 import com.github.oxaoo.qas.qa.QuestionDomain;
 import com.github.oxaoo.qas.search.DataFragment;
+import com.github.oxaoo.qas.search.PageExtractorTest;
 import com.github.oxaoo.qas.search.RelevantInfo;
 import com.github.oxaoo.qas.search.SearchFacade;
+import com.github.oxaoo.qas.training.QuestionModel;
+import com.github.oxaoo.qas.training.QuestionToken;
+import com.github.oxaoo.qas.utils.PropertyManager;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Alexander Kuleshov
@@ -26,12 +37,30 @@ import java.util.List;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class QasEngineTest {
+    private static final Logger LOG = LoggerFactory.getLogger(QasEngineTest.class);
+
     @InjectMocks
     private QasEngine qasEngine;
     @Mock
     private QuestionClassifier questionClassifier;
     @Mock
     private SearchFacade searchFacade;
+
+    private static RussianParser parser;
+
+    private final static String PARSER_CLASSIFIER_MODEL_PROPERTY = "parser.classifier.model.path";
+    private final static String PARSER_CONFIG_PATH_PROPERTY = "parser.config.path";
+    private final static String PARSER_TREE_TAGGER_HOME_PROPERTY = "parser.tree.tagger.path";
+
+    @BeforeClass
+    public static void setUp() {
+        Properties properties = PropertyManager.getProperties();
+        String classifierModelPath = properties.getProperty(PARSER_CLASSIFIER_MODEL_PROPERTY);
+        String treeTaggerHome = properties.getProperty(PARSER_TREE_TAGGER_HOME_PROPERTY);
+        String parserConfigPath = properties.getProperty(PARSER_CONFIG_PATH_PROPERTY);
+        parser = new RussianParser(classifierModelPath, treeTaggerHome, parserConfigPath);
+
+    }
 
     @Test
     public void answerTest() throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
@@ -43,6 +72,22 @@ public class QasEngineTest {
         Mockito.when(this.searchFacade.collectInfo(question)).thenReturn(singleDataFragments);
 
         this.qasEngine.answer(question);
+
+        for (RelevantInfo ri : singleDataFragments.get(0).getRelevantInfoList()) {
+            for (String sentence : ri.getRelevantSentences()) {
+                List<String> tokens = parser.parse(sentence);
+                QuestionModel questionModel = new QuestionModel();
+                for (String token : tokens) {
+                    Conll conll = Conll.map(token);
+                    QuestionToken questionToken = QuestionToken.map(conll);
+                    questionModel.addQuestionToken(questionToken);
+                }
+                LOG.info("Question: {}", sentence);
+                LOG.info("Question model: {}", questionModel.toString());
+            }
+            LOG.info("\n");
+        }
+
 //        List<DataFragment> dataFragments = this.searchFacade.collectInfo(question);
     }
 
