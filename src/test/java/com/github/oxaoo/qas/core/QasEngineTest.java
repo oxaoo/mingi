@@ -13,6 +13,7 @@ import com.github.oxaoo.qas.search.RelevantInfo;
 import com.github.oxaoo.qas.search.SearchFacade;
 import com.github.oxaoo.qas.training.QuestionModel;
 import com.github.oxaoo.qas.training.QuestionToken;
+import com.github.oxaoo.qas.utils.JsonBuilder;
 import com.github.oxaoo.qas.utils.PropertyManager;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -73,18 +74,18 @@ public class QasEngineTest {
 
         this.qasEngine.answer(question);
 
+        List<Conll> parsedQuestion = this.parseQuestion(question);
+        LOG.info("Pretty question view: {}", JsonBuilder.toJson(parsedQuestion));
         for (RelevantInfo ri : singleDataFragments.get(0).getRelevantInfoList()) {
             for (String sentence : ri.getRelevantSentences()) {
                 List<String> tokens = parser.parse(sentence);
-                QuestionModel questionModel = new QuestionModel();
+                List<Conll> sentencesTokens = new ArrayList<>();
                 for (String token : tokens) {
                     Conll conll = Conll.map(token);
-                    if (!this.verifyConllToken(conll)) continue;
-                    QuestionToken questionToken = QuestionToken.map(conll);
-                    questionModel.addQuestionToken(questionToken);
+                    sentencesTokens.add(conll);
                 }
                 LOG.info("Question: {}", sentence);
-                LOG.info("Question model: {}", questionModel.toString());
+                LOG.info("Question tokens: {}", JsonBuilder.toJson(sentencesTokens));
             }
             LOG.info("\n");
         }
@@ -92,9 +93,15 @@ public class QasEngineTest {
 //        List<DataFragment> dataFragments = this.searchFacade.collectInfo(question);
     }
 
-    //todo maybe add to real code
-    private boolean verifyConllToken(Conll conll) {
-        return !conll.getDepRel().equals("PUNC");
+    private List<Conll> parseQuestion(String question)
+            throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
+        List<String> parsedTokens = parser.parse(question);
+        List<Conll> sentencesTokens = new ArrayList<>();
+        for (String token : parsedTokens) {
+            Conll conll = Conll.map(token);
+            sentencesTokens.add(conll);
+        }
+        return sentencesTokens;
     }
 
     private DataFragment prepareDataFragment() {

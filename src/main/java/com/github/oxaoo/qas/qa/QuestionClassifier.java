@@ -45,8 +45,13 @@ public class QuestionClassifier {
     public QuestionDomain classify(String question)
             throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
         List<String> parsedTokens = this.parser.parse(question);
+        return this.classify(parsedTokens);
+    }
+
+    public QuestionDomain classify(List<String> questionTokens)
+            throws FailedConllMapException, FailedQuestionTokenMapException {
         QuestionModel questionModel = new QuestionModel();
-        for (String token : parsedTokens) {
+        for (String token : questionTokens) {
             Conll conll = Conll.map(token);
             QuestionToken questionToken = QuestionToken.map(conll);
             questionModel.addQuestionToken(questionToken);
