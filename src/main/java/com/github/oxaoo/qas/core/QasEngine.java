@@ -2,13 +2,16 @@ package com.github.oxaoo.qas.core;
 
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
+import com.github.oxaoo.mp4ru.syntax.RussianParser;
+import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
+import com.github.oxaoo.qas.parse.ParserManager;
 import com.github.oxaoo.qas.qa.QuestionClassifier;
 import com.github.oxaoo.qas.qa.QuestionDomain;
+import com.github.oxaoo.qas.qa.answer.AnswerMaker;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.SearchFacade;
-import com.github.oxaoo.qas.training.TrainerQuestionClassifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,32 +27,37 @@ public class QasEngine {
 
     private final QuestionClassifier questionClassifier;
     private final SearchFacade searchFacade;
+    private final RussianParser parser;
 
     public QasEngine() throws LoadQuestionClassifierModelException {
         this.questionClassifier = new QuestionClassifier();
         this.searchFacade = new SearchFacade();
+        this.parser = ParserManager.getParser();
     }
 
     //for inject
-    public QasEngine(QuestionClassifier questionClassifier, SearchFacade searchFacade) {
+    public QasEngine(QuestionClassifier questionClassifier, SearchFacade searchFacade, RussianParser parser) {
         this.questionClassifier = questionClassifier;
         this.searchFacade = searchFacade;
+        this.parser = parser;
     }
 
     public String answer(String question)
             throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
-        QuestionDomain questionDomain = this.questionClassifier.classify(question);
+        List<Conll> questionTokens = this.parser.parse(question, Conll.class);
+        QuestionDomain questionDomain = this.questionClassifier.classify(questionTokens);
         List<DataFragment> dataFragments = this.searchFacade.collectInfo(question);
-        return this.makeAnswer(question, questionDomain, dataFragments);
+        return this.makeAnswer(questionTokens, questionDomain, dataFragments);
     }
 
-    //todo implement
-    public String makeAnswer(String question, QuestionDomain questionDomain, List<DataFragment> dataFragments) {
+    private String makeAnswer(List<Conll> questionTokens,
+                              QuestionDomain questionDomain,
+                              List<DataFragment> dataFragments) {
         LOG.info("### Stage of make answer ###");
-        LOG.info("Question: {}", question);
+        LOG.info("Question: {}", questionTokens.toString());
         LOG.info("Question domain: {}", questionDomain.name());
         LOG.info("Data fragments: {}", dataFragments.toString());
 
-        return "n/a";
+        return AnswerMaker.make(questionTokens, questionDomain, dataFragments);
     }
 }

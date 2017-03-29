@@ -88,15 +88,8 @@ public class QasEngineTest {
 //        List<DataFragment> dataFragments = this.searchFacade.collectInfo(question);
     }
 
-    private List<Conll> parseQuestion(String question)
-            throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
-        List<String> parsedTokens = parser.parse(question);
-        List<Conll> sentencesTokens = new ArrayList<>();
-        for (String token : parsedTokens) {
-            Conll conll = Conll.map(token);
-            sentencesTokens.add(conll);
-        }
-        return sentencesTokens;
+    private List<Conll> parseQuestion(String question) throws FailedParsingException {
+        return parser.parse(question, Conll.class);
     }
 
     private DataFragment prepareDataFragment() {
