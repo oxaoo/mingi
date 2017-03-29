@@ -5,17 +5,13 @@ import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
+import com.github.oxaoo.qas.parse.ParserManager;
 import com.github.oxaoo.qas.qa.QuestionClassifier;
 import com.github.oxaoo.qas.qa.QuestionDomain;
 import com.github.oxaoo.qas.search.DataFragment;
-import com.github.oxaoo.qas.search.PageExtractorTest;
 import com.github.oxaoo.qas.search.RelevantInfo;
 import com.github.oxaoo.qas.search.SearchFacade;
-import com.github.oxaoo.qas.training.QuestionModel;
-import com.github.oxaoo.qas.training.QuestionToken;
 import com.github.oxaoo.qas.utils.JsonBuilder;
-import com.github.oxaoo.qas.utils.PropertyManager;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * @author Alexander Kuleshov
@@ -49,19 +44,19 @@ public class QasEngineTest {
 
     private static RussianParser parser;
 
-    private final static String PARSER_CLASSIFIER_MODEL_PROPERTY = "parser.classifier.model.path";
-    private final static String PARSER_CONFIG_PATH_PROPERTY = "parser.config.path";
-    private final static String PARSER_TREE_TAGGER_HOME_PROPERTY = "parser.tree.tagger.path";
-
     @BeforeClass
     public static void setUp() {
-        Properties properties = PropertyManager.getProperties();
-        String classifierModelPath = properties.getProperty(PARSER_CLASSIFIER_MODEL_PROPERTY);
-        String treeTaggerHome = properties.getProperty(PARSER_TREE_TAGGER_HOME_PROPERTY);
-        String parserConfigPath = properties.getProperty(PARSER_CONFIG_PATH_PROPERTY);
-        parser = new RussianParser(classifierModelPath, treeTaggerHome, parserConfigPath);
-
+        parser = ParserManager.getParser();
     }
+
+    @Test
+    public void answerParseTest()
+            throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
+        String answer = "Титаник затонул в 1912 году.";
+        List<Conll> tokens = this.parseQuestion(answer);
+        LOG.info(JsonBuilder.toJson(tokens));
+    }
+
 
     @Test
     public void answerTest() throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {

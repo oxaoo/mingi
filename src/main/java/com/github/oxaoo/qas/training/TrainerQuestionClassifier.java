@@ -7,6 +7,7 @@ import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.mp4ru.syntax.utils.ParserUtils;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
+import com.github.oxaoo.qas.parse.ParserManager;
 import com.github.oxaoo.qas.qa.QuestionDomain;
 import com.github.oxaoo.qas.utils.PropertyManager;
 import com.google.gson.GsonBuilder;
@@ -32,11 +33,6 @@ public class TrainerQuestionClassifier {
     private final static String TRAIN_DOMAINS_QUESTIONS_FILE_PROPERTY = "train.domains.questions.file";
     private final static String TEST_DOMAINS_QUESTIONS_FILE_PROPERTY = "test.domains.questions.file";
 
-    //MP4RU
-    private final static String PARSER_CLASSIFIER_MODEL_PROPERTY = "parser.classifier.model.path";
-    private final static String PARSER_CONFIG_PATH_PROPERTY = "parser.config.path";
-    private final static String PARSER_TREE_TAGGER_HOME_PROPERTY = "parser.tree.tagger.path";
-
     private final RussianParser parser;
     private final SvmEngine svmEngine;
 
@@ -48,16 +44,12 @@ public class TrainerQuestionClassifier {
 
     public TrainerQuestionClassifier() {
         Properties properties = PropertyManager.getProperties();
-        String classifierModelPath = properties.getProperty(PARSER_CLASSIFIER_MODEL_PROPERTY);
-        String treeTaggerHome = properties.getProperty(PARSER_TREE_TAGGER_HOME_PROPERTY);
-        String parserConfigPath = properties.getProperty(PARSER_CONFIG_PATH_PROPERTY);
-
         this.trainQuestionsPath = properties.getProperty(TRAIN_QUESTIONS_FILE_PROPERTY);
         this.trainDomainsQuestionsPath = properties.getProperty(TRAIN_DOMAINS_QUESTIONS_FILE_PROPERTY);
         this.testQuestionsPath = properties.getProperty(TEST_QUESTIONS_FILE_PROPERTY);
         this.testDomainsQuestionsPath = properties.getProperty(TEST_DOMAINS_QUESTIONS_FILE_PROPERTY);
 
-        this.parser = new RussianParser(classifierModelPath, treeTaggerHome, parserConfigPath);
+        this.parser = ParserManager.getParser();
         this.svmEngine = new SvmEngine();
     }
 
