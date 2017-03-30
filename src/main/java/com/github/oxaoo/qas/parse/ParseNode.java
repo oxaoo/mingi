@@ -1,9 +1,8 @@
 package com.github.oxaoo.qas.parse;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,47 +15,43 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "children")
 public class ParseNode<T> {
+    private static final Logger LOG = LoggerFactory.getLogger(ParseNode.class);
+
     @NonNull
     private final ParseGraph graph;
     @NonNull
     private final T value;
     private ParseNode<T> parent;
-    private ParseNode<T> lhs;
-    private ParseNode<T> rhs;
+    private final List<ParseNode<T>> children = new ArrayList<>();
+//    private ParseNode<T> lhs;
+//    private ParseNode<T> rhs;
 
     public void addChild(ParseNode<T> child) {
-        if (lhs == null) {
-            lhs = child;
-        } else if (rhs == null) {
-            rhs = child;
-        } else {
-            throw new IndexOutOfBoundsException("The node already has two children.");
-        }
-    }
-
-    public List<ParseNode<T>> getChild() {
-        List<ParseNode<T>> child = new ArrayList<>();
-        if (this.lhs != null) child.add(this.lhs);
-        if (this.rhs != null) child.add(this.rhs);
-        return child;
+        this.children.add(child);
     }
 
     public List<ParseNode<T>> getAllChild() {
-        List<ParseNode<T>> child = new ArrayList<>();
-        child.add(this);
-        this.getAllChild(this, child);
-        return child;
+        List<ParseNode<T>> allChildren = new ArrayList<>();
+        allChildren.add(this);
+        this.getAllChild(this, allChildren);
+        return allChildren;
     }
 
-    private void getAllChild(ParseNode<T> currentNode, List<ParseNode<T>> child) {
-        if (currentNode.lhs != null) {
-            child.add(currentNode.lhs);
-            this.getAllChild(currentNode.lhs, child);
+    private void getAllChild(ParseNode<T> currentNode, List<ParseNode<T>> allChildren) {
+        for (ParseNode<T> child : currentNode.children) {
+            allChildren.add(child);
+            this.getAllChild(child, allChildren);
         }
-        if (currentNode.rhs != null) {
-            child.add(currentNode.rhs);
-            this.getAllChild(currentNode.rhs, child);
-        }
+
+//        if (currentNode.lhs != null) {
+//            allChildren.add(currentNode.lhs);
+//            this.getAllChild(currentNode.lhs, allChildren);
+//        }
+//        if (currentNode.rhs != null) {
+//            allChildren.add(currentNode.rhs);
+//            this.getAllChild(currentNode.rhs, allChildren);
+//        }
     }
 }

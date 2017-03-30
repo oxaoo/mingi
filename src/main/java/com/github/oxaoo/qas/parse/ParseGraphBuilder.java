@@ -31,6 +31,8 @@ public class ParseGraphBuilder {
                     parentNode = lastNode;
                 } else {
                     parentNode = getParent(forest, conll.getHead());
+                    //fixme -> temporary feature
+                    if (parentNode == null) continue;
                 }
                 newNode.setParent(parentNode);
                 parentNode.addChild(newNode);
@@ -48,16 +50,23 @@ public class ParseGraphBuilder {
             if (parent != null) return parent;
         }
         //todo create custom exception
-        throw new RuntimeException("Not found parent node.");
+        //fixme -> temporary feature
+        return null;
+//        throw new RuntimeException("Not found parent node.");
     }
 
+    //get parent by id
     private static ParseNode<Conll> getParent(ParseNode<Conll> node, int id) {
         if (node == null) return null;
         if (node.getValue().getId() == id) return node;
-        ParseNode<Conll> parentFromLeft = getParent(node.getLhs(), id);
-        if (parentFromLeft != null) return parentFromLeft;
-        ParseNode<Conll> parentFromRight = getParent(node.getRhs(), id);
-        if (parentFromRight != null) return parentFromRight;
+        for (ParseNode<Conll> child : node.getChildren()) {
+            ParseNode<Conll> foundParent = getParent(child, id);
+            if (foundParent != null) return foundParent;
+        }
+//        ParseNode<Conll> parentFromLeft = getParent(node.getLhs(), id);
+//        if (parentFromLeft != null) return parentFromLeft;
+//        ParseNode<Conll> parentFromRight = getParent(node.getRhs(), id);
+//        if (parentFromRight != null) return parentFromRight;
         return null;
     }
 }

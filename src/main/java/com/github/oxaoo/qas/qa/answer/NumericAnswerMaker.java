@@ -51,6 +51,8 @@ public class NumericAnswerMaker {
                             .collect(Collectors.toList());
                     Conll headConll = questionTokens.get(0);
                     ParseNode<Conll> foundNode = graph.find(headConll, new ConllGraphComparator());
+                    //fixme foundNode can't be null -> now we sip it
+                    if (foundNode == null) continue;
                     List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
                     List<Conll> dependentConlls = dependentNodes.stream()
                             .map(ParseNode::getValue)
