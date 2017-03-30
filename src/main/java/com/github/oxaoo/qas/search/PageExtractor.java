@@ -30,7 +30,7 @@ public class PageExtractor {
             String link = result.getLink();
             try {
                 Document doc = Jsoup.connect(link)
-//                        .proxy("proxy.t-systems.ru", 3128)
+                        .proxy("proxy.t-systems.ru", 3128)
                         .get();
 
                 String text = doc.body().text();
