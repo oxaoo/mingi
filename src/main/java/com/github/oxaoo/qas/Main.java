@@ -44,6 +44,8 @@ public class Main {
             FailedConllMapException,
             FailedQuestionTokenMapException {
         QasEngine qasEngine = new QasEngine();
-        qasEngine.answer("В каком году затонул Титаник?");
+        List<String> answers = qasEngine.answer("В каком году затонул Титаник?");
+        LOG.info("List of answers:");
+        answers.forEach(LOG::info);
     }
 }

@@ -42,7 +42,7 @@ public class QasEngine {
         this.parser = parser;
     }
 
-    public String answer(String question)
+    public List<String> answer(String question)
             throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
         List<Conll> questionTokens = this.parser.parse(question, Conll.class);
         QuestionDomain questionDomain = this.questionClassifier.classify(questionTokens);
@@ -50,9 +50,9 @@ public class QasEngine {
         return this.makeAnswer(questionTokens, questionDomain, dataFragments);
     }
 
-    private String makeAnswer(List<Conll> questionTokens,
+    private List<String> makeAnswer(List<Conll> questionTokens,
                               QuestionDomain questionDomain,
-                              List<DataFragment> dataFragments) {
+                              List<DataFragment> dataFragments) throws FailedParsingException {
         LOG.info("### Stage of make answer ###");
         LOG.info("Question: {}", questionTokens.toString());
         LOG.info("Question domain: {}", questionDomain.name());
