@@ -53,7 +53,9 @@ public class NumericAnswerMaker {
                     Conll headConll = questionTokens.get(0);
                     ParseNode<Conll> foundNode = graph.find(headConll, new ConllGraphComparator());
                     //fixme foundNode can't be null -> now we sip it
-                    if (foundNode == null) continue;
+                    if (foundNode == null) {
+                        continue;
+                    }
                     List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
 //                    List<ParseNode<Conll>> dependentNodes;// = foundNode.getParent().getAllChild();
 //                    if (foundNode.getParent() != null) {

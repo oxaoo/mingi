@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "children")
+@ToString(exclude = {"graph", "parent", "children"})
 public class ParseNode<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ParseNode.class);
 

@@ -1,13 +1,11 @@
 package com.github.oxaoo.qas.parse;
 
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
+import com.github.oxaoo.qas.utils.JsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,16 +40,29 @@ public class ParseGraphBuilder {
 
     private static void mergeConllGraphForest(ParseGraph<Conll> graph) {
         List<ParseNode<Conll>> forest = graph.getForest();
+        LOG.info("GRAPH: {}", forest.toString());
         Iterator<ParseNode<Conll>> it = forest.iterator();
         while (it.hasNext()) {
             ParseNode<Conll> node = it.next();
             if (node.getValue().getHead() == 0) continue;
-            ParseNode<Conll> parent = graph.findParent(node);
+            ParseNode<Conll> parent = findParent(graph, node);
             if (parent != null) {
                 parent.addChild(node);
                 it.remove();
             }
         }
+    }
+
+    private static ParseNode<Conll> findParent(ParseGraph<Conll> graph, ParseNode<Conll> child) {
+        Queue<ParseNode<Conll>> queueNodes = new LinkedList<>(graph.getForest());
+        while (true) {
+            ParseNode<Conll> node = queueNodes.poll();
+            if (node == null) break;
+//            if (child.getParent().equals(node)) return node;
+            if (node.getValue().getId() == child.getValue().getHead()) return node;
+            else queueNodes.addAll(node.getChildren());
+        }
+        return null;
     }
 
     private static NodeRelation getRelation(Conll current, Conll related) {
