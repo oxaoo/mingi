@@ -55,6 +55,11 @@ public class NumericAnswerMaker {
                     //fixme foundNode can't be null -> now we sip it
                     if (foundNode == null) continue;
                     List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
+//                    List<ParseNode<Conll>> dependentNodes;// = foundNode.getParent().getAllChild();
+//                    if (foundNode.getParent() != null) {
+//                        dependentNodes = foundNode.getParent().getAllChild();
+//                    }
+//                    else dependentNodes = foundNode.getAllChild();
                     List<Conll> dependentConlls = dependentNodes.stream()
                             .map(ParseNode::getValue)
                             .collect(Collectors.toList());
