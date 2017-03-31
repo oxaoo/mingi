@@ -1,5 +1,6 @@
 package com.github.oxaoo.qas.parse;
 
+import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,9 @@ public class ParseGraph<T> {
             else queueNodes.addAll(node.getChildren());
         }
         return null;
+    }
+
+    public void addNewTree(T t) {
+        forest.add(new ParseNode<T>(this, t));
     }
 }
