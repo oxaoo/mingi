@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,51 @@ import java.util.stream.Collectors;
  */
 public class ParseGraphBuilder {
     private static final Logger LOG = LoggerFactory.getLogger(ParseGraphBuilder.class);
+
+    private enum NodeRelation {
+        PARENT,
+        CHILD
+    }
+
+    public static ParseGraph<Conll> makeFuture(List<Conll> conlls) {
+        ParseGraph<Conll> graph = new ParseGraph<>();
+        GraphComparator<Conll> relativeComparator = new RelativeConllNodeComparator();
+        for (Conll conll : conlls) {
+            ParseNode<Conll> relativeNode = graph.find(conll, relativeComparator);
+            if (relativeNode == null) {
+                graph.addNewTree(conll);
+            } else {
+                NodeRelation relation = getRelation(conll, relativeNode.getValue());
+                if (relation == NodeRelation.PARENT) graph.addNodeAsParent(conll, relativeNode);
+                else graph.addNodeAsChild(conll, relativeNode);
+            }
+        }
+        mergeConllGraphForest(graph);
+        return graph;
+    }
+
+    private static void mergeConllGraphForest(ParseGraph<Conll> graph) {
+        List<ParseNode<Conll>> forest = graph.getForest();
+        Iterator<ParseNode<Conll>> it = forest.iterator();
+        while (it.hasNext()) {
+            ParseNode<Conll> node = it.next();
+            if (node.getValue().getHead() == 0) continue;
+            ParseNode<Conll> parent = graph.findParent(node);
+            if (parent != null) {
+                parent.addChild(node);
+                it.remove();
+            }
+        }
+    }
+
+    private static NodeRelation getRelation(Conll current, Conll related) {
+        if (current.getHead() == related.getId()) return NodeRelation.CHILD;
+        else if (current.getId() == related.getHead()) return NodeRelation.PARENT;
+        else {
+            throw new IllegalStateException("There is no relationship between #"
+                    + current.getId() + " and #" + related.getId());
+        }
+    }
 
     public static ParseGraph<Conll> make(List<Conll> conlls) {
         conlls = conlls.stream().sorted(Comparator.comparingInt(Conll::getHead)).collect(Collectors.toList());
@@ -36,7 +82,9 @@ public class ParseGraphBuilder {
                 } else {
                     parentNode = getParent(forest, conll.getHead());
                     //fixme -> temporary feature
-                    if (parentNode == null) continue;
+                    if (parentNode == null) {
+                        continue;
+                    }
                 }
                 newNode.setParent(parentNode);
                 parentNode.addChild(newNode);
@@ -49,7 +97,6 @@ public class ParseGraphBuilder {
     }
 
     private static void regulate(List<Conll> conlls) {
-
         for (int i = 0; i < conlls.size() - 1; i++) {
             Conll cur = conlls.get(i);
             for (int j = i + 1; j < conlls.size() - 1; j++) {
@@ -62,64 +109,8 @@ public class ParseGraphBuilder {
                 }
             }
         }
-
-        //good solution, but not working...
-/*        for (int i = 0; i < conlls.size() - 1; i++) {
-            for (int j = i; j < conlls.size() - 1; j++) {
-                Conll cur = conlls.get(i);
-                Conll seq = conlls.get(i + 1);
-                if (cur.getId() == seq.getHead()) break;
-                else {
-                    conlls.set(i + 1, cur);
-                    conlls.set(i, seq);
-                }
-            }
-        }*/
-
-//        boolean isStop = false;
-//        while (!isStop) {
-//            int pivot = 0;
-//            for (int i = conlls.size() - 1; i > pivot; i--) {
-//                Conll cur = conlls.get(i);
-//                Conll prev = conlls.get(i - 1);
-//                if (cur.getHead() != prev.getId()) {
-//                    conlls.set(i - 1, cur);
-//                    conlls.set(i, prev);
-//                } else {
-//                    pivot = i - 1;
-//                }
-//            }
-//        }
-
-
-//        for (int j = conlls.size() - 1; j > 0; j--) {
-//            for (int i = conlls.size() - 1; i > 0; i--) {
-//                Conll cur = conlls.get(i);
-//                Conll prev = conlls.get(i - 1);
-//                if (cur.getHead() != prev.getId()) {
-//                    conlls.set(i - 1, cur);
-//                    conlls.set(i, prev);
-//                }
-//            }
-//        }
     }
 
-    public static ParseGraph<Conll> make_(List<Conll> conlls) {
-        ParseGraph<Conll> graph = new ParseGraph<>();
-        GraphComparator<Conll> relativeComparator = new RelativeConllNodeComparator();
-        for (Conll conll : conlls) {
-            ParseNode<Conll> foundNode = graph.find(conll, relativeComparator);
-            //it's new tree
-            if (foundNode == null) {
-                graph.addNewTree(conll);
-            } else if (foundNode.getValue().getId() == conll.getHead()) { //found node is parent
-
-            } else { //found node is child
-
-            }
-        }
-        return null;
-    }
 
     private static ParseNode<Conll> getParent(List<ParseNode<Conll>> forest, int id) {
         for (ParseNode<Conll> tree : forest) {

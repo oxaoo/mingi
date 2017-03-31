@@ -45,7 +45,8 @@ public class NumericAnswerMaker {
             for (RelevantInfo relevantInfo : dataFragment.getRelevantInfoList()) {
                 for (String sentence : relevantInfo.getRelevantSentences()) {
                     List<Conll> conlls = parser.parseSentence(sentence, Conll.class);
-                    ParseGraph<Conll> graph = ParseGraphBuilder.make(conlls);
+//                    ParseGraph<Conll> graph = ParseGraphBuilder.make(conlls);
+                    ParseGraph<Conll> graph = ParseGraphBuilder.makeFuture(conlls);
                     questionTokens = questionTokens.stream()
                             .sorted(Comparator.comparingInt(Conll::getHead))
                             .collect(Collectors.toList());
