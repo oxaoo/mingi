@@ -9,10 +9,7 @@ import com.github.oxaoo.qas.search.RelevantInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -39,7 +36,7 @@ import java.util.stream.Collectors;
 public class NumericAnswerMaker {
     private static final Logger LOG = LoggerFactory.getLogger(NumericAnswerMaker.class);
 
-    public static List<String> concurrentDateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
+    public static Set<String> concurrentDateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
             throws FailedParsingException {
         RussianParser parser = ParserManager.getParser();
         questionTokens = questionTokens.stream()
@@ -65,10 +62,10 @@ public class NumericAnswerMaker {
                     LOG.error("Exception during answering. Cause: {}", e.getMessage());
                     return "";
                 }
-            }).filter(s -> !s.isEmpty()).collect(Collectors.toList());
+            }).filter(s -> !s.isEmpty()).collect(Collectors.toSet());
         } catch (InterruptedException e) {
             LOG.error("Exception during invoke concurrent tasks of answering. Cause: {}", e.getMessage());
-            return Collections.emptyList();
+            return Collections.emptySet();
         } finally {
             shutdownExecutor(executor);
         }
@@ -106,10 +103,10 @@ public class NumericAnswerMaker {
 
 
     @Deprecated
-    public static List<String> dateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
+    public static Set<String> dateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
             throws FailedParsingException {
         RussianParser parser = ParserManager.getParser();
-        List<String> answers = new ArrayList<>();
+        Set<String> answers = new HashSet<>();
         questionTokens = questionTokens.stream()
                 .sorted(Comparator.comparingInt(Conll::getHead))
                 .collect(Collectors.toList());

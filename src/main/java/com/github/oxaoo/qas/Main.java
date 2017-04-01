@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Set;
 
 public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(com.github.oxaoo.mp4ru.Main.class);
@@ -43,7 +44,7 @@ public class Main {
             FailedConllMapException,
             FailedQuestionTokenMapException {
         QasEngine qasEngine = new QasEngine();
-        List<String> answers = qasEngine.answer("В каком году затонул Титаник?");
+        Set<String> answers = qasEngine.answer("В каком году затонул Титаник?");
         LOG.info("List of answers:");
         answers.forEach(LOG::info);
     }

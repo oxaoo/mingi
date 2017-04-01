@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alexander Kuleshov
@@ -19,16 +20,16 @@ public class AnswerMaker {
     private static final Logger LOG = LoggerFactory.getLogger(AnswerMaker.class);
 
     //todo impl
-    public static List<String> make(List<Conll> questionTokens,
-                                    QuestionDomain questionDomain,
-                                    List<DataFragment> dataFragments) throws FailedParsingException {
+    public static Set<String> make(List<Conll> questionTokens,
+                                   QuestionDomain questionDomain,
+                                   List<DataFragment> dataFragments) throws FailedParsingException {
         switch (questionDomain) {
             case DATE:
 //                return NumericAnswerMaker.dateAnswer(questionTokens, dataFragments);
                 return NumericAnswerMaker.concurrentDateAnswer(questionTokens, dataFragments);
             default:
                 LOG.error("Incorrect question domain: {}", questionDomain.name());
-                return Collections.emptyList();
+                return Collections.emptySet();
         }
     }
 }
