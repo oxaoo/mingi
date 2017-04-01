@@ -33,10 +33,9 @@ public class QasService extends Application {
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response ask(@QueryParam("question") String question)
             throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException, JsonProcessingException {
-//        String str = "You ask: " + question;
         Set<String> answers = this.qasEngine.answer(question);
         ObjectMapper objectMapper = new ObjectMapper();
         String str = objectMapper.writeValueAsString(answers);
