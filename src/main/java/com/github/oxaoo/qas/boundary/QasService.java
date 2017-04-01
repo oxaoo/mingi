@@ -12,6 +12,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -19,24 +21,30 @@ import java.util.Set;
  * @version 1.0
  * @since 01.04.2017
  */
-@Path("/")
-public class QasService {
+@ApplicationPath("/qas")
+@Path("/ask")
+public class QasService extends Application {
     private final QasEngine qasEngine;
 
     public QasService() throws LoadQuestionClassifierModelException {
+        super();
         this.qasEngine = new QasEngine();
     }
 
     @GET
-    @Path("/ask")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response ask(@QueryParam("question") String question)
             throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException, JsonProcessingException {
-//        String answer = "You ask: " + question;
+//        String str = "You ask: " + question;
         Set<String> answers = this.qasEngine.answer(question);
         ObjectMapper objectMapper = new ObjectMapper();
         String str = objectMapper.writeValueAsString(answers);
         return Response.ok(str).build();
+    }
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        return new HashSet<>(Collections.singletonList(QasService.class));
     }
 }
