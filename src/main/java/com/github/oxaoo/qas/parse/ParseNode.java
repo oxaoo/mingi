@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"graph", "parent", "children"})
+@ToString(exclude = {"graph", "children"})
 public class ParseNode<T> {
     private static final Logger LOG = LoggerFactory.getLogger(ParseNode.class);
 
@@ -25,8 +25,6 @@ public class ParseNode<T> {
     private final T value;
     private ParseNode<T> parent;
     private final List<ParseNode<T>> children = new ArrayList<>();
-//    private ParseNode<T> lhs;
-//    private ParseNode<T> rhs;
 
     public void addChild(ParseNode<T> child) {
         this.children.add(child);
@@ -44,14 +42,5 @@ public class ParseNode<T> {
             allChildren.add(child);
             this.getAllChild(child, allChildren);
         }
-
-//        if (currentNode.lhs != null) {
-//            allChildren.add(currentNode.lhs);
-//            this.getAllChild(currentNode.lhs, allChildren);
-//        }
-//        if (currentNode.rhs != null) {
-//            allChildren.add(currentNode.rhs);
-//            this.getAllChild(currentNode.rhs, allChildren);
-//        }
     }
 }

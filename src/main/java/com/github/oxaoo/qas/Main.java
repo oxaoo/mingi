@@ -45,7 +45,6 @@ public class Main {
             FailedQuestionTokenMapException {
         QasEngine qasEngine = new QasEngine();
         List<String> answers = qasEngine.answer("В каком году затонул Титаник?");
-//        List<String> answers = qasEngine.answer("Когда разбился Гагарин?");
         LOG.info("List of answers:");
         answers.forEach(LOG::info);
     }

@@ -7,9 +7,7 @@ import com.github.oxaoo.qas.parse.*;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -53,25 +51,47 @@ public class NumericAnswerMaker {
                     List<Conll> conlls = parser.parseSentence(sentence, Conll.class);
                     ParseGraph<Conll> graph = ParseGraphBuilder.make(conlls);
                     ParseNode<Conll> foundNode = graph.find(headQuestionToken, new ConllGraphComparator());
-                    //fixme foundNode can't be null -> now we sip it
+                    //skip the fragments which doesn't contain the necessary information
                     if (foundNode == null) {
                         continue;
                     }
                     List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-                    List<Conll> dependentConlls = dependentNodes.stream()
-//                            .filter(c -> c.getValue().getPosTag() == 'M')
-                            .map(ParseNode::getValue)
-                            .collect(Collectors.toList());
-                    dependentConlls = dependentConlls.stream()
-                            .sorted(Comparator.comparingInt(Conll::getId))
-                            .collect(Collectors.toList());
-                    StringBuilder sb = new StringBuilder();
-                    dependentConlls.forEach(c -> sb.append(c.getForm()).append(" "));
-                    answers.add(sb.toString());
+//                    List<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'M');
+                    answers.add(prepareAnswer(dependentNodes));
                 }
             }
         }
         return answers;
     }
 
+    private static String prepareAnswer(List<ParseNode<Conll>> dependentNodes) {
+        StringBuilder sb = new StringBuilder();
+        dependentNodes.stream()
+                .map(ParseNode::getValue)
+                .sorted(Comparator.comparingInt(Conll::getId))
+                .forEach(c -> sb.append(c.getForm()).append(" "));
+        return sb.toString();
+    }
+
+    private static List<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, char pos) {
+        List<ParseNode<Conll>> answerChain = new ArrayList<>();
+        findByPos(parent, pos, answerChain);
+        return answerChain;
+    }
+
+    private static boolean findByPos(ParseNode<Conll> node, char pos, List<ParseNode<Conll>> chain) {
+        if (node.getValue().getPosTag() == pos) {
+            chain.add(node);
+            return true;
+        } else if (!node.getChildren().isEmpty()) {
+            for (ParseNode<Conll> child : node.getChildren()) {
+                boolean isFound = findByPos(child, pos, chain);
+                if (isFound) {
+                    chain.add(node);
+                    return true;
+                }
+            }
+        } else return false;
+        return false;
+    }
 }
