@@ -125,8 +125,8 @@ public class NumericAnswerMaker {
                     if (foundNode == null) {
                         continue;
                     }
-                    List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-//                    List<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'M');
+//                    List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
+                    List<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'M');
                     answers.add(prepareAnswer(dependentNodes));
                 }
             }
