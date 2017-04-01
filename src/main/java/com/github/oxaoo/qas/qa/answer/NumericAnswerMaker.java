@@ -6,8 +6,14 @@ import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.qas.parse.*;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,8 +37,75 @@ import java.util.stream.Collectors;
  * @since 29.03.2017
  */
 public class NumericAnswerMaker {
+    private static final Logger LOG = LoggerFactory.getLogger(NumericAnswerMaker.class);
 
-    //todo move parse up!
+    public static List<String> concurrentDateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
+            throws FailedParsingException {
+        RussianParser parser = ParserManager.getParser();
+        questionTokens = questionTokens.stream()
+                .sorted(Comparator.comparingInt(Conll::getHead))
+                .collect(Collectors.toList());
+        Conll headQuestionToken = questionTokens.get(0);
+
+        List<String> sentences = dataFragments.stream()
+                .map(DataFragment::getRelevantInfoList).flatMap(List::stream)
+                .map(RelevantInfo::getRelevantSentences).flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        List<Callable<String>> answerTasks = sentences.stream()
+                .map(s -> (Callable<String>) () -> NumericAnswerMaker.answer(s, headQuestionToken, parser))
+                .collect(Collectors.toList());
+        ExecutorService executor = Executors.newFixedThreadPool(dataFragments.size());
+
+        try {
+            return executor.invokeAll(answerTasks).stream().map(f -> {
+                try {
+                    return f.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    LOG.error("Exception during answering. Cause: {}", e.getMessage());
+                    return "";
+                }
+            }).filter(s -> !s.isEmpty()).collect(Collectors.toList());
+        } catch (InterruptedException e) {
+            LOG.error("Exception during invoke concurrent tasks of answering. Cause: {}", e.getMessage());
+            return Collections.emptyList();
+        } finally {
+            shutdownExecutor(executor);
+        }
+    }
+
+    private static String answer(String sentence, Conll headQuestionToken, RussianParser parser)
+            throws FailedParsingException {
+        List<Conll> conlls = parser.parseSentence(sentence, Conll.class);
+        ParseGraph<Conll> graph = ParseGraphBuilder.make(conlls);
+        ParseNode<Conll> foundNode = graph.find(headQuestionToken, new ConllGraphComparator());
+        //skip the fragments which doesn't contain the necessary information
+        if (foundNode == null) {
+            return "";
+        }
+//        List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
+        List<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'M');
+        return prepareAnswer(dependentNodes);
+    }
+
+    private static void shutdownExecutor(ExecutorService executor) {
+        try {
+            LOG.debug("Attempt to shutdown the Answer Executor");
+            executor.shutdown();
+            executor.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            LOG.warn("The shutdown answer task is interrupted. Cause: {}", e.getMessage());
+        } finally {
+            if (!executor.isTerminated()) {
+                LOG.error("To cancel the non-finished answer tasks");
+            }
+            executor.shutdownNow();
+            LOG.debug("Answer Executor shutdown finished");
+        }
+    }
+
+
+    @Deprecated
     public static List<String> dateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
             throws FailedParsingException {
         RussianParser parser = ParserManager.getParser();

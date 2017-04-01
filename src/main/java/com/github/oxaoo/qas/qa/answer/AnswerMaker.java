@@ -24,7 +24,8 @@ public class AnswerMaker {
                                     List<DataFragment> dataFragments) throws FailedParsingException {
         switch (questionDomain) {
             case DATE:
-                return NumericAnswerMaker.dateAnswer(questionTokens, dataFragments);
+//                return NumericAnswerMaker.dateAnswer(questionTokens, dataFragments);
+                return NumericAnswerMaker.concurrentDateAnswer(questionTokens, dataFragments);
             default:
                 LOG.error("Incorrect question domain: {}", questionDomain.name());
                 return Collections.emptyList();
