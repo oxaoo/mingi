@@ -1,5 +1,6 @@
 package com.github.oxaoo.qas.training;
 
+import com.github.oxaoo.mp4ru.common.ResourceResolver;
 import com.github.oxaoo.qas.exceptions.FindSvmModelException;
 import com.github.oxaoo.qas.exceptions.SaveSvmModelException;
 import com.github.oxaoo.qas.qa.QuestionDomain;
@@ -7,7 +8,9 @@ import libsvm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +24,8 @@ public class SvmEngine {
 
     public static svm_model findModel(String modelPath) throws FindSvmModelException {
         try {
-            return svm.svm_load_model(modelPath);
+            InputStreamReader streamReader = ResourceResolver.getResourceAsStreamReader(modelPath);
+            return svm.svm_load_model(new BufferedReader(streamReader));
         } catch (IOException e) {
             throw new FindSvmModelException("Failed to find SVM model of question classifier.", e);
         }

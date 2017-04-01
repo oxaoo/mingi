@@ -17,8 +17,8 @@ import java.util.Properties;
 public class PropertyManager {
     private static final Logger LOG = LoggerFactory.getLogger(PropertyManager.class);
 
-    private static final String PROPERTY_FILE_NAME = "src/main/resources/qas.properties";
-    private static final String PRIVATE_PROPERTY_FILE_NAME = "src/main/resources/qas_private.properties";
+    private static final String PROPERTY_FILE_NAME = "qas.properties";
+    private static final String PRIVATE_PROPERTY_FILE_NAME = "qas_private.properties";
     private static PropertyManager propertyManager = new PropertyManager();
     private Properties properties;
     private Properties privateProperties;
@@ -31,7 +31,7 @@ public class PropertyManager {
 
     private Properties loadProperties(String propertyFileName) {
         Properties prop = new Properties();
-        try (InputStream in = new FileInputStream(propertyFileName)) {
+        try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(propertyFileName)) {
             prop.load(in);
         } catch (IOException e) {
             LOG.error(ErrorId.FAILED_LOAD_APPLICATION_PROPERTIES.getDescription(e));
