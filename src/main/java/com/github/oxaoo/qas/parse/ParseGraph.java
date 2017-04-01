@@ -1,12 +1,13 @@
 package com.github.oxaoo.qas.parse;
 
-import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * @author Alexander Kuleshov
@@ -22,7 +23,6 @@ public class ParseGraph<T> {
     public ParseNode<T> find(T wanted, GraphComparator<T> comparator) {
         Queue<ParseNode<T>> queueNodes = new LinkedList<>(this.forest);
         //todo check on bug
-//        for (ParseNode<T> node : queueNodes) {
         while (true) {
             ParseNode<T> node = queueNodes.poll();
             if (node == null) break;
@@ -38,7 +38,6 @@ public class ParseGraph<T> {
         while (true) {
             ParseNode<T> node = queueNodes.poll();
             if (node == null) break;
-//            if (child.getParent().equals(node)) return node;
             if (node.equals(child.getParent())) return node;
             else queueNodes.addAll(node.getChildren());
         }
@@ -59,19 +58,4 @@ public class ParseGraph<T> {
         ParseNode<T> childNode = new ParseNode<>(this, t);
         relativeNode.addChild(childNode);
     }
-
-    //use for merge short forest to three
-//    public void merge(GraphComparator<T> comparator) {
-//        Iterator<ParseNode<T>> it = this.forest.iterator();
-//        while (it.hasNext()) {
-//            ParseNode<T> curTree = it.next();
-//            if (curTree.getValue())
-//            Iterator<ParseNode<T>> subIt = this.forest.iterator();
-//
-//        }
-//    }
-
-//    public void addNewTree(ParseNode<T> node) {
-//        forest.add(node);
-//    }
 }

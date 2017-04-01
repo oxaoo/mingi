@@ -6,10 +6,8 @@ import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.qas.parse.*;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
-import org.jsoup.select.Collector;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,28 +39,27 @@ public class NumericAnswerMaker {
             throws FailedParsingException {
         RussianParser parser = ParserManager.getParser();
         List<String> answers = new ArrayList<>();
+        questionTokens = questionTokens.stream()
+                .sorted(Comparator.comparingInt(Conll::getHead))
+                .collect(Collectors.toList());
+        Conll headQuestionToken = questionTokens.get(0);
+
+        //foreach pages
         for (DataFragment dataFragment : dataFragments) {
+            //foreach snippets of pages
             for (RelevantInfo relevantInfo : dataFragment.getRelevantInfoList()) {
+                //foreach sentences corresponding the snippets
                 for (String sentence : relevantInfo.getRelevantSentences()) {
                     List<Conll> conlls = parser.parseSentence(sentence, Conll.class);
-//                    ParseGraph<Conll> graph = ParseGraphBuilder.make(conlls);
-                    ParseGraph<Conll> graph = ParseGraphBuilder.makeFuture(conlls);
-                    questionTokens = questionTokens.stream()
-                            .sorted(Comparator.comparingInt(Conll::getHead))
-                            .collect(Collectors.toList());
-                    Conll headConll = questionTokens.get(0);
-                    ParseNode<Conll> foundNode = graph.find(headConll, new ConllGraphComparator());
+                    ParseGraph<Conll> graph = ParseGraphBuilder.make(conlls);
+                    ParseNode<Conll> foundNode = graph.find(headQuestionToken, new ConllGraphComparator());
                     //fixme foundNode can't be null -> now we sip it
                     if (foundNode == null) {
                         continue;
                     }
                     List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-//                    List<ParseNode<Conll>> dependentNodes;// = foundNode.getParent().getAllChild();
-//                    if (foundNode.getParent() != null) {
-//                        dependentNodes = foundNode.getParent().getAllChild();
-//                    }
-//                    else dependentNodes = foundNode.getAllChild();
                     List<Conll> dependentConlls = dependentNodes.stream()
+//                            .filter(c -> c.getValue().getPosTag() == 'M')
                             .map(ParseNode::getValue)
                             .collect(Collectors.toList());
                     dependentConlls = dependentConlls.stream()
