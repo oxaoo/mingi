@@ -19,24 +19,23 @@ public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(com.github.oxaoo.mp4ru.Main.class);
 
     public static void main(String[] args) throws LoadQuestionClassifierModelException, FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
-//        run();
 //        testSearchEngine();
-//        testPageExtractor();
         qas();
     }
 
     private static void testSearchEngine() {
-        SearchEngine engine = new SearchEngine();
-//        List<Result> results = engine.find("где находится эльбрус?");
-        List<Result> results = engine.find("где родился Пушкин?");
-        List<DataFragment> relevantFragments = RelevantInfoExtractor.extract(results);
-        relevantFragments.forEach(s -> LOG.info("### {}", s));
-//        LOG.info("Final result of search: \n{}", relevantFragments.toString());
-    }
+//        SearchEngine engine = new SearchEngine();
+//        LOG.info("Simple invoke find sources:");
+//        List<Result> results = engine.find("где родился Пушкин?");
+//        List<DataFragment> relevantFragments = RelevantInfoExtractor.extract(results);
+//        LOG.info("End the simple invoke find sources. Number of result: {}", relevantFragments.size());
+////        relevantFragments.forEach(s -> LOG.info("### {}", s));
+//
+//        LOG.info("Concurrent invoke find sources:");
+//        List<Result> results2 = engine.find("где родился Пушкин?");
+//        List<DataFragment> relevantFragments2 = RelevantInfoExtractor.concurrentExtract(results2);
+//        LOG.info("End the concurrent invoke find sources. Number of result: {}", relevantFragments2.size());
 
-    private static void run() throws LoadQuestionClassifierModelException {
-        QuestionClassifier questionClassifier = new QuestionClassifier();
-//        questionClassifier.init();
     }
 
     private static void qas() throws LoadQuestionClassifierModelException,

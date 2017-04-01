@@ -21,8 +21,6 @@ public class SearchFacade {
     }
 
     public List<DataFragment> collectInfo(String question) {
-//        List<Result> results = this.searchEngine.find("где находится эльбрус?");
-//        List<Result> results = this.searchEngine.find("где родился Пушкин?");
         List<Result> results = this.searchEngine.find(question);
         List<DataFragment> relevantDataFragments = RelevantInfoExtractor.extract(results);
         relevantDataFragments.forEach(s -> LOG.debug("### {}", s));

@@ -56,7 +56,7 @@ public class QasEngine {
         LOG.info("### Stage of make answer ###");
         LOG.info("Question: {}", questionTokens.toString());
         LOG.info("Question domain: {}", questionDomain.name());
-        LOG.info("Data fragments: {}", dataFragments.toString());
+        LOG.debug("Data fragments: {}", dataFragments.toString());
 
         return AnswerMaker.make(questionTokens, questionDomain, dataFragments);
     }
