@@ -1,8 +1,10 @@
 package com.github.oxaoo.qas.qa;
 
+import com.github.oxaoo.mp4ru.common.ResourceResolver;
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.exceptions.ReadInputTextException;
+import com.github.oxaoo.mp4ru.exceptions.ResourceResolverException;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.FindSvmModelException;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
@@ -23,6 +25,7 @@ public class QuestionClassifierModelLoader {
     private static final Logger LOG = LoggerFactory.getLogger(QuestionClassifierModelLoader.class);
 
     private final static String QUESTION_CLASSIFIER_MODEL_PATH_PROPERTY = "question.classifier.model.path";
+    private final static String QAS_HOME_PROPERTY = "qas.home";
 
     public static svm_model load() throws LoadQuestionClassifierModelException {
         String modelPath = PropertyManager.getProperty(QUESTION_CLASSIFIER_MODEL_PATH_PROPERTY);
@@ -51,7 +54,20 @@ public class QuestionClassifierModelLoader {
         String modelPath = PropertyManager.getProperty(QUESTION_CLASSIFIER_MODEL_PATH_PROPERTY);
         TrainerQuestionClassifier trainer = new TrainerQuestionClassifier();
         svm_model model = trainer.build();
-        SvmEngine.saveModel(model, modelPath);
+        String absoluteModelPath;
+        try {
+            absoluteModelPath = apply2Home(modelPath);
+        } catch (ResourceResolverException e) {
+            throw new SaveSvmModelException("Could not get the full path to the model store directory.", e);
+        }
+        SvmEngine.saveModel(model, absoluteModelPath);
         return model;
+    }
+
+    private static String apply2Home(String path) throws ResourceResolverException {
+        String qasHome = PropertyManager.getProperty(QAS_HOME_PROPERTY);
+        String qasAbsoluteHome = ResourceResolver.getAbsolutePath(qasHome);
+        String fileName = path.replace(qasHome, "");
+        return qasAbsoluteHome + fileName;
     }
 }

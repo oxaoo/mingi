@@ -1,5 +1,6 @@
 package com.github.oxaoo.qas.training;
 
+import com.github.oxaoo.mp4ru.common.ResourceResolver;
 import com.github.oxaoo.qas.exceptions.ErrorId;
 import com.github.oxaoo.qas.qa.QuestionDomain;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class TrainerUtils {
     }
 
     public static void readDomainsMap(String fileName, List<QuestionModel> questionModels) {
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader br = new BufferedReader(ResourceResolver.getResourceAsStreamReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] trainPair = line.split("\\s");
