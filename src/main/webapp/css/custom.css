@@ -1,0 +1,133 @@
+body {
+    font: 400 15px Lato, sans-serif;
+    line-height: 1.8;
+    color: #818181;
+
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
+}
+
+.jumbotron {
+    color: #fff;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    padding: 100px 25px;
+    font-family: Montserrat, sans-serif;
+}
+
+/*
+    Answer panel
+ */
+.panel {
+    border: 1px solid #e9d7e9;
+    border-radius: 0 !important;
+    transition: box-shadow 0.5s;
+}
+
+.panel:hover {
+    box-shadow: 5px 0 40px rgba(0, 0, 0, .2);
+}
+
+.panel-heading {
+    color: #833ab4 !important;
+    background-color: #fff !important;
+    border: #e9d7e9;
+    padding: 25px;
+    border-bottom: 1px solid transparent;
+    border-radius: 0;
+}
+
+/*
+    Navigation bar
+ */
+.navbar {
+    margin-bottom: 0;
+    color: #5851db;
+    background-color: #c13584;
+    border: #5851db;
+    z-index: 9999;
+    font-size: 12px !important;
+    line-height: 1.42857143 !important;
+    letter-spacing: 4px;
+    border-radius: 0;
+    font-family: Montserrat, sans-serif;
+}
+
+.navbar li a, .navbar .navbar-brand {
+    color: #fff !important;
+}
+
+.navbar-nav li a:hover, .navbar-nav li.active a {
+    color: #c13584 !important;
+    background-color: #fff !important;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: transparent;
+    color: #fff !important;
+}
+
+/*
+    Gradients
+ */
+.grad1 {
+    background: #833ab4;
+    background: -webkit-linear-gradient(left top, #5851db, #833ab4, #c13584);
+    background: -o-linear-gradient(bottom right, #5851db, #833ab4, #c13584);
+    background: -moz-linear-gradient(bottom right, #5851db, #833ab4, #c13584);
+    background: linear-gradient(to bottom right, #5851db, #833ab4, #c13584);
+}
+
+.grad2 {
+    background: #5851db;
+    background: -webkit-linear-gradient(left top, #5851db, #833ab4);
+    background: -o-linear-gradient(bottom right, #5851db, #833ab4);
+    background: -moz-linear-gradient(bottom right, #5851db, #833ab4);
+    background: linear-gradient(to right, #5851db, #833ab4);
+}
+
+/*
+    Input form
+ */
+.received {
+    width: 160px;
+    font-size: 10px;
+}
+
+input[type=text]:focus, textarea:focus {
+    box-shadow: 0 0 5px #833ab4;
+    border: 1px solid #833ab4;
+}
+
+/*
+    Slide animation
+ */
+.slideanim {visibility:hidden;}
+.slide {
+    animation-name: slide;
+    -webkit-animation-name: slide;
+    animation-duration: 1s;
+    -webkit-animation-duration: 1s;
+    visibility: visible;
+}
+@keyframes slide {
+    0% {
+        opacity: 0;
+        transform: translateY(70%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+}
+@-webkit-keyframes slide {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(70%);
+    }
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0%);
+    }
+}
