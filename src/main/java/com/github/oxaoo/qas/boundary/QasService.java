@@ -8,13 +8,12 @@ import com.github.oxaoo.qas.core.QasEngine;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Alexander Kuleshov
@@ -34,8 +33,10 @@ public class QasService extends Application {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response ask(@QueryParam("question") String question)
-            throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException, JsonProcessingException {
+    public Response ask(@QueryParam("question") @NotNull String question) throws FailedParsingException,
+            FailedConllMapException,
+            FailedQuestionTokenMapException,
+            JsonProcessingException {
         Set<String> answers = this.qasEngine.answer(question);
         ObjectMapper objectMapper = new ObjectMapper();
         String str = objectMapper.writeValueAsString(answers);
