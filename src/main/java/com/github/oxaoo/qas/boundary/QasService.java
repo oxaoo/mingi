@@ -9,6 +9,7 @@ import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
@@ -33,7 +34,8 @@ public class QasService extends Application {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response ask(@QueryParam("question") @NotNull String question) throws FailedParsingException,
+    public Response ask(@QueryParam("question") @NotNull @Size(min = 4) String question)
+            throws FailedParsingException,
             FailedConllMapException,
             FailedQuestionTokenMapException,
             JsonProcessingException {

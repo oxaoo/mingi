@@ -1,7 +1,9 @@
 var answerContainerSelector;
+var loaderSelector;
 
 $(document).ready(function () {
     answerContainerSelector = $("#answerContainer");
+    loaderSelector = $("#loader");
 
     $('#refresh').on('click', function (){
         scroll("#questionFrame");
@@ -12,6 +14,7 @@ $(document).ready(function () {
 
 function ask() {
     answerContainerSelector.empty();
+    loaderSelector.show();
 
     var question = $('#questionInput').val();
     console.log("Ask question: " + question);
@@ -25,15 +28,19 @@ function ask() {
         },
         dataType: "json",
         timeout: 100000,
-        success: answer
+        success: answer,
+        error: exception
     });
 }
 
 function answer(answers) {
+    loaderSelector.hide();
+
     console.log("QAS response: " + JSON.stringify(answers));
+    if (answers.length == 0) answers[0] = "Ответов не найдено";
     for (var i = 0; i < answers.length; i++) {
-        var ans = answers[i];
-        var answerCard = makeAnswerCard(ans, i);
+        var answer = answers[i];
+        var answerCard = makeAnswerCard(answer, i);
         answerContainerSelector.append(answerCard);
     }
     scroll("#answerContainer");
@@ -45,6 +52,14 @@ function makeAnswerCard(answer, id) {
     newAnswerCard.attr('id', 'answerCard' + id);
     newAnswerCard.find('#idAnswer').text(answer);
     return newAnswerCard;
+}
+
+function exception() {
+    loaderSelector.hide();
+    console.log("An error occurred while accessing the QAS");
+    var errorMsg = "Возниколо исключение. Проверьте корректность вводимых данных";
+    var answerCard = makeAnswerCard(errorMsg, 0);
+    answerContainerSelector.append(answerCard);
 }
 
 
