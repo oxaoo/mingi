@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Вопросно-Ответная Система</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+    <link href="css/custom.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="60">
+
+<nav class="navbar navbar-default navbar-fixed-top grad2">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-comment"></span></a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a><span class="glyphicon glyphicon-refresh"></span></a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="jumbotron grad1">
+    <div class="container text-center">
+        <h1>Вопросно-Ответная Система</h1>
+        <br>
+        <form>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control input-lg" id="questionInput" size="70"
+                               placeholder="Вопрос" required>
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit" onclick="ask()">
+                            <span class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="answerContainer" class="container"></div>
+<div id="answerCard" class="row" style="display: none">
+    <div>
+        <div class="panel panel-default text-center">
+            <div class="panel-heading"><h1 id="idAnswer">Ответ №1</h1></div>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="js/qas-client.js"></script>
+</body>
+</html>
