@@ -2,6 +2,12 @@ var answerContainerSelector;
 
 $(document).ready(function () {
     answerContainerSelector = $("#answerContainer");
+
+    $('#refresh').on('click', function (){
+        scroll("#questionFrame");
+        answerContainerSelector.empty();
+        $("#questionInput").val('');
+    });
 });
 
 function ask() {
@@ -30,6 +36,7 @@ function answer(answers) {
         var answerCard = makeAnswerCard(ans, i);
         answerContainerSelector.append(answerCard);
     }
+    scroll("#answerContainer");
 }
 
 function makeAnswerCard(answer, id) {
@@ -41,3 +48,21 @@ function makeAnswerCard(answer, id) {
 }
 
 
+//common
+$(window).scroll(function() {
+    $(".slideanim").each(function(){
+        var pos = $(this).offset().top;
+        var winTop = $(window).scrollTop();
+        if (pos < winTop + 2000) {
+            $(this).addClass("slide");
+        }
+    });
+});
+
+function scroll(hash) {
+    $('html, body').animate({
+        scrollTop: $(hash).offset().top
+    }, 3000, function () {
+        window.location.hash = hash;
+    });
+}
