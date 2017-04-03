@@ -1,6 +1,7 @@
 package com.github.oxaoo.qas.training;
 
 import com.github.oxaoo.mp4ru.common.ResourceResolver;
+import com.github.oxaoo.mp4ru.exceptions.ReadInputTextException;
 import com.github.oxaoo.qas.exceptions.ErrorId;
 import com.github.oxaoo.qas.qa.QuestionDomain;
 import org.slf4j.Logger;
@@ -91,4 +92,16 @@ public class TrainerUtils {
         return Collections.emptyList();
     }
 
+    public static List<String> readQuestions(String questionsFilePath) throws ReadInputTextException {
+        List<String> questions = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(ResourceResolver.getResourceAsStreamReader(questionsFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                questions.add(line);
+            }
+        } catch (IOException e) {
+            throw new ReadInputTextException("Failed to read the text file \'" + questionsFilePath + "\'.", e);
+        }
+        return questions;
+    }
 }

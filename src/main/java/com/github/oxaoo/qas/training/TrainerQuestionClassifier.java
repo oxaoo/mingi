@@ -111,7 +111,8 @@ public class TrainerQuestionClassifier {
             FailedParsingException,
             FailedConllMapException,
             FailedQuestionTokenMapException {
-        String questions = ParserUtils.readText(questionsFilePath);
+//        String questions = ParserUtils.readText(questionsFilePath);
+        List<String> questions = TrainerUtils.readQuestions(questionsFilePath);
         List<String> parsedTokens = this.parser.parse(questions);
         List<QuestionToken> questionsTokens = new ArrayList<>();
         for (String token : parsedTokens) {

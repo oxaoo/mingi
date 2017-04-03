@@ -7,6 +7,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStreamReader;
+import java.net.URL;
+
 /**
  * @author Alexander Kuleshov
  * @version 1.0
@@ -18,6 +21,8 @@ public class UtilsTest {
     @Test
     public void getAbsolutePathTest() throws ResourceResolverException {
         String absPath = ResourceResolver.getAbsolutePath("qas/qcm.model");
+//        InputStreamReader r = ResourceResolver.getResourceAsStreamReader("qas/qcm.model");
+        URL url = ResourceResolver.getUrl("qas/qcm.model");
         LOG.info("Absolute path: {}", absPath);
     }
 
