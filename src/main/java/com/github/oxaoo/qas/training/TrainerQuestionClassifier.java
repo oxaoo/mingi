@@ -7,6 +7,7 @@ import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.mp4ru.syntax.utils.ParserUtils;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
+import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.parse.ParserManager;
 import com.github.oxaoo.qas.qa.QuestionDomain;
 import com.github.oxaoo.qas.utils.PropertyManager;
@@ -43,7 +44,7 @@ public class TrainerQuestionClassifier {
     private final String testDomainsQuestionsPath;
 
 
-    public TrainerQuestionClassifier() {
+    public TrainerQuestionClassifier() throws ProvideParserException {
         Properties properties = PropertyManager.getProperties();
         this.trainQuestionsPath = properties.getProperty(TRAIN_QUESTIONS_FILE_PROPERTY);
         this.trainDomainsQuestionsPath = properties.getProperty(TRAIN_DOMAINS_QUESTIONS_FILE_PROPERTY);
@@ -126,9 +127,6 @@ public class TrainerQuestionClassifier {
         return questionModels;
     }
 
-    /*
-        todo with bug -> improved
-     */
     private List<QuestionModel> prepareQuestionModel(String questionsFilePath, String questionDomainFilePath)
             throws ReadInputTextException,
             FailedParsingException,

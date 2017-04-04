@@ -8,6 +8,7 @@ import com.github.oxaoo.mp4ru.exceptions.ResourceResolverException;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.FindSvmModelException;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
+import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.exceptions.SaveSvmModelException;
 import com.github.oxaoo.qas.training.SvmEngine;
 import com.github.oxaoo.qas.training.TrainerQuestionClassifier;
@@ -39,13 +40,15 @@ public class QuestionClassifierModelLoader {
                     | FailedConllMapException
                     | FailedQuestionTokenMapException
                     | ReadInputTextException
+                    | ProvideParserException
                     | SaveSvmModelException e1) {
                 throw new LoadQuestionClassifierModelException("Failed to load question classifier model.", e1);
             }
         }
     }
 
-    private static svm_model build() throws FailedParsingException,
+    private static svm_model build() throws ProvideParserException,
+            FailedParsingException,
             FailedConllMapException,
             ReadInputTextException,
             FailedQuestionTokenMapException,

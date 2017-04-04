@@ -3,6 +3,8 @@ package com.github.oxaoo.qas.qa.answer;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
+import com.github.oxaoo.qas.exceptions.CreateAnswerException;
+import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.parse.*;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
@@ -37,8 +39,13 @@ public class NumericAnswerMaker {
     private static final Logger LOG = LoggerFactory.getLogger(NumericAnswerMaker.class);
 
     public static Set<String> concurrentDateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
-            throws FailedParsingException {
-        RussianParser parser = ParserManager.getParser();
+            throws CreateAnswerException {
+        RussianParser parser;
+        try {
+            parser = ParserManager.getParser();
+        } catch (ProvideParserException e) {
+            throw new CreateAnswerException("Could not create an answer for a question of type DATE.", e);
+        }
         questionTokens = questionTokens.stream()
                 .sorted(Comparator.comparingInt(Conll::getHead))
                 .collect(Collectors.toList());
@@ -104,8 +111,13 @@ public class NumericAnswerMaker {
 
     @Deprecated
     public static Set<String> dateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
-            throws FailedParsingException {
-        RussianParser parser = ParserManager.getParser();
+            throws FailedParsingException, CreateAnswerException {
+        RussianParser parser;
+        try {
+            parser = ParserManager.getParser();
+        } catch (ProvideParserException e) {
+            throw new CreateAnswerException("Could not create an answer for a question of type DATE.", e);
+        }
         Set<String> answers = new HashSet<>();
         questionTokens = questionTokens.stream()
                 .sorted(Comparator.comparingInt(Conll::getHead))

@@ -4,7 +4,9 @@ import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
+import com.github.oxaoo.qas.exceptions.CreateAnswerException;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
+import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.parse.ParserManager;
 import com.github.oxaoo.qas.qa.QuestionClassifier;
 import com.github.oxaoo.qas.qa.QuestionDomain;
@@ -45,7 +47,7 @@ public class QasEngineTest {
     private static RussianParser parser;
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUp() throws ProvideParserException {
         parser = ParserManager.getParser();
     }
 
@@ -59,7 +61,10 @@ public class QasEngineTest {
 
 
     @Test
-    public void answerTest() throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
+    public void answerTest() throws FailedParsingException,
+            FailedConllMapException,
+            FailedQuestionTokenMapException,
+            CreateAnswerException {
         String question = "В каком году затонул Титаник?";
         QuestionDomain questionDomain = QuestionDomain.DATE;
         DataFragment dataFragment = this.prepareDataFragment();

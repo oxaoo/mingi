@@ -1,8 +1,18 @@
 package com.github.oxaoo.qas.parse;
 
+import com.github.oxaoo.mp4ru.exceptions.ClassifierModelNotFoundException;
+import com.github.oxaoo.mp4ru.exceptions.InitPosTaggerException;
+import com.github.oxaoo.mp4ru.exceptions.InitRussianParserException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
+import com.github.oxaoo.mp4ru.syntax.parse.SyntaxAnalyzer;
+import com.github.oxaoo.mp4ru.syntax.tagging.PosTagger;
+import com.github.oxaoo.mp4ru.syntax.tokenize.SimpleTokenizer;
+import com.github.oxaoo.mp4ru.syntax.tokenize.Tokenizer;
+import com.github.oxaoo.qas.exceptions.InitParserManagerException;
+import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.utils.PropertyManager;
 
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -13,25 +23,34 @@ import java.util.Properties;
 public class ParserManager {
     private static volatile ParserManager parserManager;
 
-    private final RussianParser parser;
+    private RussianParser parser;
 
     private final static String PARSER_CLASSIFIER_MODEL_PROPERTY = "parser.classifier.model.path";
     private final static String PARSER_CONFIG_PATH_PROPERTY = "parser.config.path";
     private final static String PARSER_TREE_TAGGER_HOME_PROPERTY = "parser.tree.tagger.path";
 
-    private ParserManager() {
+    private ParserManager() throws InitParserManagerException {
         Properties properties = PropertyManager.getProperties();
         String classifierModelPath = properties.getProperty(PARSER_CLASSIFIER_MODEL_PROPERTY);
         String treeTaggerHome = properties.getProperty(PARSER_TREE_TAGGER_HOME_PROPERTY);
         String parserConfigPath = properties.getProperty(PARSER_CONFIG_PATH_PROPERTY);
-        this.parser = new RussianParser(classifierModelPath, treeTaggerHome, parserConfigPath);
+
+        try {
+            parser = new RussianParser(classifierModelPath, treeTaggerHome, parserConfigPath);
+        } catch (InitRussianParserException e) {
+            throw new InitParserManagerException("An error occurred while initializing the Parser Manager.", e);
+        }
     }
 
-    public static RussianParser getParser() {
+    public static RussianParser getParser() throws ProvideParserException {
         if (parserManager == null) {
             synchronized (ParserManager.class) {
                 if (parserManager == null) {
-                    parserManager = new ParserManager();
+                    try {
+                        parserManager = new ParserManager();
+                    } catch (InitParserManagerException e) {
+                        throw new ProvideParserException("Could not provide a parser instance.", e);
+                    }
                 }
             }
         }

@@ -36,9 +36,12 @@ public class UtilsTest {
 
     @Test
     public void test2() {
-        String str = "hello [world] hello";
+        String str = "hello [world] hello (my) name is [alex], and how - your \"name\"?";
+//        String str = "hello (world) hello (my) name is (alex)";
 //        String str2 = str.replaceAll("[—«»\"`‚„‘’“”%;:.?!]*[\\[.*\\]]*", "");
-        String str2 = str.replaceAll("[\\[.*]]", "");
+//        String str2 = str.replaceAll("\\([^)]*\\)", "");
+//        String str2 = str.replaceAll("\\[[^]]*\\]", "");
+        String str2 = str.replaceAll("(\\[[^]]*\\])?(\\([^)]*\\))?([—«»\"`‚„‘’“”%;:,.?!]*[\\[.*\\]]*)?", "");
         LOG.info("STR2: {}", str2);
     }
 }

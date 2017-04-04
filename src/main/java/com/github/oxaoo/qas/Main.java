@@ -3,23 +3,18 @@ package com.github.oxaoo.qas;
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.qas.core.QasEngine;
+import com.github.oxaoo.qas.exceptions.CreateAnswerException;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
-import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
-import com.github.oxaoo.qas.qa.QuestionClassifier;
-import com.github.oxaoo.qas.search.DataFragment;
-import com.github.oxaoo.qas.search.RelevantInfoExtractor;
-import com.github.oxaoo.qas.search.SearchEngine;
-import com.google.api.services.customsearch.model.Result;
+import com.github.oxaoo.qas.exceptions.InitQasEngineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Set;
 
 public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(com.github.oxaoo.mp4ru.Main.class);
 
-    public static void main(String[] args) throws LoadQuestionClassifierModelException, FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
+    public static void main(String[] args) throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException, InitQasEngineException, CreateAnswerException {
 //        testSearchEngine();
         qas();
     }
@@ -39,10 +34,11 @@ public class Main {
 
     }
 
-    private static void qas() throws LoadQuestionClassifierModelException,
-            FailedParsingException,
+    private static void qas() throws FailedParsingException,
             FailedConllMapException,
-            FailedQuestionTokenMapException {
+            FailedQuestionTokenMapException,
+            CreateAnswerException,
+            InitQasEngineException {
         QasEngine qasEngine = new QasEngine();
         Set<String> answers = qasEngine.answer("В каком году затонул Титаник?");
         LOG.info("List of answers:");

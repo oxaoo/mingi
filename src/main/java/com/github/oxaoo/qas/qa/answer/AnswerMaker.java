@@ -1,7 +1,8 @@
 package com.github.oxaoo.qas.qa.answer;
 
-import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
+import com.github.oxaoo.qas.exceptions.CreateAnswerException;
+import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.qa.QuestionDomain;
 import com.github.oxaoo.qas.search.DataFragment;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class AnswerMaker {
     //todo impl
     public static Set<String> make(List<Conll> questionTokens,
                                    QuestionDomain questionDomain,
-                                   List<DataFragment> dataFragments) throws FailedParsingException {
+                                   List<DataFragment> dataFragments) throws CreateAnswerException {
         switch (questionDomain) {
             case DATE:
 //                return NumericAnswerMaker.dateAnswer(questionTokens, dataFragments);

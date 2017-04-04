@@ -4,8 +4,11 @@ import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
+import com.github.oxaoo.qas.exceptions.CreateAnswerException;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
+import com.github.oxaoo.qas.exceptions.InitQasEngineException;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
+import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.parse.ParserManager;
 import com.github.oxaoo.qas.qa.QuestionClassifier;
 import com.github.oxaoo.qas.qa.QuestionDomain;
@@ -30,10 +33,14 @@ public class QasEngine {
     private final SearchFacade searchFacade;
     private final RussianParser parser;
 
-    public QasEngine() throws LoadQuestionClassifierModelException {
-        this.questionClassifier = new QuestionClassifier();
+    public QasEngine() throws InitQasEngineException {
+        try {
+            this.parser = ParserManager.getParser();
+            this.questionClassifier = new QuestionClassifier(this.parser);
+        } catch (LoadQuestionClassifierModelException | ProvideParserException e) {
+            throw new InitQasEngineException("An error occurred while initializing the QAS Engine.", e);
+        }
         this.searchFacade = new SearchFacade();
-        this.parser = ParserManager.getParser();
     }
 
     //for inject
@@ -43,8 +50,10 @@ public class QasEngine {
         this.parser = parser;
     }
 
-    public Set<String> answer(String question)
-            throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
+    public Set<String> answer(String question) throws FailedParsingException,
+            FailedConllMapException,
+            FailedQuestionTokenMapException,
+            CreateAnswerException {
         List<Conll> questionTokens = this.parser.parse(question, Conll.class);
         QuestionDomain questionDomain = this.questionClassifier.classify(questionTokens);
         List<DataFragment> dataFragments = this.searchFacade.collectInfo(question);
@@ -53,7 +62,7 @@ public class QasEngine {
 
     private Set<String> makeAnswer(List<Conll> questionTokens,
                                    QuestionDomain questionDomain,
-                                   List<DataFragment> dataFragments) throws FailedParsingException {
+                                   List<DataFragment> dataFragments) throws CreateAnswerException {
         LOG.info("### Stage of make answer ###");
         LOG.info("Question: {}", questionTokens.toString());
         LOG.info("Question domain: {}", questionDomain.name());

@@ -6,6 +6,7 @@ import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
+import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.parse.ParserManager;
 import com.github.oxaoo.qas.training.QuestionModel;
 import com.github.oxaoo.qas.training.QuestionToken;
@@ -24,8 +25,15 @@ public class QuestionClassifier {
     private final SvmEngine svmEngine;
     private final RussianParser parser;
 
-    public QuestionClassifier() throws LoadQuestionClassifierModelException {
+    @Deprecated
+    public QuestionClassifier() throws LoadQuestionClassifierModelException, ProvideParserException {
         this.parser = ParserManager.getParser();
+        this.model = QuestionClassifierModelLoader.load();
+        this.svmEngine = new SvmEngine();
+    }
+
+    public QuestionClassifier(RussianParser parser) throws LoadQuestionClassifierModelException {
+        this.parser = parser;
         this.model = QuestionClassifierModelLoader.load();
         this.svmEngine = new SvmEngine();
     }
