@@ -10,7 +10,7 @@ public class QuestionFilter {
 
     public static List<String> filteringQuestion(List<String> questions) {
         return questions.stream()
-                .map(q -> q.replaceAll("[—«»\"`‚„‘’“”%;:.?!(){}\\[\\]\\p{Z}]+", ""))
+                .map(q -> q.replaceAll("[—«»\"`‚„‘’“”%;:.?!\\p{Z}]*[\\[(.*?)\\]]*", ""))
                 .collect(Collectors.toList());
     }
 }

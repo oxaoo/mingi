@@ -33,4 +33,12 @@ public class UtilsTest {
         String res = path.replace(home + "/", "");
         LOG.info("Res: {}", res);
     }
+
+    @Test
+    public void test2() {
+        String str = "hello [world] hello";
+//        String str2 = str.replaceAll("[—«»\"`‚„‘’“”%;:.?!]*[\\[.*\\]]*", "");
+        String str2 = str.replaceAll("[\\[.*]]", "");
+        LOG.info("STR2: {}", str2);
+    }
 }
