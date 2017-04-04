@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * @author Alexander Kuleshov
@@ -106,20 +107,42 @@ public class TrainerQuestionClassifier {
         }
     }
 
-    private List<QuestionModel> prepareQuestionModel(String questionsFilePath, String questionDomainFilePath)
+    @Deprecated
+    private List<QuestionModel> prepareQuestionModel_(String questionsFilePath, String questionDomainFilePath)
             throws ReadInputTextException,
             FailedParsingException,
             FailedConllMapException,
             FailedQuestionTokenMapException {
-//        String questions = ParserUtils.readText(questionsFilePath);
-        List<String> questions = TrainerUtils.readQuestions(questionsFilePath);
-        List<String> parsedTokens = this.parser.parse(questions.toString());
+        String questions = ParserUtils.readText(questionsFilePath);
+        List<String> parsedTokens = this.parser.parse(questions);
         List<QuestionToken> questionsTokens = new ArrayList<>();
         for (String token : parsedTokens) {
             Conll conll = Conll.map(token);
             questionsTokens.add(QuestionToken.map(conll));
         }
 
+        List<QuestionModel> questionModels = this.buildModels(questionsTokens);
+        TrainerUtils.readDomainsMap(questionDomainFilePath, questionModels);
+        return questionModels;
+    }
+
+    /*
+        todo with bug -> improved
+     */
+    private List<QuestionModel> prepareQuestionModel(String questionsFilePath, String questionDomainFilePath)
+            throws ReadInputTextException,
+            FailedParsingException,
+            FailedConllMapException,
+            FailedQuestionTokenMapException {
+        List<String> questions = TrainerUtils.readQuestions(questionsFilePath);
+        List<String> filteredQuestions = QuestionFilter.filteringQuestion(questions);
+        List<QuestionToken> questionsTokens = new ArrayList<>();
+        for (String question : filteredQuestions) {
+            List<Conll> questionConlls = this.parser.parse(question, Conll.class);
+            for (Conll conll : questionConlls) {
+                questionsTokens.add(QuestionToken.map(conll));
+            }
+        }
         List<QuestionModel> questionModels = this.buildModels(questionsTokens);
         TrainerUtils.readDomainsMap(questionDomainFilePath, questionModels);
         return questionModels;

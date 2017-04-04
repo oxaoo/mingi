@@ -68,6 +68,6 @@ public class QuestionClassifierModelLoader {
         String qasHome = PropertyManager.getProperty(QAS_HOME_PROPERTY);
         String qasAbsoluteHome = ResourceResolver.getAbsolutePath(qasHome);
         String fileName = path.replace(qasHome, "");
-        return qasAbsoluteHome + fileName;
+        return qasAbsoluteHome + '/' + fileName;
     }
 }
