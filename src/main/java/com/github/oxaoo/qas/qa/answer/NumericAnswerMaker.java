@@ -5,14 +5,20 @@ import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.qas.exceptions.CreateAnswerException;
 import com.github.oxaoo.qas.exceptions.ProvideParserException;
-import com.github.oxaoo.qas.parse.*;
+import com.github.oxaoo.qas.parse.ConllGraphComparator;
+import com.github.oxaoo.qas.parse.ParseGraph;
+import com.github.oxaoo.qas.parse.ParseGraphBuilder;
+import com.github.oxaoo.qas.parse.ParseNode;
+import com.github.oxaoo.qas.parse.ParserManager;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +44,7 @@ import java.util.stream.Collectors;
 public class NumericAnswerMaker {
     private static final Logger LOG = LoggerFactory.getLogger(NumericAnswerMaker.class);
 
-    public static Set<String> concurrentDateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
+    public static List<Callable<String>> dateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
             throws CreateAnswerException {
         RussianParser parser;
         try {
@@ -56,26 +62,9 @@ public class NumericAnswerMaker {
                 .map(RelevantInfo::getRelevantSentences).flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        List<Callable<String>> answerTasks = sentences.stream()
+        return sentences.stream()
                 .map(s -> (Callable<String>) () -> NumericAnswerMaker.answer(s, headQuestionToken, parser))
                 .collect(Collectors.toList());
-        ExecutorService executor = Executors.newFixedThreadPool(dataFragments.size());
-
-        try {
-            return executor.invokeAll(answerTasks).stream().map(f -> {
-                try {
-                    return f.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    LOG.error("Exception during answering. Cause: {}", e.getMessage());
-                    return "";
-                }
-            }).filter(s -> !s.isEmpty()).collect(Collectors.toSet());
-        } catch (InterruptedException e) {
-            LOG.error("Exception during invoke concurrent tasks of answering. Cause: {}", e.getMessage());
-            return Collections.emptySet();
-        } finally {
-            shutdownExecutor(executor);
-        }
     }
 
     private static String answer(String sentence, Conll headQuestionToken, RussianParser parser)
@@ -92,59 +81,6 @@ public class NumericAnswerMaker {
         return prepareAnswer(dependentNodes);
     }
 
-    private static void shutdownExecutor(ExecutorService executor) {
-        try {
-            LOG.debug("Attempt to shutdown the Answer Executor");
-            executor.shutdown();
-            executor.awaitTermination(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            LOG.warn("The shutdown answer task is interrupted. Cause: {}", e.getMessage());
-        } finally {
-            if (!executor.isTerminated()) {
-                LOG.error("To cancel the non-finished answer tasks");
-            }
-            executor.shutdownNow();
-            LOG.debug("Answer Executor shutdown finished");
-        }
-    }
-
-
-    @Deprecated
-    public static Set<String> dateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
-            throws FailedParsingException, CreateAnswerException {
-        RussianParser parser;
-        try {
-            parser = ParserManager.getParser();
-        } catch (ProvideParserException e) {
-            throw new CreateAnswerException("Could not create an answer for a question of type DATE.", e);
-        }
-        Set<String> answers = new HashSet<>();
-        questionTokens = questionTokens.stream()
-                .sorted(Comparator.comparingInt(Conll::getHead))
-                .collect(Collectors.toList());
-        Conll headQuestionToken = questionTokens.get(0);
-
-        //foreach pages
-        for (DataFragment dataFragment : dataFragments) {
-            //foreach snippets of pages
-            for (RelevantInfo relevantInfo : dataFragment.getRelevantInfoList()) {
-                //foreach sentences corresponding the snippets
-                for (String sentence : relevantInfo.getRelevantSentences()) {
-                    List<Conll> conlls = parser.parseSentence(sentence, Conll.class);
-                    ParseGraph<Conll> graph = ParseGraphBuilder.make(conlls);
-                    ParseNode<Conll> foundNode = graph.find(headQuestionToken, new ConllGraphComparator());
-                    //skip the fragments which doesn't contain the necessary information
-                    if (foundNode == null) {
-                        continue;
-                    }
-//                    List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-                    List<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'M');
-                    answers.add(prepareAnswer(dependentNodes));
-                }
-            }
-        }
-        return answers;
-    }
 
     private static String prepareAnswer(List<ParseNode<Conll>> dependentNodes) {
         StringBuilder sb = new StringBuilder();

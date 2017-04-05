@@ -41,6 +41,7 @@ public class Main {
             InitQasEngineException {
         QasEngine qasEngine = new QasEngine();
         Set<String> answers = qasEngine.answer("В каком году затонул Титаник?");
+//        Set<String> answers = qasEngine.answer("В какой войне была использована первая подводная лодка?");
         LOG.info("List of answers:");
         answers.forEach(LOG::info);
     }

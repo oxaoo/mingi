@@ -33,6 +33,8 @@ public class QasEngine {
     private final SearchFacade searchFacade;
     private final RussianParser parser;
 
+    private final AnswerMaker answerMaker;
+
     public QasEngine() throws InitQasEngineException {
         try {
             this.parser = ParserManager.getParser();
@@ -41,13 +43,15 @@ public class QasEngine {
             throw new InitQasEngineException("An error occurred while initializing the QAS Engine.", e);
         }
         this.searchFacade = new SearchFacade();
+        this.answerMaker = new AnswerMaker();
     }
 
     //for inject
-    public QasEngine(QuestionClassifier questionClassifier, SearchFacade searchFacade, RussianParser parser) {
+    public QasEngine(QuestionClassifier questionClassifier, SearchFacade searchFacade, RussianParser parser, AnswerMaker answerMaker) {
         this.questionClassifier = questionClassifier;
         this.searchFacade = searchFacade;
         this.parser = parser;
+        this.answerMaker = answerMaker;
     }
 
     public Set<String> answer(String question) throws FailedParsingException,
@@ -68,6 +72,6 @@ public class QasEngine {
         LOG.info("Question domain: {}", questionDomain.name());
         LOG.debug("Data fragments: {}", dataFragments.toString());
 
-        return AnswerMaker.make(questionTokens, questionDomain, dataFragments);
+        return this.answerMaker.make(questionTokens, questionDomain, dataFragments);
     }
 }
