@@ -54,7 +54,7 @@ public class QasEngineTest {
     @Test
     public void answerParseTest()
             throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
-        String answer = "Титаник затонул в 1912 году.";
+        String answer = "Какое важное сражение произошло в Бельгии в 1815 году?";
         List<Conll> tokens = this.parseQuestion(answer);
         LOG.info(JsonBuilder.toJson(tokens));
     }

@@ -46,6 +46,7 @@ public class NumericAnswerMaker {
 
     public static List<Callable<String>> dateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
             throws CreateAnswerException {
+        //todo move to up <<<<<
         RussianParser parser;
         try {
             parser = ParserManager.getParser();
@@ -61,6 +62,7 @@ public class NumericAnswerMaker {
                 .map(DataFragment::getRelevantInfoList).flatMap(List::stream)
                 .map(RelevantInfo::getRelevantSentences).flatMap(List::stream)
                 .collect(Collectors.toList());
+        //todo >>>>>
 
         return sentences.stream()
                 .map(s -> (Callable<String>) () -> NumericAnswerMaker.answer(s, headQuestionToken, parser))
@@ -99,7 +101,6 @@ public class NumericAnswerMaker {
 
     private static boolean findByPos(ParseNode<Conll> node, char pos, List<ParseNode<Conll>> chain) {
         if (node.getValue().getPosTag() == pos) {
-            chain.add(node);
             chain.addAll(node.getAllChild());
             return true;
         } else if (!node.getChildren().isEmpty()) {

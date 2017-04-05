@@ -51,7 +51,7 @@ public class AnswerMaker {
                 break;
             //LOCATION
             case STATE:
-                answerTasks = LocationAnswerMaker.dateAnswer(questionTokens, dataFragments);
+                answerTasks = LocationAnswerMaker.stateAnswer(questionTokens, dataFragments);
                 break;
 
             default:
