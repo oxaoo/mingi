@@ -100,6 +100,7 @@ public class NumericAnswerMaker {
     private static boolean findByPos(ParseNode<Conll> node, char pos, List<ParseNode<Conll>> chain) {
         if (node.getValue().getPosTag() == pos) {
             chain.add(node);
+            chain.addAll(node.getAllChild());
             return true;
         } else if (!node.getChildren().isEmpty()) {
             for (ParseNode<Conll> child : node.getChildren()) {
