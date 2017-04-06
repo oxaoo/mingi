@@ -74,4 +74,8 @@ public class QasEngine {
 
         return this.answerMaker.make(questionTokens, questionDomain, dataFragments);
     }
+
+    public void shutdown() {
+        this.answerMaker.shutdownExecutor();
+    }
 }
