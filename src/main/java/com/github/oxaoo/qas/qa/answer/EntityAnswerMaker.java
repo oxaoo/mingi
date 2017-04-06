@@ -16,18 +16,35 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 /**
- * The Location answer maker present handles domains questions of the following type:
- * CITY,
- * COUNTRY,
- * MOUNTAIN,
- * OTHER_NUMERIC,
- * STATE
+ * The Entity answer maker present handles domains questions of the following type:
+ * ANIMAL,
+ * BODY,
+ * COLOR,
+ * CREATIVE,
+ * CURRENCY,
+ * DIS_MED,
+ * EVENT,
+ * FOOD,
+ * INSTRUMENT,
+ * LANG,
+ * LETTER,
+ * OTHER_ENTITY,
+ * PLANT,
+ * PRODUCT,
+ * RELIGION,
+ * SPORT,
+ * SUBSTANCE,
+ * SYMBOL,
+ * TECHNIQUE,
+ * TERM,
+ * VEHICLE,
+ * WORD,
  *
  * @author Alexander Kuleshov
  * @version 1.0
- * @since 05.04.2017
+ * @since 06.04.2017
  */
-public class LocationAnswerMaker {
+public class EntityAnswerMaker {
 
     public static List<Callable<String>> stateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
             throws CreateAnswerException {
@@ -48,7 +65,7 @@ public class LocationAnswerMaker {
                 .collect(Collectors.toList());
 
         return sentences.stream()
-                .map(s -> (Callable<String>) () -> LocationAnswerMaker.answer(s, headQuestionToken, parser))
+                .map(s -> (Callable<String>) () -> EntityAnswerMaker.answer(s, headQuestionToken, parser))
                 .collect(Collectors.toList());
     }
 
@@ -83,7 +100,8 @@ public class LocationAnswerMaker {
 
     private static boolean findByPos(ParseNode<Conll> node, char pos, List<ParseNode<Conll>> chain) {
         if (node.getValue().getPosTag() == pos) {
-            chain.addAll(node.getAllChild());
+//            chain.addAll(node.getAllChild());
+            chain.addAll(foo(node, new ArrayList<>()));
             return true;
         } else if (!node.getChildren().isEmpty()) {
             for (ParseNode<Conll> child : node.getChildren()) {
@@ -95,5 +113,13 @@ public class LocationAnswerMaker {
             }
         } else return false;
         return false;
+    }
+
+    private static List<ParseNode<Conll>> foo(ParseNode<Conll> node, List<ParseNode<Conll>> childChain) {
+        for (ParseNode<Conll> child : node.getChildren()) {
+            childChain.add(child);
+            foo(child, childChain);
+        }
+        return childChain;
     }
 }

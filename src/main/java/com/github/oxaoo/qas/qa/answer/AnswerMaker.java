@@ -53,6 +53,10 @@ public class AnswerMaker {
             case STATE:
                 answerTasks = LocationAnswerMaker.stateAnswer(questionTokens, dataFragments);
                 break;
+            //ENTITY
+            case EVENT:
+                answerTasks = EntityAnswerMaker.stateAnswer(questionTokens, dataFragments);
+                break;
 
             default:
                 LOG.error("Incorrect question domain: {}", questionDomain.name());
