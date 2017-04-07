@@ -40,8 +40,8 @@ public class Main {
             CreateAnswerException,
             InitQasEngineException {
         QasEngine qasEngine = new QasEngine();
-//        Set<String> answers = qasEngine.answer("В каком году затонул Титаник?");
-        Set<String> answers = qasEngine.answer("Какие концерты проходят в Москве на этой неделе?");
+        Set<String> answers = qasEngine.answer("В каком году затонул Титаник?");
+//        Set<String> answers = qasEngine.answer("Где в России производят больше всего коньяка?");
         LOG.info("List of answers:");
         answers.forEach(LOG::info);
         qasEngine.shutdown();

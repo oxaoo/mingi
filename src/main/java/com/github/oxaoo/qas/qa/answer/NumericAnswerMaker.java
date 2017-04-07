@@ -17,7 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -79,12 +81,12 @@ public class NumericAnswerMaker {
             return "";
         }
 //        List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-        List<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'M');
+        Set<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'M');
         return prepareAnswer(dependentNodes);
     }
 
 
-    private static String prepareAnswer(List<ParseNode<Conll>> dependentNodes) {
+    private static String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
         StringBuilder sb = new StringBuilder();
         dependentNodes.stream()
                 .map(ParseNode::getValue)
@@ -93,13 +95,13 @@ public class NumericAnswerMaker {
         return sb.toString();
     }
 
-    private static List<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, char pos) {
-        List<ParseNode<Conll>> answerChain = new ArrayList<>();
+    private static Set<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, char pos) {
+        Set<ParseNode<Conll>> answerChain = new HashSet<>();
         findByPos(parent, pos, answerChain);
         return answerChain;
     }
 
-    private static boolean findByPos(ParseNode<Conll> node, char pos, List<ParseNode<Conll>> chain) {
+    private static boolean findByPos(ParseNode<Conll> node, char pos, Set<ParseNode<Conll>> chain) {
         if (node.getValue().getPosTag() == pos) {
             chain.addAll(node.getAllChild());
             return true;

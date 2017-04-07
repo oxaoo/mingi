@@ -11,7 +11,9 @@ import com.github.oxaoo.qas.search.RelevantInfo;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -46,7 +48,7 @@ import java.util.stream.Collectors;
  */
 public class EntityAnswerMaker {
 
-    public static List<Callable<String>> stateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
+    public static List<Callable<String>> eventAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
             throws CreateAnswerException {
         RussianParser parser;
         try {
@@ -79,11 +81,11 @@ public class EntityAnswerMaker {
             return "";
         }
 //        List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-        List<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'N');
+        Set<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'N');
         return prepareAnswer(dependentNodes);
     }
 
-    private static String prepareAnswer(List<ParseNode<Conll>> dependentNodes) {
+    private static String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
         StringBuilder sb = new StringBuilder();
         dependentNodes.stream()
                 .map(ParseNode::getValue)
@@ -92,13 +94,13 @@ public class EntityAnswerMaker {
         return sb.toString();
     }
 
-    private static List<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, char pos) {
-        List<ParseNode<Conll>> answerChain = new ArrayList<>();
+    private static Set<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, char pos) {
+        Set<ParseNode<Conll>> answerChain = new HashSet<>();
         findByPos(parent, pos, answerChain);
         return answerChain;
     }
 
-    private static boolean findByPos(ParseNode<Conll> node, char pos, List<ParseNode<Conll>> chain) {
+    private static boolean findByPos(ParseNode<Conll> node, char pos, Set<ParseNode<Conll>> chain) {
         if (node.getValue().getPosTag() == pos) {
 //            chain.addAll(node.getAllChild());
             chain.addAll(foo(node, new ArrayList<>()));

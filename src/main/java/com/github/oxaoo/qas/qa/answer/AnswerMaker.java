@@ -55,7 +55,7 @@ public class AnswerMaker {
                 break;
             //ENTITY
             case EVENT:
-                answerTasks = EntityAnswerMaker.stateAnswer(questionTokens, dataFragments);
+                answerTasks = EntityAnswerMaker.eventAnswer(questionTokens, dataFragments);
                 break;
 
             default:
