@@ -9,7 +9,6 @@ import com.github.oxaoo.qas.parse.*;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +36,7 @@ public class LocationAnswerMaker {
         try {
             parser = ParserManager.getParser();
         } catch (ProvideParserException e) {
-            throw new CreateAnswerException("Could not create an answer for a question of type DATE.", e);
+            throw new CreateAnswerException("Could not create an answer for a question of type LOCATION.", e);
         }
         questionTokens = questionTokens.stream()
                 .sorted(Comparator.comparingInt(Conll::getHead))
@@ -64,7 +63,7 @@ public class LocationAnswerMaker {
             return "";
         }
 //        List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-        Set<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'N');
+        Set<ParseNode<Conll>> dependentNodes = findPath2ChildByPosAndDep(foundNode, 'N', "предл");
         return prepareAnswer(dependentNodes);
     }
 
@@ -77,19 +76,21 @@ public class LocationAnswerMaker {
         return sb.toString();
     }
 
-    private static Set<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, char pos) {
+    //todo make dep as constant!
+    private static Set<ParseNode<Conll>> findPath2ChildByPosAndDep(ParseNode<Conll> parent, char pos, String dep) {
         Set<ParseNode<Conll>> answerChain = new HashSet<>();
-        findByPos(parent, pos, answerChain);
+        findByPosAndDep(parent, pos, dep, answerChain);
         return answerChain;
     }
 
-    private static boolean findByPos(ParseNode<Conll> node, char pos, Set<ParseNode<Conll>> chain) {
-        if (node.getValue().getPosTag() == pos) {
+    private static boolean findByPosAndDep(ParseNode<Conll> node, char pos, String dep, Set<ParseNode<Conll>> chain) {
+        if (node.getValue().getPosTag() == pos
+                && dep.equals(node.getValue().getDepRel())) {
             chain.addAll(node.getAllChild());
             return true;
         } else if (!node.getChildren().isEmpty()) {
             for (ParseNode<Conll> child : node.getChildren()) {
-                boolean isFound = findByPos(child, pos, chain);
+                boolean isFound = findByPosAndDep(child, pos, dep, chain);
                 if (isFound) {
                     chain.add(node);
                     return true;

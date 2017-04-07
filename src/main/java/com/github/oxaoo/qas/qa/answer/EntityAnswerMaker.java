@@ -10,6 +10,7 @@ import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -81,7 +82,7 @@ public class EntityAnswerMaker {
             return "";
         }
 //        List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-        Set<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'N');
+        Set<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, Arrays.asList('N', 'V'));
         return prepareAnswer(dependentNodes);
     }
 
@@ -94,20 +95,20 @@ public class EntityAnswerMaker {
         return sb.toString();
     }
 
-    private static Set<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, char pos) {
+    private static Set<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, List<Character> posList) {
         Set<ParseNode<Conll>> answerChain = new HashSet<>();
-        findByPos(parent, pos, answerChain);
+        findByPos(parent, posList, answerChain);
         return answerChain;
     }
 
-    private static boolean findByPos(ParseNode<Conll> node, char pos, Set<ParseNode<Conll>> chain) {
-        if (node.getValue().getPosTag() == pos) {
+    private static boolean findByPos(ParseNode<Conll> node, List<Character> posList, Set<ParseNode<Conll>> chain) {
+        if (posList.contains(node.getValue().getPosTag())) {
 //            chain.addAll(node.getAllChild());
             chain.addAll(foo(node, new ArrayList<>()));
             return true;
         } else if (!node.getChildren().isEmpty()) {
             for (ParseNode<Conll> child : node.getChildren()) {
-                boolean isFound = findByPos(child, pos, chain);
+                boolean isFound = findByPos(child, posList, chain);
                 if (isFound) {
                     chain.add(node);
                     return true;
