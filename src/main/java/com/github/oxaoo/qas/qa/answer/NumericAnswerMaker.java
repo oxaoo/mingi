@@ -15,11 +15,7 @@ import com.github.oxaoo.qas.search.RelevantInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -48,7 +44,6 @@ public class NumericAnswerMaker {
 
     public static List<Callable<String>> dateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
             throws CreateAnswerException {
-        //todo move to up <<<<<
         RussianParser parser;
         try {
             parser = ParserManager.getParser();
@@ -58,16 +53,29 @@ public class NumericAnswerMaker {
         questionTokens = questionTokens.stream()
                 .sorted(Comparator.comparingInt(Conll::getHead))
                 .collect(Collectors.toList());
-        Conll headQuestionToken = questionTokens.get(0);
+        //find the verb
+        final Conll targetToken;
+        if (questionTokens.get(0).getPosTag() == 'V') {
+            targetToken = questionTokens.get(0);
+        } else {
+            Conll foundToken = null;
+            for (Conll token : questionTokens) {
+                if (token.getPosTag() == 'V') {
+                    foundToken = token;
+                    break;
+                }
+            }
+            if (foundToken != null) targetToken = foundToken;
+            else targetToken = questionTokens.get(0);
+        }
 
         List<String> sentences = dataFragments.stream()
                 .map(DataFragment::getRelevantInfoList).flatMap(List::stream)
                 .map(RelevantInfo::getRelevantSentences).flatMap(List::stream)
                 .collect(Collectors.toList());
-        //todo >>>>>
 
         return sentences.stream()
-                .map(s -> (Callable<String>) () -> NumericAnswerMaker.answer(s, headQuestionToken, parser))
+                .map(s -> (Callable<String>) () -> NumericAnswerMaker.answer(s, targetToken, parser))
                 .collect(Collectors.toList());
     }
 
@@ -98,6 +106,12 @@ public class NumericAnswerMaker {
     private static Set<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, char pos) {
         Set<ParseNode<Conll>> answerChain = new HashSet<>();
         findByPos(parent, pos, answerChain);
+//        Optional<ParseNode<Conll>> optionalNode
+//                = answerChain.stream().filter(n -> n.getValue().getPosTag() == pos).findFirst();
+//        if (optionalNode.isPresent()) {
+//            ParseNode<Conll> foundNode = optionalNode.get();
+//            findByPos(foundNode, pos, answerChain);
+//        }
         return answerChain;
     }
 
