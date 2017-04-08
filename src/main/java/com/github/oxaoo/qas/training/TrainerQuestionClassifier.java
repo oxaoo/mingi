@@ -108,31 +108,13 @@ public class TrainerQuestionClassifier {
         }
     }
 
-    @Deprecated
-    private List<QuestionModel> prepareQuestionModel_(String questionsFilePath, String questionDomainFilePath)
-            throws ReadInputTextException,
-            FailedParsingException,
-            FailedConllMapException,
-            FailedQuestionTokenMapException {
-        String questions = ParserUtils.readText(questionsFilePath);
-        List<String> parsedTokens = this.parser.parse(questions);
-        List<QuestionToken> questionsTokens = new ArrayList<>();
-        for (String token : parsedTokens) {
-            Conll conll = Conll.map(token);
-            questionsTokens.add(QuestionToken.map(conll));
-        }
-
-        List<QuestionModel> questionModels = this.buildModels(questionsTokens);
-        TrainerUtils.readDomainsMap(questionDomainFilePath, questionModels);
-        return questionModels;
-    }
-
     private List<QuestionModel> prepareQuestionModel(String questionsFilePath, String questionDomainFilePath)
             throws ReadInputTextException,
             FailedParsingException,
             FailedConllMapException,
             FailedQuestionTokenMapException {
         List<String> questions = TrainerUtils.readQuestions(questionsFilePath);
+        //todo delete the filteringQuestion
         List<String> filteredQuestions = QuestionFilter.filteringQuestion(questions);
         List<QuestionToken> questionsTokens = new ArrayList<>();
         for (String question : filteredQuestions) {

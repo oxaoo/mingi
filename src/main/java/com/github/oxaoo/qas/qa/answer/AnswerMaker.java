@@ -10,11 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,8 +37,8 @@ public class AnswerMaker {
     }
 
     public Set<String> make(List<Conll> questionTokens,
-                                   QuestionDomain questionDomain,
-                                   List<DataFragment> dataFragments) throws CreateAnswerException {
+                            QuestionDomain questionDomain,
+                            List<DataFragment> dataFragments) throws CreateAnswerException {
         List<Callable<String>> answerTasks;
         switch (questionDomain) {
             //NUMERIC
@@ -56,6 +52,10 @@ public class AnswerMaker {
             //ENTITY
             case EVENT:
                 answerTasks = EntityAnswerMaker.eventAnswer(questionTokens, dataFragments);
+                break;
+            //HUMAN
+            case IND:
+                answerTasks = HumanAnswerMaker.indAnswer(questionTokens, dataFragments);
                 break;
 
             default:

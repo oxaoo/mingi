@@ -36,7 +36,7 @@ public class LocationAnswerMaker {
         try {
             parser = ParserManager.getParser();
         } catch (ProvideParserException e) {
-            throw new CreateAnswerException("Could not create an answer for a question of type LOCATION.", e);
+            throw new CreateAnswerException("Could not create an answer for a question of type STATE.", e);
         }
         questionTokens = questionTokens.stream()
                 .sorted(Comparator.comparingInt(Conll::getHead))
