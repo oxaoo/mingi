@@ -57,5 +57,6 @@ public class ParseGraph<T> {
     public void addNodeAsChild(T t, ParseNode<T> relativeNode) {
         ParseNode<T> childNode = new ParseNode<>(this, t);
         relativeNode.addChild(childNode);
+        childNode.setParent(relativeNode);
     }
 }
