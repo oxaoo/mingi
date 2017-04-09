@@ -4,8 +4,10 @@ import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
+import com.github.oxaoo.mp4ru.syntax.tokenize.SimpleTokenizer;
 import com.github.oxaoo.qas.exceptions.CreateAnswerException;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
+import com.github.oxaoo.qas.exceptions.InitQasEngineException;
 import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.parse.ParserManager;
 import com.github.oxaoo.qas.qa.QuestionClassifier;
@@ -27,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alexander Kuleshov
@@ -54,9 +57,33 @@ public class QasEngineTest {
     @Test
     public void answerParseTest()
             throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
-        String answer = "Какое важное сражение произошло в Бельгии в 1815 году?";
-        List<Conll> tokens = this.parseQuestion(answer);
-        LOG.info(JsonBuilder.toJson(tokens));
+        String question = "Что означает ФБК?";
+        List<Conll> questionTokens = this.parseQuestion(question);
+        LOG.info("*** QUESTION ***");
+        LOG.info(JsonBuilder.toJson(questionTokens));
+
+        String answer = "ФБК является аббревиатурой: Фонд борьбы с коррупцией.";
+        List<Conll> answerTokens = this.parseQuestion(answer);
+        LOG.info("*** ANSWER ***");
+        LOG.info(JsonBuilder.toJson(answerTokens));
+    }
+
+    @Test
+    public void listQuestions() throws FailedParsingException {
+        String[] questions = {
+                "Как расшифровывается аббревиатура СТС?",
+                "Что значит слово лол?",
+                "Что означает МВД?",
+                "Какая аббревиатура у фтороводорода?",
+                "Что означает ФБК?",
+                "Что значит слово кек?",
+                "Что такое ДТП?"
+        };
+        for (String question : questions) {
+            List<Conll> questionTokens = this.parseQuestion(question);
+            LOG.info("==> Question: {}", question);
+            LOG.info(JsonBuilder.toJson(questionTokens));
+        }
     }
 
 
@@ -122,4 +149,35 @@ public class QasEngineTest {
         dataFragment.setRelevantInfoList(relevantInfos);
         return dataFragment;
     }
+
+
+    @Test
+    public void test() throws InitQasEngineException, FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException, CreateAnswerException {
+        QasEngine qasEngine = new QasEngine();
+        String question = "Как расшифровывается аббревиатура СТС?";
+        Set<String> answers = qasEngine.answer(question);
+        LOG.info("List of answers:");
+        answers.forEach(LOG::info);
+        qasEngine.shutdown();
+    }
+
+    @Test
+    public void failedParse() throws FailedParsingException {
+        String str = "   Туризм и активный отдых Туры из Волгограда Регионы Города Отчеты Поиск отелей ЖД билеты Авиабилеты \uFEFF Элиста ДостопримечательностиКак добратьсяКартаОтчеты о поездкахТуры и экскурсииРоссия Регионы и областиВолгоградскаяКалмыкияАдыгеяАстраханскаяГорода и селаВолгоградВолжскийЭлистаАстраханьГеленджикАнапаНовороссийскДостопримечательности Полезные сервисы Поиск достопримечательностейПоиск и бронирование отелей Поиск ЖД билетов Поиск авиабилетов \uFEFF Поиск по сайту Популярные туры Элиста из Волгограда Баскунчак из Волгограда Геленджик из Волгограда \uFEFFРоссия \\ Элиста \\ Достопримечательности Буддийский храм (Элиста), центральный хурул «Золотая обитель Будды Шакьямуни» Координаты: N46 18.558 E44 17.034. ";
+        List<String> str2 = parser.parse(str);
+        LOG.info("STR2:");
+        str2.forEach(LOG::info);
+//        String fstr = str.replaceAll("[—«»\"`‚„‘’“”%;:\\p{Z}]+", "");
+//        LOG.info("Filtering string: {}", fstr);
+    }
+
+    @Test
+    public void failedParse2() throws FailedParsingException {
+        String str = "   Туризм и активный отдых Туры из Волгограда Регионы Города Отчеты Поиск отелей ЖД билеты Авиабилеты \uFEFF Элиста ДостопримечательностиКак добратьсяКартаОтчеты о поездкахТуры и экскурсииРоссия Регионы и областиВолгоградскаяКалмыкияАдыгеяАстраханскаяГорода и селаВолгоградВолжскийЭлистаАстраханьГеленджикАнапаНовороссийскДостопримечательности Полезные сервисы Поиск достопримечательностейПоиск и бронирование отелей Поиск ЖД билетов Поиск авиабилетов \uFEFF Поиск по сайту Популярные туры Элиста из Волгограда Баскунчак из Волгограда Геленджик из Волгограда \uFEFFРоссия \\ Элиста \\ Достопримечательности Буддийский храм (Элиста), центральный хурул «Золотая обитель Будды Шакьямуни» Координаты: N46 18.558 E44 17.034. ";
+
+        SimpleTokenizer tokenizer = new SimpleTokenizer();
+        List<String> tokens = tokenizer.tokenization(str);
+        LOG.info("Tokens: {}", tokens);
+    }
+
 }

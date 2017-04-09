@@ -9,35 +9,34 @@ import com.github.oxaoo.qas.parse.*;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 /**
- * The Human answer maker present handles domains questions of the following type:
- * GROUP,
- * IND,
- * TITLE,
- * DESCRIPTION_HUMAN
+ * The Abbreviation answer maker present handles domains questions of the following type:
+ * ABB,
+ * EXP
  *
  * @author Alexander Kuleshov
  * @version 1.0
- * @since 08.04.2017
+ * @since 09.04.2017
  */
-public class HumanAnswerMaker {
-
-    public static List<Callable<String>> indAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
+public class AbbreviationAnswerMaker {
+    public static List<Callable<String>> abbAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
             throws CreateAnswerException {
         RussianParser parser;
         try {
             parser = ParserManager.getParser();
         } catch (ProvideParserException e) {
-            throw new CreateAnswerException("Could not create an answer for a question of type IND.", e);
+            throw new CreateAnswerException("Could not create an answer for a question of type ABB.", e);
         }
-        questionTokens = questionTokens.stream()
-                .sorted(Comparator.comparingInt(Conll::getHead))
-                .collect(Collectors.toList());
-        Conll headQuestionToken = questionTokens.get(0);
+        //find the potential abb
+//        Conll targetToken = AnswerMakerTools.findFirstAfterRoot(questionTokens, "Nc.*");
+        Conll targetToken = AnswerMakerTools.findSecondAfterRoot(questionTokens, "Nc.*");
 
         List<String> sentences = dataFragments.stream()
                 .map(DataFragment::getRelevantInfoList).flatMap(List::stream)
@@ -45,22 +44,22 @@ public class HumanAnswerMaker {
                 .collect(Collectors.toList());
 
         return sentences.stream()
-                .map(s -> (Callable<String>) () -> HumanAnswerMaker.answer(s, headQuestionToken, parser))
+                .map(s -> (Callable<String>) () -> AbbreviationAnswerMaker.answer(s, targetToken, parser))
                 .collect(Collectors.toList());
     }
 
-    private static String answer(String sentence, Conll headQuestionToken, RussianParser parser)
+    private static String answer(String sentence, Conll targetToken, RussianParser parser)
             throws FailedParsingException {
         List<Conll> conlls = parser.parseSentence(sentence, Conll.class);
         ParseGraph<Conll> graph = ParseGraphBuilder.make(conlls);
-        ParseNode<Conll> foundNode = graph.find(headQuestionToken, new ConllGraphComparator());
+        ParseNode<Conll> foundNode = graph.find(targetToken, new ConllGraphComparator());
         //skip the fragments which doesn't contain the necessary information
         if (foundNode == null) {
             return "";
         }
-//        List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-        Set<ParseNode<Conll>> dependentNodes = findPath2ChildByStartFeats(foundNode, "Np");
-        return prepareAnswer(dependentNodes);
+        foundNode = AnswerMakerTools.getFirstParent(foundNode, "V.*");
+        List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
+        return prepareAnswer(new HashSet<>(dependentNodes));
     }
 
     private static String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
