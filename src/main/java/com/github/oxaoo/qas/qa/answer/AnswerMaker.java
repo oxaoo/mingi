@@ -61,6 +61,10 @@ public class AnswerMaker {
             case ABB:
                 answerTasks = AbbreviationAnswerMaker.abbAnswer(questionTokens, dataFragments);
                 break;
+                //DESCRIPTION
+            case DEFINITION:
+                answerTasks = DescriptionAnswerMaker.definitionAnswer(questionTokens, dataFragments);
+                break;
 
             default:
                 LOG.error("Incorrect question domain: {}", questionDomain.name());

@@ -6,6 +6,7 @@ import com.github.oxaoo.qas.parse.ParseNode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +59,21 @@ public class AnswerMakerTools {
         if (firstNode != null) return firstNode;
         //default variant
         return tokens.get(0);
+    }
+
+    public static Conll getRoot(List<Conll> tokens) {
+        return tokens.stream()
+                .sorted(Comparator.comparingInt(Conll::getHead))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static Conll getRoot(List<Conll> tokens, String featsPattern) {
+        return tokens.stream()
+                .sorted(Comparator.comparingInt(Conll::getHead))
+                .filter(c -> c.getFeats().matches(featsPattern))
+                .findFirst()
+                .orElse(null);
     }
 
     public static ParseNode<Conll> getFirstParent(final ParseNode<Conll> target, String featsPattern) {

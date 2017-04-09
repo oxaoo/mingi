@@ -57,12 +57,12 @@ public class QasEngineTest {
     @Test
     public void answerParseTest()
             throws FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
-        String question = "Что означает ФБК?";
+        String question = "Что такое титан?";
         List<Conll> questionTokens = this.parseQuestion(question);
         LOG.info("*** QUESTION ***");
         LOG.info(JsonBuilder.toJson(questionTokens));
 
-        String answer = "ФБК является аббревиатурой: Фонд борьбы с коррупцией.";
+        String answer = "Титан это элемент четвёртого периода периодической системы химических элементов";
         List<Conll> answerTokens = this.parseQuestion(answer);
         LOG.info("*** ANSWER ***");
         LOG.info(JsonBuilder.toJson(answerTokens));
@@ -71,13 +71,15 @@ public class QasEngineTest {
     @Test
     public void listQuestions() throws FailedParsingException {
         String[] questions = {
-                "Как расшифровывается аббревиатура СТС?",
-                "Что значит слово лол?",
-                "Что означает МВД?",
-                "Какая аббревиатура у фтороводорода?",
-                "Что означает ФБК?",
-                "Что значит слово кек?",
-                "Что такое ДТП?"
+                "Что такое ферменты печени?",
+                "Что такое этология?",
+                "Что такое титан?",
+                "Что такое кальдера?",
+                "Что такое точка росы?",
+                "В чем смысл Иисуса?",
+                "Что означает слово Хойя?",
+                "Что такое транзистор?",
+                "Что такое гомофобия?"
         };
         for (String question : questions) {
             List<Conll> questionTokens = this.parseQuestion(question);
@@ -154,7 +156,7 @@ public class QasEngineTest {
     @Test
     public void test() throws InitQasEngineException, FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException, CreateAnswerException {
         QasEngine qasEngine = new QasEngine();
-        String question = "Как расшифровывается аббревиатура СТС?";
+        String question = "Что такое титан?";
         Set<String> answers = qasEngine.answer(question);
         LOG.info("List of answers:");
         answers.forEach(LOG::info);
