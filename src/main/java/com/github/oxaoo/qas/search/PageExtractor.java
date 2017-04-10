@@ -1,16 +1,22 @@
 package com.github.oxaoo.qas.search;
 
 import com.google.api.services.customsearch.model.Result;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -27,9 +33,12 @@ public class PageExtractor {
         for (Result result : results) {
             String link = result.getLink();
             try {
-                Document doc = Jsoup.connect(link)
-                        .proxy("proxy.t-systems.ru", 3128)
-                        .get();
+                Connection connection = Jsoup.connect(link);
+                Proxy proxy = ProxyManager.getProxyIf();
+                if (proxy != null) {
+                    connection.proxy(proxy);
+                }
+                Document doc = connection.get();
 
                 String text = doc.body().text();
                 texts.add(text);
@@ -66,9 +75,12 @@ public class PageExtractor {
     private static String extractResult(Result result) {
         String link = result.getLink();
         try {
-            Document doc = Jsoup.connect(link)
-                    .proxy("proxy.t-systems.ru", 3128)
-                    .get();
+            Connection connection = Jsoup.connect(link);
+            Proxy proxy = ProxyManager.getProxyIf();
+            if (proxy != null) {
+                connection.proxy(proxy);
+            }
+            Document doc = connection.get();
             String text = doc.body().text();
             LOG.debug("\nLink: {}, \nText: {}, \nSnippet: {}\n", link, text, result.getSnippet());
             return text;

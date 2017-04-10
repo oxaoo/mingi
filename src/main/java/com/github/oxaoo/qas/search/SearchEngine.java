@@ -41,10 +41,12 @@ public class SearchEngine {
     }
 
     private void init() {
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("proxy.t-systems.ru", 3128));
-        HttpTransport httpTransport = new NetHttpTransport.Builder().setProxy(proxy).build();
-//        HttpTransport httpTransport = new NetHttpTransport.Builder().build();
-        this.customsearch = new Customsearch(httpTransport, new JacksonFactory(), httpRequest -> {
+        NetHttpTransport.Builder netBuilder = new NetHttpTransport.Builder();
+        Proxy proxy = ProxyManager.getProxyIf();
+        if (proxy != null) {
+            netBuilder.setProxy(proxy);
+        }
+        this.customsearch = new Customsearch(netBuilder.build(), new JacksonFactory(), httpRequest -> {
         });
     }
 
