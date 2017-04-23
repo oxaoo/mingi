@@ -14,7 +14,7 @@ import com.github.oxaoo.qas.qa.QuestionClassifier;
 import com.github.oxaoo.qas.qa.QuestionDomain;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
-import com.github.oxaoo.qas.search.SearchFacade;
+import com.github.oxaoo.qas.search.SearchFactory;
 import com.github.oxaoo.qas.utils.JsonBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class QasEngineTest {
     @Mock
     private QuestionClassifier questionClassifier;
     @Mock
-    private SearchFacade searchFacade;
+    private SearchFactory searchFactory;
 
     private static RussianParser parser;
 
@@ -99,7 +99,7 @@ public class QasEngineTest {
         DataFragment dataFragment = this.prepareDataFragment();
         List<DataFragment> singleDataFragments = Collections.singletonList(dataFragment);
         Mockito.when(this.questionClassifier.classify(question)).thenReturn(questionDomain);
-        Mockito.when(this.searchFacade.collectInfo(question)).thenReturn(singleDataFragments);
+        Mockito.when(this.searchFactory.collectInfo(question)).thenReturn(singleDataFragments);
 
         this.qasEngine.answer(question);
 
@@ -119,7 +119,7 @@ public class QasEngineTest {
             LOG.info("\n");
         }
 
-//        List<DataFragment> dataFragments = this.searchFacade.collectInfo(question);
+//        List<DataFragment> dataFragments = this.searchFactory.collectInfo(question);
     }
 
     private List<Conll> parseQuestion(String question) throws FailedParsingException {

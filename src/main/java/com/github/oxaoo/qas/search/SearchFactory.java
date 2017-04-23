@@ -11,12 +11,12 @@ import java.util.List;
  * @version 1.0
  * @since 25.03.2017
  */
-public class SearchFacade {
-    private static final Logger LOG = LoggerFactory.getLogger(SearchFacade.class);
+public class SearchFactory {
+    private static final Logger LOG = LoggerFactory.getLogger(SearchFactory.class);
 
     private final SearchEngine searchEngine;
 
-    public SearchFacade() {
+    public SearchFactory() {
         this.searchEngine = new SearchEngine();
     }
 

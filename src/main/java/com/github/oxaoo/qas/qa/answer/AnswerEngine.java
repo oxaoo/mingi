@@ -18,21 +18,21 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @since 29.03.2017
  */
-public class AnswerMaker {
-    private static final Logger LOG = LoggerFactory.getLogger(AnswerMaker.class);
+public class AnswerEngine {
+    private static final Logger LOG = LoggerFactory.getLogger(AnswerEngine.class);
 
     private final static int DEFAULT_THREAD_POOL_SIZE = 10;
     private final ExecutorService executor;
 
-    public AnswerMaker() {
+    public AnswerEngine() {
         this.executor = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
     }
 
-    public AnswerMaker(int threadPoolSize) {
+    public AnswerEngine(int threadPoolSize) {
         this.executor = Executors.newFixedThreadPool(threadPoolSize);
     }
 
-    public AnswerMaker(ExecutorService executor) {
+    public AnswerEngine(ExecutorService executor) {
         this.executor = executor;
     }
 

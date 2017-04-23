@@ -12,9 +12,9 @@ import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.parse.ParserManager;
 import com.github.oxaoo.qas.qa.QuestionClassifier;
 import com.github.oxaoo.qas.qa.QuestionDomain;
-import com.github.oxaoo.qas.qa.answer.AnswerMaker;
+import com.github.oxaoo.qas.qa.answer.AnswerEngine;
 import com.github.oxaoo.qas.search.DataFragment;
-import com.github.oxaoo.qas.search.SearchFacade;
+import com.github.oxaoo.qas.search.SearchFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +30,10 @@ public class QasEngine {
     private static final Logger LOG = LoggerFactory.getLogger(QasEngine.class);
 
     private final QuestionClassifier questionClassifier;
-    private final SearchFacade searchFacade;
+    private final SearchFactory searchFactory;
     private final RussianParser parser;
 
-    private final AnswerMaker answerMaker;
+    private final AnswerEngine answerEngine;
 
     public QasEngine() throws InitQasEngineException {
         try {
@@ -42,16 +42,16 @@ public class QasEngine {
         } catch (LoadQuestionClassifierModelException | ProvideParserException e) {
             throw new InitQasEngineException("An error occurred while initializing the QAS Engine.", e);
         }
-        this.searchFacade = new SearchFacade();
-        this.answerMaker = new AnswerMaker();
+        this.searchFactory = new SearchFactory();
+        this.answerEngine = new AnswerEngine();
     }
 
     //for inject
-    public QasEngine(QuestionClassifier questionClassifier, SearchFacade searchFacade, RussianParser parser, AnswerMaker answerMaker) {
+    public QasEngine(QuestionClassifier questionClassifier, SearchFactory searchFactory, RussianParser parser, AnswerEngine answerEngine) {
         this.questionClassifier = questionClassifier;
-        this.searchFacade = searchFacade;
+        this.searchFactory = searchFactory;
         this.parser = parser;
-        this.answerMaker = answerMaker;
+        this.answerEngine = answerEngine;
     }
 
     public Set<String> answer(String question) throws FailedParsingException,
@@ -60,7 +60,7 @@ public class QasEngine {
             CreateAnswerException {
         List<Conll> questionTokens = this.parser.parse(question, Conll.class);
         QuestionDomain questionDomain = this.questionClassifier.classify(questionTokens);
-        List<DataFragment> dataFragments = this.searchFacade.collectInfo(question);
+        List<DataFragment> dataFragments = this.searchFactory.collectInfo(question);
         return this.makeAnswer(questionTokens, questionDomain, dataFragments);
     }
 
@@ -72,10 +72,10 @@ public class QasEngine {
         LOG.info("Question domain: {}", questionDomain.name());
         LOG.debug("Data fragments: {}", dataFragments.toString());
 
-        return this.answerMaker.make(questionTokens, questionDomain, dataFragments);
+        return this.answerEngine.make(questionTokens, questionDomain, dataFragments);
     }
 
     public void shutdown() {
-        this.answerMaker.shutdownExecutor();
+        this.answerEngine.shutdownExecutor();
     }
 }
