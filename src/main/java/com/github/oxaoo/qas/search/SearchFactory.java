@@ -15,9 +15,12 @@ public class SearchFactory {
     private static final Logger LOG = LoggerFactory.getLogger(SearchFactory.class);
 
     private final SearchEngine searchEngine;
+    //todo use enterprise search also
+    private final EnterpriseSearch enterpriseSearch;
 
     public SearchFactory() {
         this.searchEngine = new SearchEngine();
+        this.enterpriseSearch = new EnterpriseSearch();
     }
 
     public List<DataFragment> collectInfo(String question) {
