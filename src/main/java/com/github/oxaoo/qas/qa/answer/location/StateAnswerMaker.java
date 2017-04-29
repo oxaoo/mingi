@@ -1,11 +1,11 @@
-package com.github.oxaoo.qas.qa.answer;
+package com.github.oxaoo.qas.qa.answer.location;
 
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
-import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
-import com.github.oxaoo.qas.exceptions.CreateAnswerException;
-import com.github.oxaoo.qas.exceptions.ProvideParserException;
-import com.github.oxaoo.qas.parse.*;
+import com.github.oxaoo.qas.parse.ConllGraphComparator;
+import com.github.oxaoo.qas.parse.ConllParseGraphBuilder;
+import com.github.oxaoo.qas.parse.ParseGraph;
+import com.github.oxaoo.qas.parse.ParseNode;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
 
@@ -17,45 +17,31 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 /**
- * The Location answer maker present handles domains questions of the following type:
- * CITY,
- * COUNTRY,
- * MOUNTAIN,
- * OTHER_NUMERIC,
- * STATE
- *
  * @author Alexander Kuleshov
  * @version 1.0
- * @since 05.04.2017
+ * @since 30.04.2017
  */
-public class LocationAnswerMaker {
-
-    public static List<Callable<String>> stateAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
-            throws CreateAnswerException {
-        RussianParser parser;
-        try {
-            parser = ParserManager.getParser();
-        } catch (ProvideParserException e) {
-            throw new CreateAnswerException("Could not create an answer for a question of type STATE.", e);
-        }
-        questionTokens = questionTokens.stream()
+public class StateAnswerMaker extends LocationAnswerMaker<String, Conll, DataFragment> {
+    @Override
+    public List<Callable<String>> toAnswer(List<Conll> tokens, List<DataFragment> data) {
+        tokens = tokens.stream()
                 .sorted(Comparator.comparingInt(Conll::getHead))
                 .collect(Collectors.toList());
-        Conll headQuestionToken = questionTokens.get(0);
+        Conll headQuestionToken = tokens.get(0);
 
-        List<String> sentences = dataFragments.stream()
+        List<String> sentences = data.stream()
                 .map(DataFragment::getRelevantInfoList).flatMap(List::stream)
                 .map(RelevantInfo::getRelevantSentences).flatMap(List::stream)
                 .collect(Collectors.toList());
 
         return sentences.stream()
-                .map(s -> (Callable<String>) () -> LocationAnswerMaker.answer(s, headQuestionToken, parser))
+                .map(s -> (Callable<String>) () -> this.answer(s, headQuestionToken))
                 .collect(Collectors.toList());
     }
 
-    private static String answer(String sentence, Conll headQuestionToken, RussianParser parser)
+    private String answer(String sentence, Conll headQuestionToken)
             throws FailedParsingException {
-        List<Conll> conlls = parser.parseSentence(sentence, Conll.class);
+        List<Conll> conlls = this.parser.parseSentence(sentence, Conll.class);
         ParseGraph<Conll> graph = new ConllParseGraphBuilder().build(conlls);
         ParseNode<Conll> foundNode = graph.find(headQuestionToken, new ConllGraphComparator());
         //skip the fragments which doesn't contain the necessary information
@@ -67,7 +53,7 @@ public class LocationAnswerMaker {
         return prepareAnswer(dependentNodes);
     }
 
-    private static String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
+    private String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
         StringBuilder sb = new StringBuilder();
         dependentNodes.stream()
                 .map(ParseNode::getValue)
@@ -77,13 +63,13 @@ public class LocationAnswerMaker {
     }
 
     //todo make dep as constant!
-    private static Set<ParseNode<Conll>> findPath2ChildByPosAndDep(ParseNode<Conll> parent, char pos, String dep) {
+    private Set<ParseNode<Conll>> findPath2ChildByPosAndDep(ParseNode<Conll> parent, char pos, String dep) {
         Set<ParseNode<Conll>> answerChain = new HashSet<>();
         findByPosAndDep(parent, pos, dep, answerChain);
         return answerChain;
     }
 
-    private static boolean findByPosAndDep(ParseNode<Conll> node, char pos, String dep, Set<ParseNode<Conll>> chain) {
+    private boolean findByPosAndDep(ParseNode<Conll> node, char pos, String dep, Set<ParseNode<Conll>> chain) {
         if (node.getValue().getPosTag() == pos
                 && dep.equals(node.getValue().getDepRel())) {
             chain.addAll(node.getAllChild());

@@ -1,11 +1,12 @@
-package com.github.oxaoo.qas.qa.answer;
+package com.github.oxaoo.qas.qa.answer.abbreviation;
 
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
-import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
-import com.github.oxaoo.qas.exceptions.CreateAnswerException;
-import com.github.oxaoo.qas.exceptions.ProvideParserException;
-import com.github.oxaoo.qas.parse.*;
+import com.github.oxaoo.qas.parse.ConllGraphComparator;
+import com.github.oxaoo.qas.parse.ConllParseGraphBuilder;
+import com.github.oxaoo.qas.parse.ParseGraph;
+import com.github.oxaoo.qas.parse.ParseNode;
+import com.github.oxaoo.qas.qa.answer.AnswerMakerTools;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
 
@@ -17,40 +18,31 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 /**
- * The Abbreviation answer maker present handles domains questions of the following type:
- * ABB,
- * EXP
- *
  * @author Alexander Kuleshov
  * @version 1.0
- * @since 09.04.2017
+ * @since 30.04.2017
  */
-public class AbbreviationAnswerMaker {
-    public static List<Callable<String>> abbAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
-            throws CreateAnswerException {
-        RussianParser parser;
-        try {
-            parser = ParserManager.getParser();
-        } catch (ProvideParserException e) {
-            throw new CreateAnswerException("Could not create an answer for a question of type ABB.", e);
-        }
+public class AbbAnswerMaker extends AbbreviationAnswerMaker<String, Conll, DataFragment> {
+
+    @Override
+    public List<Callable<String>> toAnswer(List<Conll> tokens, List<DataFragment> data) {
         //find the potential abb
 //        Conll targetToken = AnswerMakerTools.findFirstAfterRoot(questionTokens, "Nc.*");
-        Conll targetToken = AnswerMakerTools.findSecondAfterRoot(questionTokens, "Nc.*");
+        Conll targetToken = AnswerMakerTools.findSecondAfterRoot(tokens, "Nc.*");
 
-        List<String> sentences = dataFragments.stream()
+        List<String> sentences = data.stream()
                 .map(DataFragment::getRelevantInfoList).flatMap(List::stream)
                 .map(RelevantInfo::getRelevantSentences).flatMap(List::stream)
                 .collect(Collectors.toList());
 
         return sentences.stream()
-                .map(s -> (Callable<String>) () -> AbbreviationAnswerMaker.answer(s, targetToken, parser))
+                .map(s -> (Callable<String>) () -> this.answer(s, targetToken))
                 .collect(Collectors.toList());
     }
 
-    private static String answer(String sentence, Conll targetToken, RussianParser parser)
+    private String answer(String sentence, Conll targetToken)
             throws FailedParsingException {
-        List<Conll> conlls = parser.parseSentence(sentence, Conll.class);
+        List<Conll> conlls = this.parser.parseSentence(sentence, Conll.class);
         ParseGraph<Conll> graph = new ConllParseGraphBuilder().build(conlls);
         ParseNode<Conll> foundNode = graph.find(targetToken, new ConllGraphComparator());
         //skip the fragments which doesn't contain the necessary information
@@ -62,7 +54,7 @@ public class AbbreviationAnswerMaker {
         return prepareAnswer(new HashSet<>(dependentNodes));
     }
 
-    private static String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
+    private String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
         StringBuilder sb = new StringBuilder();
         dependentNodes.stream()
                 .map(ParseNode::getValue)
@@ -71,13 +63,16 @@ public class AbbreviationAnswerMaker {
         return sb.toString();
     }
 
-    private static Set<ParseNode<Conll>> findPath2ChildByStartFeats(ParseNode<Conll> parent, String startFeats) {
+    //todo maybe can share this methods?!
+    @Deprecated
+    private Set<ParseNode<Conll>> findPath2ChildByStartFeats(ParseNode<Conll> parent, String startFeats) {
         Set<ParseNode<Conll>> answerChain = new HashSet<>();
         findByFeats(parent, startFeats, answerChain);
         return answerChain;
     }
 
-    private static boolean findByFeats(ParseNode<Conll> node, String startFeats, Set<ParseNode<Conll>> chain) {
+    @Deprecated
+    private boolean findByFeats(ParseNode<Conll> node, String startFeats, Set<ParseNode<Conll>> chain) {
         if (node.getValue().getFeats().startsWith(startFeats)) {
             chain.addAll(node.getAllChild());
             return true;

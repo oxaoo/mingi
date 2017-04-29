@@ -1,8 +1,15 @@
 package com.github.oxaoo.qas.qa.answer;
 
+import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.qas.exceptions.CreateAnswerException;
 import com.github.oxaoo.qas.qa.QuestionDomain;
+import com.github.oxaoo.qas.qa.answer.abbreviation.AbbAnswerMaker;
+import com.github.oxaoo.qas.qa.answer.description.DefinitionAnswerMaker;
+import com.github.oxaoo.qas.qa.answer.entity.EventAnswerMaker;
+import com.github.oxaoo.qas.qa.answer.human.IndAnswerMaker;
+import com.github.oxaoo.qas.qa.answer.location.StateAnswerMaker;
+import com.github.oxaoo.qas.qa.answer.numeric.DateAnswerMaker;
 import com.github.oxaoo.qas.search.DataFragment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,56 +30,62 @@ public class AnswerEngine {
 
     private final static int DEFAULT_THREAD_POOL_SIZE = 10;
     private final ExecutorService executor;
+    private final RussianParser parser;
 
-    public AnswerEngine() {
+    public AnswerEngine(RussianParser parser) {
+        this.parser = parser;
         this.executor = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
     }
 
-    public AnswerEngine(int threadPoolSize) {
+    public AnswerEngine(RussianParser parser, int threadPoolSize) {
+        this.parser = parser;
         this.executor = Executors.newFixedThreadPool(threadPoolSize);
     }
 
-    public AnswerEngine(ExecutorService executor) {
+    public AnswerEngine(RussianParser parser, ExecutorService executor) {
+        this.parser = parser;
         this.executor = executor;
     }
 
     public Set<String> make(List<Conll> questionTokens,
                             QuestionDomain questionDomain,
                             List<DataFragment> dataFragments) throws CreateAnswerException {
-        List<Callable<String>> answerTasks;
+        AnswerContext<String, Conll, DataFragment> answerContext = new AnswerContext<>();
         switch (questionDomain) {
             //NUMERIC
             case DATE:
-                answerTasks = NumericAnswerMaker.dateAnswer(questionTokens, dataFragments);
+                answerContext.setAnswerMaker(new DateAnswerMaker());
                 break;
             //LOCATION
             case STATE:
-                answerTasks = LocationAnswerMaker.stateAnswer(questionTokens, dataFragments);
+                answerContext.setAnswerMaker(new StateAnswerMaker());
                 break;
             //ENTITY
             case EVENT:
-                answerTasks = EntityAnswerMaker.eventAnswer(questionTokens, dataFragments);
+                answerContext.setAnswerMaker(new EventAnswerMaker());
                 break;
             //HUMAN
             case IND:
-                answerTasks = HumanAnswerMaker.indAnswer(questionTokens, dataFragments);
+                answerContext.setAnswerMaker(new IndAnswerMaker());
                 break;
             //ABBREVIATION
             case ABB:
-                answerTasks = AbbreviationAnswerMaker.abbAnswer(questionTokens, dataFragments);
+                answerContext.setAnswerMaker(new AbbAnswerMaker());
                 break;
-                //DESCRIPTION
+            //DESCRIPTION
             case DEFINITION:
-                answerTasks = DescriptionAnswerMaker.definitionAnswer(questionTokens, dataFragments);
+                answerContext.setAnswerMaker(new DefinitionAnswerMaker());
                 break;
 
             default:
                 LOG.error("Incorrect question domain: {}", questionDomain.name());
                 return Collections.emptySet();
         }
-
+        answerContext.setParser(this.parser);
+        List<Callable<String>> answerTasks = answerContext.runAnswerMaker(questionTokens, dataFragments);
         return this.answerExecutor(answerTasks);
     }
+
 
     public Set<String> answerExecutor(List<Callable<String>> answerTasks) {
         try {

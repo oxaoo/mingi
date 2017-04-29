@@ -1,80 +1,45 @@
-package com.github.oxaoo.qas.qa.answer;
+package com.github.oxaoo.qas.qa.answer.entity;
 
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
-import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
-import com.github.oxaoo.qas.exceptions.CreateAnswerException;
-import com.github.oxaoo.qas.exceptions.ProvideParserException;
-import com.github.oxaoo.qas.parse.*;
+import com.github.oxaoo.qas.parse.ConllGraphComparator;
+import com.github.oxaoo.qas.parse.ConllParseGraphBuilder;
+import com.github.oxaoo.qas.parse.ParseGraph;
+import com.github.oxaoo.qas.parse.ParseNode;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 /**
- * The Entity answer maker present handles domains questions of the following type:
- * ANIMAL,
- * BODY,
- * COLOR,
- * CREATIVE,
- * CURRENCY,
- * DIS_MED,
- * EVENT,
- * FOOD,
- * INSTRUMENT,
- * LANG,
- * LETTER,
- * OTHER_ENTITY,
- * PLANT,
- * PRODUCT,
- * RELIGION,
- * SPORT,
- * SUBSTANCE,
- * SYMBOL,
- * TECHNIQUE,
- * TERM,
- * VEHICLE,
- * WORD,
- *
  * @author Alexander Kuleshov
  * @version 1.0
- * @since 06.04.2017
+ * @since 30.04.2017
  */
-public class EntityAnswerMaker {
+public class EventAnswerMaker extends EntityAnswerMaker<String, Conll, DataFragment> {
 
-    public static List<Callable<String>> eventAnswer(List<Conll> questionTokens, List<DataFragment> dataFragments)
-            throws CreateAnswerException {
-        RussianParser parser;
-        try {
-            parser = ParserManager.getParser();
-        } catch (ProvideParserException e) {
-            throw new CreateAnswerException("Could not create an answer for a question of type EVENT.", e);
-        }
-        questionTokens = questionTokens.stream()
+    @Override
+    public List<Callable<String>> toAnswer(List<Conll> tokens, List<DataFragment> data) {
+        tokens = tokens.stream()
                 .sorted(Comparator.comparingInt(Conll::getHead))
                 .collect(Collectors.toList());
-        Conll headQuestionToken = questionTokens.get(0);
+        Conll headQuestionToken = tokens.get(0);
 
-        List<String> sentences = dataFragments.stream()
+        List<String> sentences = data.stream()
                 .map(DataFragment::getRelevantInfoList).flatMap(List::stream)
                 .map(RelevantInfo::getRelevantSentences).flatMap(List::stream)
                 .collect(Collectors.toList());
 
         return sentences.stream()
-                .map(s -> (Callable<String>) () -> EntityAnswerMaker.answer(s, headQuestionToken, parser))
+                .map(s -> (Callable<String>) () -> this.answer(s, headQuestionToken))
                 .collect(Collectors.toList());
     }
 
-    private static String answer(String sentence, Conll headQuestionToken, RussianParser parser)
+    private String answer(String sentence, Conll headQuestionToken)
             throws FailedParsingException {
-        List<Conll> conlls = parser.parseSentence(sentence, Conll.class);
+        List<Conll> conlls = this.parser.parseSentence(sentence, Conll.class);
         ParseGraph<Conll> graph = new ConllParseGraphBuilder().build(conlls);
         ParseNode<Conll> foundNode = graph.find(headQuestionToken, new ConllGraphComparator());
         //skip the fragments which doesn't contain the necessary information
@@ -86,7 +51,7 @@ public class EntityAnswerMaker {
         return prepareAnswer(dependentNodes);
     }
 
-    private static String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
+    private String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
         StringBuilder sb = new StringBuilder();
         dependentNodes.stream()
                 .map(ParseNode::getValue)
@@ -95,16 +60,16 @@ public class EntityAnswerMaker {
         return sb.toString();
     }
 
-    private static Set<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, List<Character> posList) {
+    private Set<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, List<Character> posList) {
         Set<ParseNode<Conll>> answerChain = new HashSet<>();
         findByPos(parent, posList, answerChain);
         return answerChain;
     }
 
-    private static boolean findByPos(ParseNode<Conll> node, List<Character> posList, Set<ParseNode<Conll>> chain) {
+    private boolean findByPos(ParseNode<Conll> node, List<Character> posList, Set<ParseNode<Conll>> chain) {
         if (posList.contains(node.getValue().getPosTag())) {
 //            chain.addAll(node.getAllChild());
-            chain.addAll(foo(node, new ArrayList<>()));
+            chain.addAll(this.assemblyChainNode(node, new ArrayList<>()));
             return true;
         } else if (!node.getChildren().isEmpty()) {
             for (ParseNode<Conll> child : node.getChildren()) {
@@ -118,10 +83,10 @@ public class EntityAnswerMaker {
         return false;
     }
 
-    private static List<ParseNode<Conll>> foo(ParseNode<Conll> node, List<ParseNode<Conll>> childChain) {
+    private List<ParseNode<Conll>> assemblyChainNode(ParseNode<Conll> node, List<ParseNode<Conll>> childChain) {
         for (ParseNode<Conll> child : node.getChildren()) {
             childChain.add(child);
-            foo(child, childChain);
+            this.assemblyChainNode(child, childChain);
         }
         return childChain;
     }

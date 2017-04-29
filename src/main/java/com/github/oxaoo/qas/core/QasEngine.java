@@ -43,7 +43,7 @@ public class QasEngine {
             throw new InitQasEngineException("An error occurred while initializing the QAS Engine.", e);
         }
         this.searchFactory = new SearchFactory();
-        this.answerEngine = new AnswerEngine();
+        this.answerEngine = new AnswerEngine(this.parser);
     }
 
     //for inject
