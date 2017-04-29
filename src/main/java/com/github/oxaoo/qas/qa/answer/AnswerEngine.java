@@ -2,14 +2,13 @@ package com.github.oxaoo.qas.qa.answer;
 
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
-import com.github.oxaoo.qas.exceptions.CreateAnswerException;
-import com.github.oxaoo.qas.qa.question.QuestionDomain;
 import com.github.oxaoo.qas.qa.answer.abbreviation.AbbAnswerMaker;
 import com.github.oxaoo.qas.qa.answer.description.DefinitionAnswerMaker;
 import com.github.oxaoo.qas.qa.answer.entity.EventAnswerMaker;
 import com.github.oxaoo.qas.qa.answer.human.IndAnswerMaker;
 import com.github.oxaoo.qas.qa.answer.location.StateAnswerMaker;
 import com.github.oxaoo.qas.qa.answer.numeric.DateAnswerMaker;
+import com.github.oxaoo.qas.qa.question.QuestionDomain;
 import com.github.oxaoo.qas.search.DataFragment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +48,7 @@ public class AnswerEngine {
 
     public Set<String> make(List<Conll> questionTokens,
                             QuestionDomain questionDomain,
-                            List<DataFragment> dataFragments) throws CreateAnswerException {
+                            List<DataFragment> dataFragments) {
         AnswerContext<String, Conll, DataFragment> answerContext = new AnswerContext<>();
         switch (questionDomain) {
             //NUMERIC

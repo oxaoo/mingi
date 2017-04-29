@@ -4,15 +4,14 @@ import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
-import com.github.oxaoo.qas.exceptions.CreateAnswerException;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.InitQasEngineException;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
 import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.parse.ParserManager;
+import com.github.oxaoo.qas.qa.answer.AnswerEngine;
 import com.github.oxaoo.qas.qa.question.QuestionClassifier;
 import com.github.oxaoo.qas.qa.question.QuestionDomain;
-import com.github.oxaoo.qas.qa.answer.AnswerEngine;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.SearchFactory;
 import org.slf4j.Logger;
@@ -56,8 +55,7 @@ public class QasEngine {
 
     public Set<String> answer(String question) throws FailedParsingException,
             FailedConllMapException,
-            FailedQuestionTokenMapException,
-            CreateAnswerException {
+            FailedQuestionTokenMapException {
         List<Conll> questionTokens = this.parser.parse(question, Conll.class);
         QuestionDomain questionDomain = this.questionClassifier.classify(questionTokens);
         List<DataFragment> dataFragments = this.searchFactory.collectInfo(question);
@@ -66,7 +64,7 @@ public class QasEngine {
 
     private Set<String> makeAnswer(List<Conll> questionTokens,
                                    QuestionDomain questionDomain,
-                                   List<DataFragment> dataFragments) throws CreateAnswerException {
+                                   List<DataFragment> dataFragments) {
         LOG.info("### Stage of make answer ###");
         LOG.info("Question: {}", questionTokens.toString());
         LOG.info("Question domain: {}", questionDomain.name());

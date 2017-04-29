@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.qas.core.QasEngine;
-import com.github.oxaoo.qas.exceptions.CreateAnswerException;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.InitQasEngineException;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
@@ -16,7 +15,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Alexander Kuleshov
@@ -41,16 +42,10 @@ public class QasService extends Application {
             FailedConllMapException,
             FailedQuestionTokenMapException,
             JsonProcessingException {
-        Set<String> answers = null;
-        try {
-            answers = this.qasEngine.answer(question);
-            ObjectMapper objectMapper = new ObjectMapper();
-            String str = objectMapper.writeValueAsString(answers);
-            return Response.ok(str).build();
-        } catch (CreateAnswerException e) {
-            //todo add message
-            return Response.status(Response.Status.CONFLICT).build();
-        }
+        Set<String> answers = this.qasEngine.answer(question);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String str = objectMapper.writeValueAsString(answers);
+        return Response.ok(str).build();
     }
 
     @Override

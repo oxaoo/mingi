@@ -5,7 +5,6 @@ import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.mp4ru.syntax.tokenize.SimpleTokenizer;
-import com.github.oxaoo.qas.exceptions.CreateAnswerException;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.InitQasEngineException;
 import com.github.oxaoo.qas.exceptions.ProvideParserException;
@@ -92,8 +91,7 @@ public class QasEngineTest {
     @Test
     public void answerTest() throws FailedParsingException,
             FailedConllMapException,
-            FailedQuestionTokenMapException,
-            CreateAnswerException {
+            FailedQuestionTokenMapException {
         String question = "В каком году затонул Титаник?";
         QuestionDomain questionDomain = QuestionDomain.DATE;
         DataFragment dataFragment = this.prepareDataFragment();
@@ -154,7 +152,7 @@ public class QasEngineTest {
 
 
     @Test
-    public void test() throws InitQasEngineException, FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException, CreateAnswerException {
+    public void test() throws InitQasEngineException, FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
         QasEngine qasEngine = new QasEngine();
         String question = "Что такое титан?";
         Set<String> answers = qasEngine.answer(question);
