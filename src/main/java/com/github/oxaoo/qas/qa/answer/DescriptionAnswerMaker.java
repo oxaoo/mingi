@@ -52,7 +52,7 @@ public class DescriptionAnswerMaker {
     private static String answer(String sentence, Conll targetToken, RussianParser parser)
             throws FailedParsingException {
         List<Conll> conlls = parser.parseSentence(sentence, Conll.class);
-        ParseGraph<Conll> graph = ParseGraphBuilder.make(conlls);
+        ParseGraph<Conll> graph = new ConllParseGraphBuilder().build(conlls);
         ParseNode<Conll> foundNode = graph.find(targetToken, new ConllGraphComparator());
         //skip the fragments which doesn't contain the necessary information
         if (foundNode == null) {

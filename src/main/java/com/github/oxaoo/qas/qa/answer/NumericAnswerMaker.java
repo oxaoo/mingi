@@ -5,17 +5,16 @@ import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.qas.exceptions.CreateAnswerException;
 import com.github.oxaoo.qas.exceptions.ProvideParserException;
-import com.github.oxaoo.qas.parse.ConllGraphComparator;
-import com.github.oxaoo.qas.parse.ParseGraph;
-import com.github.oxaoo.qas.parse.ParseGraphBuilder;
-import com.github.oxaoo.qas.parse.ParseNode;
-import com.github.oxaoo.qas.parse.ParserManager;
+import com.github.oxaoo.qas.parse.*;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -82,7 +81,7 @@ public class NumericAnswerMaker {
     private static String answer(String sentence, Conll headQuestionToken, RussianParser parser)
             throws FailedParsingException {
         List<Conll> conlls = parser.parseSentence(sentence, Conll.class);
-        ParseGraph<Conll> graph = ParseGraphBuilder.make(conlls);
+        ParseGraph<Conll> graph = new ConllParseGraphBuilder().build(conlls);
         ParseNode<Conll> foundNode = graph.find(headQuestionToken, new ConllGraphComparator());
         //skip the fragments which doesn't contain the necessary information
         if (foundNode == null) {
