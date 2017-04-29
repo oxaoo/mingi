@@ -1,6 +1,6 @@
 package com.github.oxaoo.qas.training;
 
-import com.github.oxaoo.qas.qa.QuestionDomain;
+import com.github.oxaoo.qas.qa.question.QuestionDomain;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;

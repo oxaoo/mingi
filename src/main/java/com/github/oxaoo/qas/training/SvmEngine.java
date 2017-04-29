@@ -3,7 +3,7 @@ package com.github.oxaoo.qas.training;
 import com.github.oxaoo.mp4ru.common.ResourceResolver;
 import com.github.oxaoo.qas.exceptions.FindSvmModelException;
 import com.github.oxaoo.qas.exceptions.SaveSvmModelException;
-import com.github.oxaoo.qas.qa.QuestionDomain;
+import com.github.oxaoo.qas.qa.question.QuestionDomain;
 import libsvm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

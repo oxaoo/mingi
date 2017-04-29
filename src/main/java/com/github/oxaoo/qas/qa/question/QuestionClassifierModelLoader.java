@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.qa;
+package com.github.oxaoo.qas.qa.question;
 
 import com.github.oxaoo.mp4ru.common.ResourceResolver;
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;

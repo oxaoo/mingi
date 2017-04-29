@@ -5,11 +5,10 @@ import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.exceptions.ReadInputTextException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
-import com.github.oxaoo.mp4ru.syntax.utils.ParserUtils;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.parse.ParserManager;
-import com.github.oxaoo.qas.qa.QuestionDomain;
+import com.github.oxaoo.qas.qa.question.QuestionDomain;
 import com.github.oxaoo.qas.utils.PropertyManager;
 import com.google.gson.GsonBuilder;
 import libsvm.svm_model;
@@ -19,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 /**
  * @author Alexander Kuleshov

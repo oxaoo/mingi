@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.qa;
+package com.github.oxaoo.qas.qa.question;
 
 /**
  * @author Alexander Kuleshov

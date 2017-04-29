@@ -3,7 +3,7 @@ package com.github.oxaoo.qas.qa.answer;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.qas.exceptions.CreateAnswerException;
-import com.github.oxaoo.qas.qa.QuestionDomain;
+import com.github.oxaoo.qas.qa.question.QuestionDomain;
 import com.github.oxaoo.qas.qa.answer.abbreviation.AbbAnswerMaker;
 import com.github.oxaoo.qas.qa.answer.description.DefinitionAnswerMaker;
 import com.github.oxaoo.qas.qa.answer.entity.EventAnswerMaker;
