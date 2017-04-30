@@ -1,5 +1,6 @@
 package com.github.oxaoo.qas.search;
 
+import com.github.oxaoo.qas.search.common.ProxyManager;
 import com.google.api.services.customsearch.model.Result;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @since 22.03.2017
  */
+@Deprecated
 public class PageExtractor {
     private static final Logger LOG = LoggerFactory.getLogger(PageExtractor.class);
 

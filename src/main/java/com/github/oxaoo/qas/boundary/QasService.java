@@ -34,19 +34,23 @@ public class QasService extends Application {
         this.qasEngine = new QasEngine();
     }
 
+    //todo using webSearch
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response ask(@QueryParam("question") @NotNull @Size(min = 4) String question)
+    public Response ask(@QueryParam("question") @NotNull @Size(min = 4) String question,
+                        @QueryParam("webSearch") @DefaultValue("true") boolean webSearch)
             throws FailedParsingException,
             FailedConllMapException,
             FailedQuestionTokenMapException,
             JsonProcessingException {
-        Set<String> answers = this.qasEngine.answer(question);
+        Set<String> answers = this.qasEngine.answer(question, webSearch);
         ObjectMapper objectMapper = new ObjectMapper();
         String str = objectMapper.writeValueAsString(answers);
         return Response.ok(str).build();
     }
+
+    //todo impl load textFile
 
     @Override
     public Set<Class<?>> getClasses() {

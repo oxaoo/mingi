@@ -13,7 +13,7 @@ import com.github.oxaoo.qas.qa.question.QuestionClassifier;
 import com.github.oxaoo.qas.qa.question.QuestionDomain;
 import com.github.oxaoo.qas.search.DataFragment;
 import com.github.oxaoo.qas.search.RelevantInfo;
-import com.github.oxaoo.qas.search.SearchFactory;
+import com.github.oxaoo.qas.search.SearchFactory_;
 import com.github.oxaoo.qas.utils.JsonBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class QasEngineTest {
     @Mock
     private QuestionClassifier questionClassifier;
     @Mock
-    private SearchFactory searchFactory;
+    private SearchFactory_ searchFactory;
 
     private static RussianParser parser;
 
@@ -99,7 +99,7 @@ public class QasEngineTest {
         Mockito.when(this.questionClassifier.classify(question)).thenReturn(questionDomain);
         Mockito.when(this.searchFactory.collectInfo(question)).thenReturn(singleDataFragments);
 
-        this.qasEngine.answer(question);
+        this.qasEngine.answer(question, true);
 
         List<Conll> parsedQuestion = this.parseQuestion(question);
         LOG.info("Pretty question view: {}", JsonBuilder.toJson(parsedQuestion));
@@ -155,7 +155,7 @@ public class QasEngineTest {
     public void test() throws InitQasEngineException, FailedParsingException, FailedConllMapException, FailedQuestionTokenMapException {
         QasEngine qasEngine = new QasEngine();
         String question = "Что такое титан?";
-        Set<String> answers = qasEngine.answer(question);
+        Set<String> answers = qasEngine.answer(question, true);
         LOG.info("List of answers:");
         answers.forEach(LOG::info);
         qasEngine.shutdown();

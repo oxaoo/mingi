@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.search;
+package com.github.oxaoo.qas.search.common;
 
 import com.github.oxaoo.qas.utils.PropertyManager;
 import org.slf4j.Logger;

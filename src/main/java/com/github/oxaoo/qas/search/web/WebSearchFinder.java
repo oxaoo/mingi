@@ -1,6 +1,6 @@
-package com.github.oxaoo.qas.search;
+package com.github.oxaoo.qas.search.web;
 
-
+import com.github.oxaoo.qas.search.SearchFinder;
 import com.github.oxaoo.qas.search.common.ProxyManager;
 import com.github.oxaoo.qas.utils.PropertyManager;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -19,11 +19,10 @@ import java.util.List;
 /**
  * @author Alexander Kuleshov
  * @version 1.0
- * @since 21.03.2017
+ * @since 30.04.2017
  */
-@Deprecated
-public class SearchEngine {
-    private static final Logger LOG = LoggerFactory.getLogger(SearchEngine.class);
+public class WebSearchFinder implements SearchFinder<List<Result>> {
+    private static final Logger LOG = LoggerFactory.getLogger(WebSearchFinder.class);
 
     private final static String GOOGLE_CSE_ID_PROPERTY = "google.cse.id";
     private final static String GOOGLE_API_KEY_PROPERTY = "google.api.key";
@@ -33,7 +32,7 @@ public class SearchEngine {
 
     private Customsearch customsearch;
 
-    public SearchEngine() {
+    public WebSearchFinder() {
         this.apiKey = PropertyManager.getPrivateProperty(GOOGLE_API_KEY_PROPERTY);
         this.cseId = PropertyManager.getPrivateProperty(GOOGLE_CSE_ID_PROPERTY);
         this.init();
@@ -49,6 +48,13 @@ public class SearchEngine {
         });
     }
 
+
+    @Override
+    public List<Result> find() {
+        throw new UnsupportedOperationException("Method is not supported by the Web Search Finder.");
+    }
+
+    @Override
     public List<Result> find(String query) {
         List<Result> items;
         try {
@@ -58,7 +64,7 @@ public class SearchEngine {
                     .execute();
             items = results.getItems();
         } catch (IOException e) {
-            LOG.error("Error during the query to the search engine. Cause: {}", e.getMessage());
+            LOG.error("Error during the query to the web search engine. Cause: {}", e.getMessage());
             items = Collections.emptyList();
         }
 
@@ -66,7 +72,6 @@ public class SearchEngine {
             LOG.debug("Title: {} \nSnippet: {} \nLink: {} \n\n",
                     result.getTitle(), result.getSnippet(), result.getLink());
         }
-
         return items;
     }
 }
