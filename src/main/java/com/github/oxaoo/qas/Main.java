@@ -5,6 +5,8 @@ import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.qas.core.QasEngine;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.InitQasEngineException;
+import com.github.oxaoo.qas.search.engine.SearchEngine;
+import com.github.oxaoo.qas.search.engine.web.WebSearchEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,8 @@ public class Main {
             FailedQuestionTokenMapException,
             InitQasEngineException {
         QasEngine qasEngine = new QasEngine();
-        Set<String> answers = qasEngine.answer("В каком году затонул Титаник?", true); //+ DATE
+        Set<String> answers = qasEngine.answer("В каком году затонул Титаник?", new SearchEngine<>(new WebSearchEngine()));
+//        Set<String> answers = qasEngine.answer("В каком году затонул Титаник?", true); //+ DATE
 //        Set<String> answers = qasEngine.answer("В каком регионе России выпадает наибольшее количество осадков в год?");
 //        Set<String> answers = qasEngine.answer("В каком регионе России находится крупнейший буддистский храм?"); //+ STATE
 //        Set<String> answers = qasEngine.answer("В каком году Медведев стал презедентом?");

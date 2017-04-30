@@ -38,6 +38,8 @@ public class QasEngine {
     private final RussianParser parser;
     private final AnswerEngine answerEngine;
 
+    private SearchEngine searchEngine;
+
     public QasEngine() throws InitQasEngineException {
         try {
             this.parser = ParserManager.getParser();
@@ -48,6 +50,7 @@ public class QasEngine {
         this.answerEngine = new AnswerEngine(this.parser);
     }
 
+    @Deprecated
     public Set<String> answer(String question, boolean webSearch) throws FailedParsingException,
             FailedConllMapException,
             FailedQuestionTokenMapException {
@@ -59,6 +62,16 @@ public class QasEngine {
         } else {
             dataFragments = new SearchEngine<>(new EnterpriseSearchEngine()).collectInfo(question);
         }
+//        this.searchEngine.collectInfo(question);
+        return this.makeAnswer(questionTokens, questionDomain, dataFragments);
+    }
+
+    public<T, K> Set<String> answer(String question, SearchEngine<T, K> searchEngine) throws FailedParsingException,
+            FailedConllMapException,
+            FailedQuestionTokenMapException {
+        List<Conll> questionTokens = this.parser.parse(question, Conll.class);
+        QuestionDomain questionDomain = this.questionClassifier.classify(questionTokens);
+        List<DataFragment> dataFragments = searchEngine.collectInfo(question);
         return this.makeAnswer(questionTokens, questionDomain, dataFragments);
     }
 

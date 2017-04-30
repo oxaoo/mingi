@@ -8,6 +8,10 @@ import com.github.oxaoo.qas.core.QasEngine;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.InitQasEngineException;
 import com.github.oxaoo.qas.exceptions.LoadQuestionClassifierModelException;
+import com.github.oxaoo.qas.search.engine.SearchEngine;
+import com.github.oxaoo.qas.search.engine.SearchFactory;
+import com.github.oxaoo.qas.search.engine.enterprise.EnterpriseSearchEngine;
+import com.github.oxaoo.qas.search.engine.web.WebSearchEngine;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -44,7 +48,13 @@ public class QasService extends Application {
             FailedConllMapException,
             FailedQuestionTokenMapException,
             JsonProcessingException {
-        Set<String> answers = this.qasEngine.answer(question, webSearch);
+        SearchFactory<?, ?> searchFactory;
+        if (webSearch) {
+            searchFactory = new WebSearchEngine();
+        } else {
+            searchFactory = new EnterpriseSearchEngine();
+        }
+        Set<String> answers = this.qasEngine.answer(question, new SearchEngine<>(searchFactory));
         ObjectMapper objectMapper = new ObjectMapper();
         String str = objectMapper.writeValueAsString(answers);
         return Response.ok(str).build();

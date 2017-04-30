@@ -5,6 +5,8 @@ import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.mp4ru.syntax.tokenize.SimpleTokenizer;
+import com.github.oxaoo.qas.core.auxiliary.WebSearchEngineStub;
+import com.github.oxaoo.qas.core.auxiliary.WebSearchStubResultProvider;
 import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.InitQasEngineException;
 import com.github.oxaoo.qas.exceptions.ProvideParserException;
@@ -15,7 +17,9 @@ import com.github.oxaoo.qas.qa.question.QuestionDomain;
 import com.github.oxaoo.qas.search.data.DataFragment;
 import com.github.oxaoo.qas.search.data.RelevantInfo;
 import com.github.oxaoo.qas.search.engine.SearchEngine;
+import com.github.oxaoo.qas.search.engine.web.WebSearchUnit;
 import com.github.oxaoo.qas.utils.JsonBuilder;
+import com.google.api.services.customsearch.model.Result;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -185,4 +189,31 @@ public class QasEngineTest {
         LOG.info("Tokens: {}", tokens);
     }
 
+
+    @Test
+    public void answerWithFinderStubTest() throws InitQasEngineException,
+            FailedParsingException,
+            FailedConllMapException,
+            FailedQuestionTokenMapException {
+        SearchEngine<List<Result>, List<WebSearchUnit>> searchEngine = new SearchEngine<>(new WebSearchEngineStub());
+        QasEngine qasEngine = new QasEngine();
+        String question = "В каком году затонул Титаник?";
+        this.provideResult();
+        Set<String> answers = qasEngine.answer(question, searchEngine);
+        answers.forEach(LOG::info);
+    }
+
+    private void provideResult() {
+        String link = "https://ru.wikipedia.org/wiki/%D0%A2%D0%B8%D1%82%D0%B0%D0%BD%D0%B8%D0%BA";
+        String snippet = "«Тита́ник» (англ. Titanic) — британский трансатлантический пароход, второй лайнер класса «Олимпик»."
+                + " Строился в Белфасте на верфи «Харленд энд Вулф» с 1909 по 1912 год\n"
+                + "В 2:20 15 апреля, разломившись на две части, «Титаник» затонул, унеся жизни 1496 человек."
+                + " 712 спасшихся человек";
+
+        Result result = new Result()
+                .setLink(link)
+                .setSnippet(snippet);
+        List<Result> results = Collections.singletonList(result);
+        WebSearchStubResultProvider.add(results);
+    }
 }
