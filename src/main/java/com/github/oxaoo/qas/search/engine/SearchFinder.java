@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.search;
+package com.github.oxaoo.qas.search.engine;
 
 /**
  * @author Alexander Kuleshov
@@ -7,5 +7,6 @@ package com.github.oxaoo.qas.search;
  */
 public interface SearchFinder<T> {
     T find();
+
     T find(String s);
 }

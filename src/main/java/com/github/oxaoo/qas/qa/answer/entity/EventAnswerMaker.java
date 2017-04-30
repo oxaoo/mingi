@@ -6,8 +6,8 @@ import com.github.oxaoo.qas.parse.ConllGraphComparator;
 import com.github.oxaoo.qas.parse.ConllParseGraphBuilder;
 import com.github.oxaoo.qas.parse.ParseGraph;
 import com.github.oxaoo.qas.parse.ParseNode;
-import com.github.oxaoo.qas.search.DataFragment;
-import com.github.oxaoo.qas.search.RelevantInfo;
+import com.github.oxaoo.qas.search.data.DataFragment;
+import com.github.oxaoo.qas.search.data.RelevantInfo;
 
 import java.util.*;
 import java.util.concurrent.Callable;

@@ -1,6 +1,6 @@
-package com.github.oxaoo.qas.search.web;
+package com.github.oxaoo.qas.search.engine.web;
 
-import com.github.oxaoo.qas.search.SearchLoader;
+import com.github.oxaoo.qas.search.engine.SearchLoader;
 import com.github.oxaoo.qas.search.common.ProxyManager;
 import com.google.api.services.customsearch.model.Result;
 import org.jsoup.Connection;

@@ -1,7 +1,8 @@
-package com.github.oxaoo.qas.search;
+package com.github.oxaoo.qas.search.logic;
 
 import com.github.oxaoo.mp4ru.syntax.tokenize.SimpleTokenizer;
 import com.github.oxaoo.mp4ru.syntax.tokenize.Tokenizer;
+import com.github.oxaoo.qas.search.data.RelevantInfo;
 
 import java.text.BreakIterator;
 import java.util.ArrayList;
@@ -14,9 +15,10 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @since 25.03.2017
  */
-public class NaiveMatcher {
+public class NaiveMatcher implements TextMatcher {
 
-    public static List<RelevantInfo> matching(String snippetsFragment, String text) {
+    @Override
+    public List<RelevantInfo> matching(String snippetsFragment, String text) {
         List<RelevantInfo> relevantInfoList = new ArrayList<>();
         List<String> snippets = snippetSplitter(snippetsFragment);
         List<String> sentences = textSplitter(text);
@@ -38,7 +40,7 @@ public class NaiveMatcher {
         return relevantInfoList;
     }
 
-    private static List<String> snippetSplitter(String snippetsFragment) {
+    private List<String> snippetSplitter(String snippetsFragment) {
         snippetsFragment = snippetsFragment.replaceAll("[^\\S ]+", "");
         String separateToken = "\\.\\.\\.";
         return Arrays.stream(snippetsFragment.split(separateToken))
@@ -48,7 +50,7 @@ public class NaiveMatcher {
                 .collect(Collectors.toList());
     }
 
-    private static List<String> textSplitter(String text) {
+    private List<String> textSplitter(String text) {
         List<String> sentences = new ArrayList<>();
         BreakIterator iterator = BreakIterator.getSentenceInstance();
         iterator.setText(text);

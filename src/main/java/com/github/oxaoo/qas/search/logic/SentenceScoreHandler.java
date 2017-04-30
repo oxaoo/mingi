@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.search;
+package com.github.oxaoo.qas.search.logic;
 
 import java.util.List;
 import java.util.stream.Collectors;

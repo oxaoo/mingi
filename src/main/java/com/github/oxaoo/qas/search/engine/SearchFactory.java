@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.search;
+package com.github.oxaoo.qas.search.engine;
 
 /**
  * @author Alexander Kuleshov

@@ -1,9 +1,8 @@
-package com.github.oxaoo.qas.search.web;
+package com.github.oxaoo.qas.search.engine.web;
 
 import com.google.api.services.customsearch.model.Result;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author Alexander Kuleshov

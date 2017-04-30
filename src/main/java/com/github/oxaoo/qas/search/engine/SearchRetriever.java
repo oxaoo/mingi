@@ -1,4 +1,6 @@
-package com.github.oxaoo.qas.search;
+package com.github.oxaoo.qas.search.engine;
+
+import com.github.oxaoo.qas.search.data.DataFragment;
 
 import java.util.List;
 
@@ -9,5 +11,6 @@ import java.util.List;
  */
 public interface SearchRetriever<T, K> {
     List<DataFragment> retrieve(K k);
+
     List<DataFragment> retrieve(SearchFinder<T> searchFinder, SearchLoader<T, K> searchLoader, String question);
 }

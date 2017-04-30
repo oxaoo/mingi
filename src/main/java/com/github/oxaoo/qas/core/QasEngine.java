@@ -12,14 +12,10 @@ import com.github.oxaoo.qas.parse.ParserManager;
 import com.github.oxaoo.qas.qa.answer.AnswerEngine;
 import com.github.oxaoo.qas.qa.question.QuestionClassifier;
 import com.github.oxaoo.qas.qa.question.QuestionDomain;
-import com.github.oxaoo.qas.search.DataFragment;
-import com.github.oxaoo.qas.search.SearchFactory;
-import com.github.oxaoo.qas.search.SearchFactory_;
-import com.github.oxaoo.qas.search.SearchModel;
-import com.github.oxaoo.qas.search.enterprise.EnterpriseSearchEngine;
-import com.github.oxaoo.qas.search.web.WebSearchEngine;
-import com.github.oxaoo.qas.search.web.WebSearchUnit;
-import com.google.api.services.customsearch.model.Result;
+import com.github.oxaoo.qas.search.engine.SearchEngine;
+import com.github.oxaoo.qas.search.data.DataFragment;
+import com.github.oxaoo.qas.search.engine.enterprise.EnterpriseSearchEngine;
+import com.github.oxaoo.qas.search.engine.web.WebSearchEngine;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -59,9 +55,9 @@ public class QasEngine {
         QuestionDomain questionDomain = this.questionClassifier.classify(questionTokens);
         List<DataFragment> dataFragments;
         if (webSearch) {
-            dataFragments = new SearchModel<>(new WebSearchEngine()).collectInfo(question);
+            dataFragments = new SearchEngine<>(new WebSearchEngine()).collectInfo(question);
         } else {
-            dataFragments = new SearchModel<>(new EnterpriseSearchEngine()).collectInfo(question);
+            dataFragments = new SearchEngine<>(new EnterpriseSearchEngine()).collectInfo(question);
         }
         return this.makeAnswer(questionTokens, questionDomain, dataFragments);
     }

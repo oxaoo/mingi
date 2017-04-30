@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.search;
+package com.github.oxaoo.qas.search.logic;
 
 import lombok.Data;
 import lombok.NonNull;

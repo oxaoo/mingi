@@ -1,4 +1,6 @@
-package com.github.oxaoo.qas.search;
+package com.github.oxaoo.qas.search.engine;
+
+import com.github.oxaoo.qas.search.data.DataFragment;
 
 import java.util.List;
 
@@ -7,12 +9,12 @@ import java.util.List;
  * @version 1.0
  * @since 30.04.2017
  */
-public class SearchModel<T, K> {
+public class SearchEngine<T, K> {
     private SearchFinder<T> finder;
     private SearchLoader<T, K> loader;
     private SearchRetriever<T, K> retriever;
 
-    public SearchModel(SearchFactory<T, K> searchFactory) {
+    public SearchEngine(SearchFactory<T, K> searchFactory) {
         this.finder = searchFactory.createSearchFinder();
         this.loader = searchFactory.createSearchLoader();
         this.retriever = searchFactory.createSearchRetriever();

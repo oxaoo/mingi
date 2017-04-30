@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.search;
+package com.github.oxaoo.qas.search.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * @author <a href="mailto:aleksandr.kuleshov@t-systems.ru">Alexander Kuleshov</a>
+ * @author Alexander Kuleshov
+ * @version 1.0
+ * @since 24.03.2017
  */
 @Data
 @NoArgsConstructor

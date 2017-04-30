@@ -9,7 +9,7 @@ import com.github.oxaoo.qas.qa.answer.human.IndAnswerMaker;
 import com.github.oxaoo.qas.qa.answer.location.StateAnswerMaker;
 import com.github.oxaoo.qas.qa.answer.numeric.DateAnswerMaker;
 import com.github.oxaoo.qas.qa.question.QuestionDomain;
-import com.github.oxaoo.qas.search.DataFragment;
+import com.github.oxaoo.qas.search.data.DataFragment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

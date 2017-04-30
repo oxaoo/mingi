@@ -1,9 +1,9 @@
-package com.github.oxaoo.qas.search.web;
+package com.github.oxaoo.qas.search.engine.web;
 
-import com.github.oxaoo.qas.search.SearchFactory;
-import com.github.oxaoo.qas.search.SearchFinder;
-import com.github.oxaoo.qas.search.SearchLoader;
-import com.github.oxaoo.qas.search.SearchRetriever;
+import com.github.oxaoo.qas.search.engine.SearchFactory;
+import com.github.oxaoo.qas.search.engine.SearchFinder;
+import com.github.oxaoo.qas.search.engine.SearchLoader;
+import com.github.oxaoo.qas.search.engine.SearchRetriever;
 import com.google.api.services.customsearch.model.Result;
 
 import java.util.List;

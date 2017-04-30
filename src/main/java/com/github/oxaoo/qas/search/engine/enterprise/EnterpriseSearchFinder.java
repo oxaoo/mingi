@@ -1,6 +1,6 @@
-package com.github.oxaoo.qas.search.enterprise;
+package com.github.oxaoo.qas.search.engine.enterprise;
 
-import com.github.oxaoo.qas.search.SearchFinder;
+import com.github.oxaoo.qas.search.engine.SearchFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

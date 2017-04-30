@@ -9,11 +9,12 @@ import com.github.oxaoo.qas.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.exceptions.InitQasEngineException;
 import com.github.oxaoo.qas.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.parse.ParserManager;
+import com.github.oxaoo.qas.qa.answer.AnswerEngine;
 import com.github.oxaoo.qas.qa.question.QuestionClassifier;
 import com.github.oxaoo.qas.qa.question.QuestionDomain;
-import com.github.oxaoo.qas.search.DataFragment;
-import com.github.oxaoo.qas.search.RelevantInfo;
-import com.github.oxaoo.qas.search.SearchFactory_;
+import com.github.oxaoo.qas.search.data.DataFragment;
+import com.github.oxaoo.qas.search.data.RelevantInfo;
+import com.github.oxaoo.qas.search.engine.SearchEngine;
 import com.github.oxaoo.qas.utils.JsonBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,8 +45,10 @@ public class QasEngineTest {
     @Mock
     private QuestionClassifier questionClassifier;
     @Mock
-    private SearchFactory_ searchFactory;
-
+    private SearchEngine searchEngine;
+    @Mock
+    private AnswerEngine answerEngine;
+    @Mock
     private static RussianParser parser;
 
     @BeforeClass
@@ -93,11 +96,13 @@ public class QasEngineTest {
             FailedConllMapException,
             FailedQuestionTokenMapException {
         String question = "В каком году затонул Титаник?";
+        List<Conll> questionTokens = parser.parse(question, Conll.class);
+//        List<Conll> question = Collections.emptyList();
         QuestionDomain questionDomain = QuestionDomain.DATE;
         DataFragment dataFragment = this.prepareDataFragment();
         List<DataFragment> singleDataFragments = Collections.singletonList(dataFragment);
-        Mockito.when(this.questionClassifier.classify(question)).thenReturn(questionDomain);
-        Mockito.when(this.searchFactory.collectInfo(question)).thenReturn(singleDataFragments);
+        Mockito.when(this.questionClassifier.classify(questionTokens)).thenReturn(questionDomain);
+        Mockito.when(this.searchEngine.collectInfo(question)).thenReturn(singleDataFragments);
 
         this.qasEngine.answer(question, true);
 
@@ -117,7 +122,7 @@ public class QasEngineTest {
             LOG.info("\n");
         }
 
-//        List<DataFragment> dataFragments = this.searchFactory.collectInfo(question);
+//        List<DataFragment> dataFragments = this.searchEngine.collectInfo(question);
     }
 
     private List<Conll> parseQuestion(String question) throws FailedParsingException {

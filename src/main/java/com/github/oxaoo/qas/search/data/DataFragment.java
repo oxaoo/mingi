@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.search;
+package com.github.oxaoo.qas.search.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
