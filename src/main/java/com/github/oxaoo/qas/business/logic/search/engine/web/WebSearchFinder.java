@@ -2,7 +2,7 @@ package com.github.oxaoo.qas.business.logic.search.engine.web;
 
 import com.github.oxaoo.qas.business.logic.search.engine.SearchFinder;
 import com.github.oxaoo.qas.business.logic.search.common.ProxyManager;
-import com.github.oxaoo.qas.business.logic.utils.PropertyManager;
+import com.github.oxaoo.qas.data.source.PropertyManager;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.customsearch.Customsearch;

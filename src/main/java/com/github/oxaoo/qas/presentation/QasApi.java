@@ -5,14 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.qas.business.logic.boundary.QasFacade;
-import com.github.oxaoo.qas.business.logic.core.QasEngine;
 import com.github.oxaoo.qas.business.logic.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.business.logic.exceptions.InitQasEngineException;
-import com.github.oxaoo.qas.business.logic.exceptions.LoadQuestionClassifierModelException;
-import com.github.oxaoo.qas.business.logic.search.engine.SearchEngine;
-import com.github.oxaoo.qas.business.logic.search.engine.SearchFactory;
-import com.github.oxaoo.qas.business.logic.search.engine.enterprise.EnterpriseSearchEngine;
-import com.github.oxaoo.qas.business.logic.search.engine.web.WebSearchEngine;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,6 +16,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +27,7 @@ import java.util.Set;
  * @since 01.04.2017
  */
 @ApplicationPath("/qas")
-@Path("/ask")
+@Path("/")
 public class QasApi extends Application {
     private final QasFacade facade;
 
@@ -40,6 +37,7 @@ public class QasApi extends Application {
     }
 
     @GET
+    @Path("/ask")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response ask(@QueryParam("question") @NotNull @Size(min = 4) String question,
@@ -54,11 +52,14 @@ public class QasApi extends Application {
         return Response.ok(str).build();
     }
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
+    @POST
+    @Path("/uploadFile")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response uploadFile(@QueryParam("filePath") @NotNull String filePath) {
-        boolean result = this.facade.uploadFile(filePath);
+    public Response uploadFile(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
+                               @FormDataParam("file") InputStream uploadedInputStream,
+                               @FormDataParam("file") FormDataContentDisposition fileDetail) {
+        boolean result = this.facade.uploadFile(uploadedInputStream, fileDetail);
         if (result) {
             return Response.ok().build();
         } else {

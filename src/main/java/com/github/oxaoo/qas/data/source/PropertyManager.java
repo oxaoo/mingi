@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.business.logic.utils;
+package com.github.oxaoo.qas.data.source;
 
 import com.github.oxaoo.qas.business.logic.exceptions.ErrorId;
 import org.slf4j.Logger;

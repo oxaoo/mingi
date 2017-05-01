@@ -1,6 +1,6 @@
 package com.github.oxaoo.qas.business.logic.search.common;
 
-import com.github.oxaoo.qas.business.logic.utils.PropertyManager;
+import com.github.oxaoo.qas.data.source.PropertyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

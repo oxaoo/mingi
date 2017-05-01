@@ -9,7 +9,7 @@ import com.github.oxaoo.qas.business.logic.exceptions.FailedQuestionTokenMapExce
 import com.github.oxaoo.qas.business.logic.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.business.logic.parse.ParserManager;
 import com.github.oxaoo.qas.business.logic.qa.question.QuestionDomain;
-import com.github.oxaoo.qas.business.logic.utils.PropertyManager;
+import com.github.oxaoo.qas.data.source.PropertyManager;
 import com.google.gson.GsonBuilder;
 import libsvm.svm_model;
 import org.slf4j.Logger;

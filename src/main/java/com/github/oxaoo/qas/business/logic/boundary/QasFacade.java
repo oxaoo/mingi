@@ -9,7 +9,12 @@ import com.github.oxaoo.qas.business.logic.search.engine.SearchEngine;
 import com.github.oxaoo.qas.business.logic.search.engine.SearchFactory;
 import com.github.oxaoo.qas.business.logic.search.engine.enterprise.EnterpriseSearchEngine;
 import com.github.oxaoo.qas.business.logic.search.engine.web.WebSearchEngine;
+import com.github.oxaoo.qas.data.source.FileManager;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+import java.io.InputStream;
 import java.util.Set;
 
 /**
@@ -17,15 +22,15 @@ import java.util.Set;
  * @version 1.0
  * @since 01.05.2017
  */
+@Getter
+@AllArgsConstructor
 public class QasFacade {
     private final QasEngine qasEngine;
+    private final FileManager fileManager;
 
     public QasFacade() throws InitQasEngineException {
         this.qasEngine = new QasEngine();
-    }
-
-    public QasFacade(QasEngine qasEngine) {
-        this.qasEngine = qasEngine;
+        this.fileManager = new FileManager();
     }
 
     public Set<String> askQuestion(String question, boolean isWebSearch)
@@ -42,8 +47,7 @@ public class QasFacade {
         }
     }
 
-    //todo impl
-    public boolean uploadFile(String filePath) {
-        return true;
+    public boolean uploadFile(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) {
+        return this.fileManager.stream2File(uploadedInputStream, fileDetail);
     }
 }
