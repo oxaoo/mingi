@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.business.logic.utils;
+package com.github.oxaoo.qas.business.logic.common;
 
 import com.github.oxaoo.mp4ru.common.ResourceResolver;
 import com.github.oxaoo.mp4ru.exceptions.ResourceResolverException;

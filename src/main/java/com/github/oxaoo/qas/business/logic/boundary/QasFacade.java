@@ -2,6 +2,7 @@ package com.github.oxaoo.qas.business.logic.boundary;
 
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
+import com.github.oxaoo.qas.business.logic.common.FileManager;
 import com.github.oxaoo.qas.business.logic.core.QasEngine;
 import com.github.oxaoo.qas.business.logic.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.business.logic.exceptions.InitQasEngineException;
@@ -9,7 +10,6 @@ import com.github.oxaoo.qas.business.logic.search.engine.SearchEngine;
 import com.github.oxaoo.qas.business.logic.search.engine.SearchFactory;
 import com.github.oxaoo.qas.business.logic.search.engine.enterprise.EnterpriseSearchEngine;
 import com.github.oxaoo.qas.business.logic.search.engine.web.WebSearchEngine;
-import com.github.oxaoo.qas.data.source.FileManager;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,6 +48,6 @@ public class QasFacade {
     }
 
     public boolean uploadFile(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) {
-        return this.fileManager.stream2File(uploadedInputStream, fileDetail);
+        return this.fileManager.saveFile(uploadedInputStream, fileDetail);
     }
 }

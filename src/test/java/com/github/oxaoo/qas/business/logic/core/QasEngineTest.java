@@ -18,7 +18,7 @@ import com.github.oxaoo.qas.business.logic.search.data.DataFragment;
 import com.github.oxaoo.qas.business.logic.search.data.RelevantInfo;
 import com.github.oxaoo.qas.business.logic.search.engine.SearchEngine;
 import com.github.oxaoo.qas.business.logic.search.engine.web.WebSearchUnit;
-import com.github.oxaoo.qas.business.logic.utils.JsonBuilder;
+import com.github.oxaoo.qas.business.logic.common.JsonBuilder;
 import com.google.api.services.customsearch.model.Result;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.business.logic.utils;
+package com.github.oxaoo.qas.business.logic.common;
 
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;

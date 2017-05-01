@@ -12,7 +12,7 @@ import com.github.oxaoo.qas.business.logic.exceptions.ProvideParserException;
 import com.github.oxaoo.qas.business.logic.exceptions.SaveSvmModelException;
 import com.github.oxaoo.qas.business.logic.training.SvmEngine;
 import com.github.oxaoo.qas.business.logic.training.TrainerQuestionClassifier;
-import com.github.oxaoo.qas.data.source.PropertyManager;
+import com.github.oxaoo.qas.business.logic.common.PropertyManager;
 import libsvm.svm_model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

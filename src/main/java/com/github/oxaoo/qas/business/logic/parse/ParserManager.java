@@ -4,7 +4,7 @@ import com.github.oxaoo.mp4ru.exceptions.InitRussianParserException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.qas.business.logic.exceptions.InitParserManagerException;
 import com.github.oxaoo.qas.business.logic.exceptions.ProvideParserException;
-import com.github.oxaoo.qas.data.source.PropertyManager;
+import com.github.oxaoo.qas.business.logic.common.PropertyManager;
 
 import java.util.Properties;
 

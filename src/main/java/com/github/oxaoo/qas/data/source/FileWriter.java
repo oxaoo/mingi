@@ -1,5 +1,6 @@
 package com.github.oxaoo.qas.data.source;
 
+import com.github.oxaoo.qas.business.logic.common.PropertyManager;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +12,8 @@ import java.io.*;
  * @version 1.0
  * @since 02.05.2017
  */
-public class FileManager {
-    private static final Logger LOG = LoggerFactory.getLogger(FileManager.class);
+public class FileWriter {
+    private static final Logger LOG = LoggerFactory.getLogger(FileWriter.class);
 
     private final static String UPLOAD_RESOURCE_DIRECTORY_PROPERTY = "upload.resource.directory";
 
@@ -35,6 +36,11 @@ public class FileManager {
             return false;
         }
         return true;
+    }
+
+    public boolean text2File(String text, String path) {
+        //todo stub
+        return false;
     }
 
     private void deleteIf(String filePath) {
