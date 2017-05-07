@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.business.logic.core.auxiliary;
+package com.github.oxaoo.qas.business.logic.core.stub;
 
 import com.google.api.services.customsearch.model.Result;
 
@@ -23,5 +23,9 @@ public class WebSearchStubResultProvider {
         List<Result> results = stubProvider.poll();
         if (results == null) return Collections.emptyList();
         return results;
+    }
+
+    public static boolean isEmpty() {
+        return stubProvider.isEmpty();
     }
 }

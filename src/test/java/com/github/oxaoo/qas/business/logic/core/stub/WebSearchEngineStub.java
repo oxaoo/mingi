@@ -1,4 +1,4 @@
-package com.github.oxaoo.qas.business.logic.core.auxiliary;
+package com.github.oxaoo.qas.business.logic.core.stub;
 
 import com.github.oxaoo.qas.business.logic.search.engine.SearchFinder;
 import com.github.oxaoo.qas.business.logic.search.engine.web.WebSearchEngine;
