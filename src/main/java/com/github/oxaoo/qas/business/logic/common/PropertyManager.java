@@ -46,6 +46,10 @@ public class PropertyManager {
         return propertyManager.properties.getProperty(key);
     }
 
+    public static Object setProperty(String key, String value) {
+        return propertyManager.properties.setProperty(key, value);
+    }
+
     public static String getPrivateProperty(String key) {
         return propertyManager.privateProperties.getProperty(key);
     }
