@@ -12,6 +12,8 @@ import com.github.oxaoo.qas.business.logic.training.QuestionModel;
 import com.github.oxaoo.qas.business.logic.training.QuestionToken;
 import com.github.oxaoo.qas.business.logic.training.SvmEngine;
 import libsvm.svm_model;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -20,21 +22,36 @@ import java.util.List;
  * @version 1.0
  * @since 19.03.2017
  */
+@Getter
+@AllArgsConstructor
 public class QuestionClassifier {
     private final svm_model model;
     private final SvmEngine svmEngine;
     private final RussianParser parser;
 
-    @Deprecated
     public QuestionClassifier() throws LoadQuestionClassifierModelException, ProvideParserException {
         this.parser = ParserManager.getParser();
-        this.model = QuestionClassifierModelLoader.load();
         this.svmEngine = new SvmEngine();
+        this.model = new DefaultQuestionClassifierModelLoader(this.svmEngine).load();
     }
 
     public QuestionClassifier(RussianParser parser) throws LoadQuestionClassifierModelException {
         this.parser = parser;
-        this.model = QuestionClassifierModelLoader.load();
+        this.svmEngine = new SvmEngine();
+        this.model = new DefaultQuestionClassifierModelLoader(this.svmEngine).load();
+    }
+
+    public QuestionClassifier(QuestionClassifierModelLoader modelLoader)
+            throws LoadQuestionClassifierModelException, ProvideParserException {
+        this.parser = ParserManager.getParser();
+        this.model = modelLoader.load();
+        this.svmEngine = new SvmEngine();
+    }
+
+    public QuestionClassifier(QuestionClassifierModelLoader modelLoader, RussianParser parser)
+            throws LoadQuestionClassifierModelException {
+        this.parser = parser;
+        this.model = modelLoader.load();
         this.svmEngine = new SvmEngine();
     }
 
