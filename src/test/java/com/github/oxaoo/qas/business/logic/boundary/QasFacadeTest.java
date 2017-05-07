@@ -5,10 +5,8 @@ import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.qas.business.logic.common.FileManager;
 import com.github.oxaoo.qas.business.logic.core.QasEngine;
 import com.github.oxaoo.qas.business.logic.exceptions.FailedQuestionTokenMapException;
-import com.github.oxaoo.qas.business.logic.exceptions.InitQasEngineException;
 import com.github.oxaoo.qas.business.logic.search.engine.SearchEngine;
 import com.sun.jersey.core.header.FormDataContentDisposition;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +16,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.InputStream;
 
 /**
- * @author <a href="mailto:aleksandr.kuleshov@t-systems.ru">Alexander Kuleshov</a>
+ * @author Alexander Kuleshov
+ * @version 1.0
+ * @since 07.05.2017
  */
 @RunWith(MockitoJUnitRunner.class)
 public class QasFacadeTest {
@@ -31,19 +31,6 @@ public class QasFacadeTest {
         engineMock = Mockito.mock(QasEngine.class);
         fileManager = Mockito.mock(FileManager.class);
         facade = new QasFacade(engineMock, fileManager);
-    }
-
-    /**
-     * Init test.
-     * Check that all facade components are initialized.
-     *
-     * @throws InitQasEngineException the init qas engine exception
-     */
-    @Test
-    public void initTest() throws InitQasEngineException {
-        QasFacade facade = new QasFacade();
-        Assert.assertNotNull(facade.getQasEngine());
-        Assert.assertNotNull(facade.getFileManager());
     }
 
     /**

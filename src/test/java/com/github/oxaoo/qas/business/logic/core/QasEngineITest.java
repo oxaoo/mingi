@@ -20,10 +20,20 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author <a href="mailto:aleksandr.kuleshov@t-systems.ru">Alexander Kuleshov</a>
+ * @author Alexander Kuleshov
+ * @version 1.0
+ * @since 07.05.2017
  */
 public class QasEngineITest {
     private static final Logger LOG = LoggerFactory.getLogger(QasEngineTest.class);
+
+    @Test
+    public void initTest() throws InitQasEngineException {
+        QasEngine engine = new QasEngine();
+        Assert.assertNotNull(engine.getParser());
+        Assert.assertNotNull(engine.getQuestionClassifier());
+        Assert.assertNotNull(engine.getAnswerEngine());
+    }
 
     /**
      * Answering using the web search engine stub.

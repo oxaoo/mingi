@@ -6,14 +6,10 @@ import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.qas.business.logic.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.qas.business.logic.exceptions.InitQasEngineException;
-import com.github.oxaoo.qas.business.logic.exceptions.ProvideParserException;
-import com.github.oxaoo.qas.business.logic.parse.ParserManager;
 import com.github.oxaoo.qas.business.logic.qa.answer.AnswerEngine;
 import com.github.oxaoo.qas.business.logic.qa.question.QuestionClassifier;
 import com.github.oxaoo.qas.business.logic.qa.question.QuestionDomain;
 import com.github.oxaoo.qas.business.logic.search.engine.SearchEngine;
-import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -43,19 +39,6 @@ public class QasEngineTest {
     @Mock
     private static RussianParser parser;
 
-    @BeforeClass
-    public static void setUp() throws ProvideParserException {
-        parser = ParserManager.getParser();
-    }
-
-
-    @Test
-    public void initTest() throws InitQasEngineException {
-        QasEngine engine = new QasEngine();
-        Assert.assertNotNull(engine.getParser());
-        Assert.assertNotNull(engine.getQuestionClassifier());
-        Assert.assertNotNull(engine.getAnswerEngine());
-    }
 
     @Test
     @SuppressWarnings({"unchecked", "PMD.JUnitTestsShouldIncludeAssert"})
