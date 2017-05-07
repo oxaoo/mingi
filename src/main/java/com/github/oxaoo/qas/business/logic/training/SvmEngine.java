@@ -22,7 +22,7 @@ import java.util.List;
 public class SvmEngine {
     private static final Logger LOG = LoggerFactory.getLogger(SvmEngine.class);
 
-    public static svm_model findModel(String modelPath) throws FindSvmModelException {
+    public svm_model findModel(String modelPath) throws FindSvmModelException {
         try {
             InputStreamReader streamReader = ResourceResolver.getResourceAsStreamReader(modelPath);
             return svm.svm_load_model(new BufferedReader(streamReader));
@@ -31,7 +31,7 @@ public class SvmEngine {
         }
     }
 
-    public static void saveModel(svm_model model, String modelPath) throws SaveSvmModelException {
+    public void saveModel(svm_model model, String modelPath) throws SaveSvmModelException {
         try {
             svm.svm_save_model(modelPath, model);
         } catch (IOException e) {
