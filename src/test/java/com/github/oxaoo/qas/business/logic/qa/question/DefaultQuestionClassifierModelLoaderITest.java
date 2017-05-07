@@ -2,13 +2,20 @@ package com.github.oxaoo.qas.business.logic.qa.question;
 
 import com.github.oxaoo.mp4ru.exceptions.ResourceResolverException;
 import com.github.oxaoo.qas.business.logic.common.PropertyManager;
+import com.github.oxaoo.qas.business.logic.exceptions.BuildModelException;
+import com.github.oxaoo.qas.business.logic.exceptions.LoadQuestionClassifierModelException;
 import com.github.oxaoo.qas.business.logic.exceptions.ProvideParserException;
+import libsvm.svm_model;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.UUID;
+
 import static com.github.oxaoo.qas.business.logic.qa.question.DefaultQuestionClassifierModelLoader.QAS_HOME_PROPERTY;
-import static org.junit.Assert.*;
+import static com.github.oxaoo.qas.business.logic.qa.question.DefaultQuestionClassifierModelLoader.QUESTION_CLASSIFIER_MODEL_PATH_PROPERTY;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * The type Default question classifier model loader i test.
@@ -77,10 +84,56 @@ public class DefaultQuestionClassifierModelLoaderITest {
     @Test(expected = ResourceResolverException.class)
     public void apply2HomeNotExistHomeDirectoryTest() throws ProvideParserException, ResourceResolverException {
         String path2Qcm = "qas/qcm.model";
-        PropertyManager.setProperty(QAS_HOME_PROPERTY, "qas_not_exist_dir/");
-        DefaultQuestionClassifierModelLoader modelLoader = new DefaultQuestionClassifierModelLoader();
-        modelLoader.apply2Home(path2Qcm);
+        String backupPropertyHome = PropertyManager.setProperty(QAS_HOME_PROPERTY, "qas_nonexistent_dir/");
+        try {
+            DefaultQuestionClassifierModelLoader modelLoader = new DefaultQuestionClassifierModelLoader();
+            modelLoader.apply2Home(path2Qcm);
+        } finally {
+            //rollback in finally case, because the apply2Home method throw exception
+            PropertyManager.setProperty(QAS_HOME_PROPERTY, backupPropertyHome);
+        }
     }
 
     //todo add itest for load() and build()
+    @Test
+    public void loadTest() throws ProvideParserException, LoadQuestionClassifierModelException {
+        QuestionClassifierModelLoader modelLoader = new DefaultQuestionClassifierModelLoader();
+        svm_model model = modelLoader.load();
+        assertNotNull(model);
+    }
+
+    @Test
+    public void loadNotExistModelTest() throws ProvideParserException, LoadQuestionClassifierModelException {
+        String modelPath = "qas/" + UUID.randomUUID().toString() + ".model";
+        //intentionally changing the path to the model file
+        String backupPropertyModel = PropertyManager.setProperty(QUESTION_CLASSIFIER_MODEL_PATH_PROPERTY, modelPath);
+        QuestionClassifierModelLoader modelLoader = new DefaultQuestionClassifierModelLoader();
+        svm_model model = modelLoader.load();
+        assertNotNull(model);
+        //rollback
+        PropertyManager.setProperty(QUESTION_CLASSIFIER_MODEL_PATH_PROPERTY, backupPropertyModel);
+    }
+
+    @Test(expected = LoadQuestionClassifierModelException.class)
+    public void loadNotExistModelAndHomeTest() throws ProvideParserException, LoadQuestionClassifierModelException {
+        String modelPath = "qas/" + UUID.randomUUID().toString() + ".model";
+        //intentionally changing the paths
+        String backupPropertyModel = PropertyManager.setProperty(QUESTION_CLASSIFIER_MODEL_PATH_PROPERTY, modelPath);
+        String backupPropertyHome = PropertyManager.setProperty(QAS_HOME_PROPERTY, "qas_nonexistent_dir/");
+        try {
+            QuestionClassifierModelLoader modelLoader = new DefaultQuestionClassifierModelLoader();
+            modelLoader.load();
+        } finally {
+            //rollback in finally case, because the load method throw exception
+            PropertyManager.setProperty(QUESTION_CLASSIFIER_MODEL_PATH_PROPERTY, backupPropertyModel);
+            PropertyManager.setProperty(QAS_HOME_PROPERTY, backupPropertyHome);
+        }
+    }
+
+    @Test
+    public void buildTest() throws ProvideParserException, BuildModelException {
+        QuestionClassifierModelLoader modelLoader = new DefaultQuestionClassifierModelLoader();
+        svm_model model = modelLoader.build();
+        assertNotNull(model);
+    }
 }
