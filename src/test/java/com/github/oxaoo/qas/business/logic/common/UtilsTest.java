@@ -20,7 +20,6 @@ public class UtilsTest {
     public void getAbsolutePathTest() throws ResourceResolverException {
         String absPath = ResourceResolver.getAbsolutePath("qas/qcm.model");
 //        InputStreamReader r = ResourceResolver.getResourceAsStreamReader("qas/qcm.model");
-        URL url = ResourceResolver.getUrl("qas/qcm.model");
         LOG.info("Absolute path: {}", absPath);
     }
 
