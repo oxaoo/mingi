@@ -6,11 +6,12 @@ import com.github.oxaoo.qas.business.logic.parse.ConllGraphComparator;
 import com.github.oxaoo.qas.business.logic.parse.ConllParseGraphBuilder;
 import com.github.oxaoo.qas.business.logic.parse.ParseGraph;
 import com.github.oxaoo.qas.business.logic.parse.ParseNode;
+import com.github.oxaoo.qas.business.logic.qa.answer.AnswerMakerTools;
 import com.github.oxaoo.qas.business.logic.search.data.DataFragment;
 import com.github.oxaoo.qas.business.logic.search.data.RelevantInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -22,87 +23,35 @@ import java.util.stream.Collectors;
  * @since 30.04.2017
  */
 public class DateAnswerMaker extends NumericAnswerMaker<String, Conll, DataFragment> {
+    private static final Logger LOG = LoggerFactory.getLogger(DateAnswerMaker.class);
 
     @Override
     public List<Callable<String>> toAnswer(List<Conll> tokens, List<DataFragment> data) {
-        tokens = tokens.stream()
-                .sorted(Comparator.comparingInt(Conll::getHead))
-                .collect(Collectors.toList());
-        //find the verb
         final Conll targetToken;
-        if (tokens.get(0).getPosTag() == 'V') {
-            targetToken = tokens.get(0);
+        //find the verb
+        Conll gotRoot = AnswerMakerTools.getRoot(tokens, "V.*");
+        if (gotRoot != null) {
+            targetToken = gotRoot;
         } else {
-            Conll foundToken = null;
-            for (Conll token : tokens) {
-                if (token.getPosTag() == 'V') {
-                    foundToken = token;
-                    break;
-                }
-            }
-            if (foundToken != null) targetToken = foundToken;
-            else targetToken = tokens.get(0);
+            targetToken = AnswerMakerTools.getRoot(tokens);
+            LOG.warn("The DateAnswerMaker doesn't find the root token which the feat begin with 'V'");
         }
 
-        List<String> sentences = data.stream()
-                .map(DataFragment::getRelevantInfoList).flatMap(List::stream)
-                .map(RelevantInfo::getRelevantSentences).flatMap(List::stream)
-                .collect(Collectors.toList());
-
+        List<String> sentences = AnswerMakerTools.getSentences(data);
         return sentences.stream()
                 .map(s -> (Callable<String>) () -> this.answer(s, targetToken))
                 .collect(Collectors.toList());
     }
 
-    private String answer(String sentence, Conll headQuestionToken)
-            throws FailedParsingException {
+    private String answer(String sentence, Conll headQuestionToken) throws FailedParsingException {
         List<Conll> conlls = this.parser.parseSentence(sentence, Conll.class);
         ParseGraph<Conll> graph = new ConllParseGraphBuilder().build(conlls);
-        ParseNode<Conll> foundNode = graph.find(headQuestionToken, new ConllGraphComparator());
+        ParseNode<Conll> foundHeadNode = graph.find(headQuestionToken, new ConllGraphComparator());
         //skip the fragments which doesn't contain the necessary information
-        if (foundNode == null) {
+        if (foundHeadNode == null) {
             return "";
         }
-//        List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-        Set<ParseNode<Conll>> dependentNodes = findPath2ChildByPos(foundNode, 'M');
-        return prepareAnswer(dependentNodes);
-    }
-
-
-    private String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
-        StringBuilder sb = new StringBuilder();
-        dependentNodes.stream()
-                .map(ParseNode::getValue)
-                .sorted(Comparator.comparingInt(Conll::getId))
-                .forEach(c -> sb.append(c.getForm()).append(" "));
-        return sb.toString();
-    }
-
-    private Set<ParseNode<Conll>> findPath2ChildByPos(ParseNode<Conll> parent, char pos) {
-        Set<ParseNode<Conll>> answerChain = new HashSet<>();
-        findByPos(parent, pos, answerChain);
-//        Optional<ParseNode<Conll>> optionalNode
-//                = answerChain.stream().filter(n -> n.getValue().getPosTag() == pos).findFirst();
-//        if (optionalNode.isPresent()) {
-//            ParseNode<Conll> foundNode = optionalNode.get();
-//            findByPos(foundNode, pos, answerChain);
-//        }
-        return answerChain;
-    }
-
-    private boolean findByPos(ParseNode<Conll> node, char pos, Set<ParseNode<Conll>> chain) {
-        if (node.getValue().getPosTag() == pos) {
-            chain.addAll(node.getAllChild());
-            return true;
-        } else if (!node.getChildren().isEmpty()) {
-            for (ParseNode<Conll> child : node.getChildren()) {
-                boolean isFound = findByPos(child, pos, chain);
-                if (isFound) {
-                    chain.add(node);
-                    return true;
-                }
-            }
-        } else return false;
-        return false;
+        Set<ParseNode<Conll>> dependentNodes = AnswerMakerTools.getChain2Pos(foundHeadNode, 'M');
+        return AnswerMakerTools.prepareAnswer(dependentNodes);
     }
 }

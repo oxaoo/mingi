@@ -8,12 +8,9 @@ import com.github.oxaoo.qas.business.logic.parse.ParseGraph;
 import com.github.oxaoo.qas.business.logic.parse.ParseNode;
 import com.github.oxaoo.qas.business.logic.qa.answer.AnswerMakerTools;
 import com.github.oxaoo.qas.business.logic.search.data.DataFragment;
-import com.github.oxaoo.qas.business.logic.search.data.RelevantInfo;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -27,14 +24,9 @@ public class AbbAnswerMaker extends AbbreviationAnswerMaker<String, Conll, DataF
     @Override
     public List<Callable<String>> toAnswer(List<Conll> tokens, List<DataFragment> data) {
         //find the potential abb
-//        Conll targetToken = AnswerMakerTools.findFirstAfterRoot(questionTokens, "Nc.*");
         Conll targetToken = AnswerMakerTools.findSecondAfterRoot(tokens, "Nc.*");
 
-        List<String> sentences = data.stream()
-                .map(DataFragment::getRelevantInfoList).flatMap(List::stream)
-                .map(RelevantInfo::getRelevantSentences).flatMap(List::stream)
-                .collect(Collectors.toList());
-
+        List<String> sentences = AnswerMakerTools.getSentences(data);
         return sentences.stream()
                 .map(s -> (Callable<String>) () -> this.answer(s, targetToken))
                 .collect(Collectors.toList());
@@ -51,40 +43,6 @@ public class AbbAnswerMaker extends AbbreviationAnswerMaker<String, Conll, DataF
         }
         foundNode = AnswerMakerTools.getFirstParent(foundNode, "V.*");
         List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-        return prepareAnswer(new HashSet<>(dependentNodes));
-    }
-
-    private String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
-        StringBuilder sb = new StringBuilder();
-        dependentNodes.stream()
-                .map(ParseNode::getValue)
-                .sorted(Comparator.comparingInt(Conll::getId))
-                .forEach(c -> sb.append(c.getForm()).append(" "));
-        return sb.toString();
-    }
-
-    //todo maybe can share this methods?!
-    @Deprecated
-    private Set<ParseNode<Conll>> findPath2ChildByStartFeats(ParseNode<Conll> parent, String startFeats) {
-        Set<ParseNode<Conll>> answerChain = new HashSet<>();
-        findByFeats(parent, startFeats, answerChain);
-        return answerChain;
-    }
-
-    @Deprecated
-    private boolean findByFeats(ParseNode<Conll> node, String startFeats, Set<ParseNode<Conll>> chain) {
-        if (node.getValue().getFeats().startsWith(startFeats)) {
-            chain.addAll(node.getAllChild());
-            return true;
-        } else if (!node.getChildren().isEmpty()) {
-            for (ParseNode<Conll> child : node.getChildren()) {
-                boolean isFound = findByFeats(child, startFeats, chain);
-                if (isFound) {
-                    chain.add(node);
-                    return true;
-                }
-            }
-        } else return false;
-        return false;
+        return AnswerMakerTools.prepareAnswer(new HashSet<>(dependentNodes));
     }
 }
