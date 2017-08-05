@@ -8,10 +8,7 @@ import com.github.oxaoo.qas.business.logic.parse.ParseGraph;
 import com.github.oxaoo.qas.business.logic.parse.ParseNode;
 import com.github.oxaoo.qas.business.logic.qa.answer.AnswerMakerTools;
 import com.github.oxaoo.qas.business.logic.search.data.DataFragment;
-import com.github.oxaoo.qas.business.logic.search.data.RelevantInfo;
 
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -42,40 +39,7 @@ public class IndAnswerMaker extends HumanAnswerMaker<String, Conll, DataFragment
         if (foundNode == null) {
             return "";
         }
-//        List<ParseNode<Conll>> dependentNodes = foundNode.getAllChild();
-        //todo refactoring!
-        Set<ParseNode<Conll>> dependentNodes = findPath2ChildByStartFeats(foundNode, "Np");
-        return prepareAnswer(dependentNodes);
-    }
-
-    private String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
-        StringBuilder sb = new StringBuilder();
-        dependentNodes.stream()
-                .map(ParseNode::getValue)
-                .sorted(Comparator.comparingInt(Conll::getId))
-                .forEach(c -> sb.append(c.getForm()).append(" "));
-        return sb.toString();
-    }
-
-    private Set<ParseNode<Conll>> findPath2ChildByStartFeats(ParseNode<Conll> parent, String startFeats) {
-        Set<ParseNode<Conll>> answerChain = new HashSet<>();
-        findByFeats(parent, startFeats, answerChain);
-        return answerChain;
-    }
-
-    private boolean findByFeats(ParseNode<Conll> node, String startFeats, Set<ParseNode<Conll>> chain) {
-        if (node.getValue().getFeats().startsWith(startFeats)) {
-            chain.addAll(node.getAllChild());
-            return true;
-        } else if (!node.getChildren().isEmpty()) {
-            for (ParseNode<Conll> child : node.getChildren()) {
-                boolean isFound = findByFeats(child, startFeats, chain);
-                if (isFound) {
-                    chain.add(node);
-                    return true;
-                }
-            }
-        } else return false;
-        return false;
+        Set<ParseNode<Conll>> dependentNodes = AnswerMakerTools.buildChain2Feats(foundNode, "Np.*");
+        return AnswerMakerTools.prepareAnswer(dependentNodes);
     }
 }

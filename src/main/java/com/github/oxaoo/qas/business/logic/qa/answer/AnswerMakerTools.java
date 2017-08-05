@@ -6,7 +6,6 @@ import com.github.oxaoo.qas.business.logic.search.data.DataFragment;
 import com.github.oxaoo.qas.business.logic.search.data.RelevantInfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -115,42 +114,30 @@ public class AnswerMakerTools {
     }
 
     /**
-     * Gets unordered chain from the start node to the node with specific target POS.
+     * Gets unordered chain from the start node to the node with specific target Feats pattern.
      *
-     * @param startNode the start node
-     * @param targetPos the target pos
-     * @return the chain to the node with target POS
+     * @param startNode    the start node
+     * @param featsPattern the feats pattern (regular expression)
+     * @return the chain to the node with target feats
      */
-    public static Set<ParseNode<Conll>> getChain2Pos(ParseNode<Conll> startNode, char targetPos) {
-        return AnswerMakerTools.getChain2Pos(startNode, Collections.singletonList(targetPos));
-    }
-
-    /**
-     * Gets unordered chain from the start node to the node with specific target list of POS.
-     *
-     * @param startNode     the start node
-     * @param targetPosList the target pos list
-     * @return the chain to the node with target POS
-     */
-    public static Set<ParseNode<Conll>> getChain2Pos(ParseNode<Conll> startNode, List<Character> targetPosList) {
+    public static Set<ParseNode<Conll>> buildChain2Feats(ParseNode<Conll> startNode, String featsPattern) {
         Set<ParseNode<Conll>> answerChain = new HashSet<>();
-        AnswerMakerTools.buildChain2Pos(startNode, targetPosList, answerChain);
+        AnswerMakerTools.buildChain2Feats(startNode, featsPattern, answerChain);
         return answerChain;
     }
 
-
     /**
-     * Building the chain from the start node to the child node with specific target list of POS.
+     * Building the chain from the start node to the child node with specific target Feats pattern.
      *
      * @param startNode     the start node
-     * @param targetPosList the target pos list
+     * @param featsPattern the feats pattern (regular expression)
      * @param chain         the chain
-     * @return the boolean
+     * @return the <tt>true</tt> if was possible to build the chain
      */
-    private static boolean buildChain2Pos(ParseNode<Conll> startNode,
-                                          List<Character> targetPosList,
-                                          Set<ParseNode<Conll>> chain) {
-        if (targetPosList.contains(startNode.getValue().getPosTag())) {
+    private static boolean buildChain2Feats(ParseNode<Conll> startNode,
+                                            String featsPattern,
+                                            Set<ParseNode<Conll>> chain) {
+        if (startNode.getValue().getFeats().matches(featsPattern)) {
             //todo change the algo of adding context
             //added the dependent child nodes for completeness of the context.
             chain.addAll(startNode.getAllChild());
@@ -158,7 +145,7 @@ public class AnswerMakerTools {
             return true;
         } else if (!startNode.getChildren().isEmpty()) {
             for (ParseNode<Conll> child : startNode.getChildren()) {
-                boolean isFound = buildChain2Pos(child, targetPosList, chain);
+                boolean isFound = buildChain2Feats(child, featsPattern, chain);
                 if (isFound) {
                     chain.add(startNode);
                     return true;

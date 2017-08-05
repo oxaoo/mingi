@@ -8,7 +8,6 @@ import com.github.oxaoo.qas.business.logic.parse.ParseGraph;
 import com.github.oxaoo.qas.business.logic.parse.ParseNode;
 import com.github.oxaoo.qas.business.logic.qa.answer.AnswerMakerTools;
 import com.github.oxaoo.qas.business.logic.search.data.DataFragment;
-import com.github.oxaoo.qas.business.logic.search.data.RelevantInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,7 @@ public class DateAnswerMaker extends NumericAnswerMaker<String, Conll, DataFragm
         if (foundHeadNode == null) {
             return "";
         }
-        Set<ParseNode<Conll>> dependentNodes = AnswerMakerTools.getChain2Pos(foundHeadNode, 'M');
+        Set<ParseNode<Conll>> dependentNodes = AnswerMakerTools.buildChain2Feats(foundHeadNode, "M.*");
         return AnswerMakerTools.prepareAnswer(dependentNodes);
     }
 }

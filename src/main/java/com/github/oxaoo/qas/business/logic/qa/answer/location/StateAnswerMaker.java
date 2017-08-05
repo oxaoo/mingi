@@ -6,6 +6,8 @@ import com.github.oxaoo.qas.business.logic.parse.ConllGraphComparator;
 import com.github.oxaoo.qas.business.logic.parse.ConllParseGraphBuilder;
 import com.github.oxaoo.qas.business.logic.parse.ParseGraph;
 import com.github.oxaoo.qas.business.logic.parse.ParseNode;
+import com.github.oxaoo.qas.business.logic.qa.answer.AnswerMaker;
+import com.github.oxaoo.qas.business.logic.qa.answer.AnswerMakerTools;
 import com.github.oxaoo.qas.business.logic.search.data.DataFragment;
 import com.github.oxaoo.qas.business.logic.search.data.RelevantInfo;
 
@@ -24,16 +26,8 @@ import java.util.stream.Collectors;
 public class StateAnswerMaker extends LocationAnswerMaker<String, Conll, DataFragment> {
     @Override
     public List<Callable<String>> toAnswer(List<Conll> tokens, List<DataFragment> data) {
-        tokens = tokens.stream()
-                .sorted(Comparator.comparingInt(Conll::getHead))
-                .collect(Collectors.toList());
-        Conll headQuestionToken = tokens.get(0);
-
-        List<String> sentences = data.stream()
-                .map(DataFragment::getRelevantInfoList).flatMap(List::stream)
-                .map(RelevantInfo::getRelevantSentences).flatMap(List::stream)
-                .collect(Collectors.toList());
-
+        Conll headQuestionToken = AnswerMakerTools.getRoot(tokens);
+        List<String> sentences = AnswerMakerTools.getSentences(data);
         return sentences.stream()
                 .map(s -> (Callable<String>) () -> this.answer(s, headQuestionToken))
                 .collect(Collectors.toList());

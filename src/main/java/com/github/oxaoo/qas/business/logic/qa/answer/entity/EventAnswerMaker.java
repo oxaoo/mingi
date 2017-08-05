@@ -8,7 +8,6 @@ import com.github.oxaoo.qas.business.logic.parse.ParseGraph;
 import com.github.oxaoo.qas.business.logic.parse.ParseNode;
 import com.github.oxaoo.qas.business.logic.qa.answer.AnswerMakerTools;
 import com.github.oxaoo.qas.business.logic.search.data.DataFragment;
-import com.github.oxaoo.qas.business.logic.search.data.RelevantInfo;
 
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -39,7 +38,7 @@ public class EventAnswerMaker extends EntityAnswerMaker<String, Conll, DataFragm
         if (foundNode == null) {
             return "";
         }
-        Set<ParseNode<Conll>> dependentNodes = AnswerMakerTools.getChain2Pos(foundNode, Arrays.asList('N', 'V'));
+        Set<ParseNode<Conll>> dependentNodes = AnswerMakerTools.buildChain2Feats(foundNode, "[NV].*");
         return AnswerMakerTools.prepareAnswer(dependentNodes);
     }
 }
