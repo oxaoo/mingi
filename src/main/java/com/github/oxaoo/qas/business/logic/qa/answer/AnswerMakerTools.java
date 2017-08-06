@@ -5,12 +5,7 @@ import com.github.oxaoo.qas.business.logic.parse.ParseNode;
 import com.github.oxaoo.qas.business.logic.search.data.DataFragment;
 import com.github.oxaoo.qas.business.logic.search.data.RelevantInfo;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -114,30 +109,53 @@ public class AnswerMakerTools {
     }
 
     /**
-     * Gets unordered chain from the start node to the node with specific target Feats pattern.
+     * Gets unordered chain from the start node to the node with specific target <b>Feats</b> pattern,
+     * which describe the set of morphological-syntactic features.
      *
      * @param startNode    the start node
      * @param featsPattern the feats pattern (regular expression)
      * @return the chain to the node with target feats
      */
-    public static Set<ParseNode<Conll>> buildChain2Feats(ParseNode<Conll> startNode, String featsPattern) {
+    public static Set<ParseNode<Conll>> buildChain2Feats(ParseNode<Conll> startNode,
+                                                         String featsPattern) {
         Set<ParseNode<Conll>> answerChain = new HashSet<>();
-        AnswerMakerTools.buildChain2Feats(startNode, featsPattern, answerChain);
+        AnswerMakerTools.buildChain2Feats(startNode, featsPattern, null, answerChain);
         return answerChain;
     }
 
     /**
-     * Building the chain from the start node to the child node with specific target Feats pattern.
+     * Gets unordered chain from the start node to the node with specific target <b>Feats</b> pattern,
+     * which describe the set of morphological-syntactic features
+     * and <b>dep</b> pattern - dependency relation to the HEAD.
      *
-     * @param startNode     the start node
+     * @param startNode    the start node
      * @param featsPattern the feats pattern (regular expression)
-     * @param chain         the chain
+     * @param depPattern   the dep pattern (regular expression)
+     * @return the chain to the node with target feats
+     */
+    public static Set<ParseNode<Conll>> buildChain2Feats(ParseNode<Conll> startNode,
+                                                         String featsPattern,
+                                                         String depPattern) {
+        Set<ParseNode<Conll>> answerChain = new HashSet<>();
+        AnswerMakerTools.buildChain2Feats(startNode, featsPattern, depPattern, answerChain);
+        return answerChain;
+    }
+
+    /**
+     * Building the chain from the start node to the child node with specific target Feats and dep patterns.
+     *
+     * @param startNode    the start node
+     * @param featsPattern the feats pattern (regular expression)
+     * @param depPattern   the dep pattern (regular expression)
+     * @param chain        the chain
      * @return the <tt>true</tt> if was possible to build the chain
      */
     private static boolean buildChain2Feats(ParseNode<Conll> startNode,
                                             String featsPattern,
+                                            String depPattern,
                                             Set<ParseNode<Conll>> chain) {
-        if (startNode.getValue().getFeats().matches(featsPattern)) {
+        if (startNode.getValue().getFeats().matches(featsPattern)
+                && (depPattern == null || startNode.getValue().getDepRel().matches(depPattern))) {
             //todo change the algo of adding context
             //added the dependent child nodes for completeness of the context.
             chain.addAll(startNode.getAllChild());
@@ -145,7 +163,7 @@ public class AnswerMakerTools {
             return true;
         } else if (!startNode.getChildren().isEmpty()) {
             for (ParseNode<Conll> child : startNode.getChildren()) {
-                boolean isFound = buildChain2Feats(child, featsPattern, chain);
+                boolean isFound = buildChain2Feats(child, featsPattern, depPattern, chain);
                 if (isFound) {
                     chain.add(startNode);
                     return true;
