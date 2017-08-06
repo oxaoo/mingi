@@ -1,4 +1,4 @@
-# QAS
+# MINGI
 The question answering system based on semantic-syntactic analysis 
 supports only the Russian language.  
 As semantic-syntactic analysis is used 
