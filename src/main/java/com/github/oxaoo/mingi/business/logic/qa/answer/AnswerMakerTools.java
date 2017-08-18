@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
  */
 public class AnswerMakerTools {
 
-    public static List<String> getSentences(List<DataFragment> data) {
+    public static Set<String> getSentences(List<DataFragment> data) {
         return data.stream()
                 .map(DataFragment::getRelevantInfoList).flatMap(List::stream)
                 .map(RelevantInfo::getRelevantSentences).flatMap(List::stream)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     public static ParseNode<Conll> findFirstAfter(ParseNode<Conll> target, String featsPattern) {

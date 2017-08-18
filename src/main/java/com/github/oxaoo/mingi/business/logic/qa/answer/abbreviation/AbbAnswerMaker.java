@@ -11,6 +11,7 @@ import com.github.oxaoo.mingi.business.logic.search.data.DataFragment;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,7 @@ public class AbbAnswerMaker extends AbbreviationAnswerMaker<String, Conll, DataF
         //find the potential abb
         Conll targetToken = AnswerMakerTools.findSecondAfterRoot(tokens, "Nc.*");
 
-        List<String> sentences = AnswerMakerTools.getSentences(data);
+        Set<String> sentences = AnswerMakerTools.getSentences(data);
         return sentences.stream()
                 .map(s -> (Callable<String>) () -> this.answer(s, targetToken))
                 .collect(Collectors.toList());

@@ -23,7 +23,7 @@ public class StateAnswerMaker extends LocationAnswerMaker<String, Conll, DataFra
     @Override
     public List<Callable<String>> toAnswer(List<Conll> tokens, List<DataFragment> data) {
         Conll headQuestionToken = AnswerMakerTools.getRoot(tokens);
-        List<String> sentences = AnswerMakerTools.getSentences(data);
+        Set<String> sentences = AnswerMakerTools.getSentences(data);
         return sentences.stream()
                 .map(s -> (Callable<String>) () -> this.answer(s, headQuestionToken))
                 .collect(Collectors.toList());

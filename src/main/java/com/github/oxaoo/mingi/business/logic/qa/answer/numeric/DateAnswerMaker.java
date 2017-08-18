@@ -36,7 +36,7 @@ public class DateAnswerMaker extends NumericAnswerMaker<String, Conll, DataFragm
             LOG.warn("The DateAnswerMaker doesn't find the root token which the feat begin with 'V'");
         }
 
-        List<String> sentences = AnswerMakerTools.getSentences(data);
+        Set<String> sentences = AnswerMakerTools.getSentences(data);
         return sentences.stream()
                 .map(s -> (Callable<String>) () -> this.answer(s, targetToken))
                 .collect(Collectors.toList());

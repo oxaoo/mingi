@@ -11,6 +11,7 @@ import com.github.oxaoo.mingi.business.logic.search.data.DataFragment;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public class DefinitionAnswerMaker extends DescriptionAnswerMaker<String, Conll,
     public List<Callable<String>> toAnswer(List<Conll> tokens, List<DataFragment> data) {
         Conll targetToken = AnswerMakerTools.getRoot(tokens, "Nc.*");
 
-        List<String> sentences = AnswerMakerTools.getSentences(data);
+        Set<String> sentences = AnswerMakerTools.getSentences(data);
         return sentences.stream()
                 .map(s -> (Callable<String>) () -> this.answer(s, targetToken))
                 .collect(Collectors.toList());
