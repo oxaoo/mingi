@@ -3,6 +3,7 @@ package com.github.oxaoo.mingi.business.logic.fuzzysearch;
 import com.github.oxaoo.mp4ru.syntax.tokenize.SentenceTokenizer;
 import com.github.oxaoo.mp4ru.syntax.tokenize.Tokenizer;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
+import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -21,8 +22,9 @@ public class FuzzySearchTextTest {
     public void test() {
         final List<String> sentences = this.tokenizer.tokenization(text);
 //        final List<ExtractedResult> results = FuzzySearch.extractAll(query2, sentences);
-        final List<ExtractedResult> results = FuzzySearch.extractSorted(query1, sentences);
-        LOG.info("List of result:");
+//        final List<ExtractedResult> results = FuzzySearch.extractSorted(query1, sentences, 3);
+        final List<ExtractedResult> results = FuzzySearch.extractTop(query1, sentences, new WeightedRatio(), 3);
+        LOG.info("List of result {}:", results.size());
         results.forEach(r -> LOG.info(r.toString()));
 //        LOG.info("Results: {}", results.toString());
     }

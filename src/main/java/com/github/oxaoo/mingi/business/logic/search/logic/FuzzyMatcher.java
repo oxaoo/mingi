@@ -6,6 +6,7 @@ import com.github.oxaoo.mp4ru.syntax.tokenize.Tokenizer;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
+import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class FuzzyMatcher implements TextMatcher {
         List<String> snippets = this.snippetSplitter(snippetsFragment);
         List<String> sentences = this.tokenizer.tokenization(text);
         for (String snippet : snippets) {
-            List<ExtractedResult> results = FuzzySearch.extractSorted(snippet, sentences, 3);
+            List<ExtractedResult> results = FuzzySearch.extractTop(snippet, sentences, new WeightedRatio(), 3);
             List<String> relevantSentences = results.stream().map(ExtractedResult::getString).collect(Collectors.toList());
             relevantInfoList.add(new RelevantInfo(snippet, relevantSentences));
         }
