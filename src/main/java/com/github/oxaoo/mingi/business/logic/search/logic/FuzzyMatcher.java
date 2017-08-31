@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Alexander Kuleshov
- * @version 0.1.0
+ * @version 1.1
  * @since 18.08.2017
  */
 @AllArgsConstructor
