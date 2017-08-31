@@ -1,9 +1,9 @@
 package com.github.oxaoo.mingi.business.logic.qa.answer;
 
-import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.mingi.business.logic.parse.ParseNode;
 import com.github.oxaoo.mingi.business.logic.search.data.DataFragment;
 import com.github.oxaoo.mingi.business.logic.search.data.RelevantInfo;
+import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -108,6 +108,30 @@ public class AnswerMakerTools {
         return target;
     }
 
+    public static Set<ParseNode<Conll>> getChainFragment(ParseNode<Conll> rootNode,
+                                                         String featsPattern) {
+        Set<ParseNode<Conll>> answerChain = new HashSet<>();
+        getChainFragment(rootNode, featsPattern, answerChain);
+        return answerChain;
+    }
+
+    private static boolean getChainFragment(ParseNode<Conll> startNode,
+                                            String featsPattern,
+                                            Set<ParseNode<Conll>> chain) {
+        if (startNode.getValue().getFeats().matches(featsPattern)) {
+            chain.add(startNode);
+            chain.addAll(startNode.getAllChild());
+//            chain.addAll(AnswerMakerTools.getAllDescendants(startNode));
+            return true;
+        } else if (!startNode.getChildren().isEmpty()) {
+            for (ParseNode<Conll> child : startNode.getChildren()) {
+                boolean isGot = getChainFragment(child, featsPattern, chain);
+                if (isGot) return true;
+            }
+            return false;
+        } else return false;
+    }
+
     /**
      * Gets unordered chain from the start node to the node with specific target <b>Feats</b> pattern,
      * which describe the set of morphological-syntactic features.
@@ -174,24 +198,36 @@ public class AnswerMakerTools {
     }
 
     public static String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
-        return prepareAnswer(dependentNodes, false);
+        return prepareAnswer(dependentNodes, AnswerMappingType.FORM);
     }
 
 
-        /**
-         * Prepare answer string.
-         * Dependent nodes are sorting by an id and concat by a space.
-         *
-         * @param dependentNodes the set of unordered dependent nodes
-         * @return the answer string
-         */
-    public static String prepareAnswer(Set<ParseNode<Conll>> dependentNodes, boolean isLemma) {
+    /**
+     * Prepare answer string.
+     * Dependent nodes are sorting by an id and concat by a space.
+     *
+     * @param dependentNodes the set of unordered dependent nodes
+     * @param type           the mapping type of words
+     * @return the answer string
+     */
+    public static String prepareAnswer(Set<ParseNode<Conll>> dependentNodes, AnswerMappingType type) {
         StringBuilder sb = new StringBuilder();
         dependentNodes.stream()
                 .map(ParseNode::getValue)
                 .sorted(Comparator.comparingInt(Conll::getId))
                 .forEach(c -> {
-                    String val = isLemma ? c.getLemma() : c.getForm();
+                    String val;
+                    switch (type) {
+                        case LEMMA:
+                            val = c.getLemma();
+                            break;
+                        case FORM:
+                            val = c.getForm();
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Not supported mapping type: "
+                                    + type != null ? type.name() : "null");
+                    }
                     sb.append(val).append(" ");
                 });
         return sb.toString();
@@ -200,14 +236,15 @@ public class AnswerMakerTools {
     /**
      * Gets all descendants of node.
      *
-     * @param node       the node
-     * @param childChain the child chain
+     * @param node the node
      * @return the all descendants of node
      */
-    private static List<ParseNode<Conll>> getAllDescendants(ParseNode<Conll> node, List<ParseNode<Conll>> childChain) {
+    private static List<ParseNode<Conll>> getAllDescendants(ParseNode<Conll> node) {
+        List<ParseNode<Conll>> childChain = new ArrayList<>();
         for (ParseNode<Conll> child : node.getChildren()) {
             childChain.add(child);
-            AnswerMakerTools.getAllDescendants(child, childChain);
+            List<ParseNode<Conll>> subChildChain = getAllDescendants(child);
+            childChain.addAll(subChildChain);
         }
         return childChain;
     }

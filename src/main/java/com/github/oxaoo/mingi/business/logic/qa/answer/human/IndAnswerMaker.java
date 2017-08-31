@@ -5,6 +5,7 @@ import com.github.oxaoo.mingi.business.logic.parse.ConllParseGraphBuilder;
 import com.github.oxaoo.mingi.business.logic.parse.ParseGraph;
 import com.github.oxaoo.mingi.business.logic.parse.ParseNode;
 import com.github.oxaoo.mingi.business.logic.qa.answer.AnswerMakerTools;
+import com.github.oxaoo.mingi.business.logic.qa.answer.AnswerMappingType;
 import com.github.oxaoo.mingi.business.logic.search.data.DataFragment;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
@@ -44,11 +45,7 @@ public class IndAnswerMaker extends HumanAnswerMaker<String, Conll, DataFragment
             return "";
         }
         // Np = {nouns, type: proper name}
-        Set<ParseNode<Conll>> dependentNodes = AnswerMakerTools.buildChain2Feats(foundNode, "Np.*");
-//        LOG.info("Dependent nodes: {}", dependentNodes.toString());
-        LOG.info("Dependent nodes:");
-        dependentNodes.forEach(n -> LOG.info(n.getValue().getForm()));
-        LOG.info("________________");
-        return AnswerMakerTools.prepareAnswer(dependentNodes, true);
+        Set<ParseNode<Conll>> dependentNodes = AnswerMakerTools.getChainFragment(foundNode, "Np.*");
+        return AnswerMakerTools.prepareAnswer(dependentNodes, AnswerMappingType.LEMMA);
     }
 }

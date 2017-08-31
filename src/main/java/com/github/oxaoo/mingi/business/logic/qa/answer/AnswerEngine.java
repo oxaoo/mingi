@@ -95,7 +95,13 @@ public class AnswerEngine {
                     LOG.error("Exception during answering. Cause: {}", e.getMessage());
                     return "";
                 }
-            }).filter(s -> !s.isEmpty()).collect(Collectors.toSet());
+            }).filter(s -> {
+                if (!s.isEmpty()) {
+                    LOG.info(">>: Answer >>: {}", s);
+                    return true;
+                }
+                else return false;
+            }).collect(Collectors.toSet());
         } catch (InterruptedException e) {
             LOG.error("Exception during invoke concurrent tasks of answering. Cause: {}", e.getMessage());
             return Collections.emptySet();
