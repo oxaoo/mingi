@@ -1,13 +1,15 @@
 package com.github.oxaoo.mingi.business.logic.qa.answer.human;
 
-import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
-import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.github.oxaoo.mingi.business.logic.parse.ConllGraphComparator;
 import com.github.oxaoo.mingi.business.logic.parse.ConllParseGraphBuilder;
 import com.github.oxaoo.mingi.business.logic.parse.ParseGraph;
 import com.github.oxaoo.mingi.business.logic.parse.ParseNode;
 import com.github.oxaoo.mingi.business.logic.qa.answer.AnswerMakerTools;
 import com.github.oxaoo.mingi.business.logic.search.data.DataFragment;
+import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
+import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
  * @since 30.04.2017
  */
 public class IndAnswerMaker extends HumanAnswerMaker<String, Conll, DataFragment> {
+    private static final Logger LOG = LoggerFactory.getLogger(IndAnswerMaker.class);
 
     @Override
     public List<Callable<String>> toAnswer(List<Conll> tokens, List<DataFragment> data) {
@@ -37,9 +40,15 @@ public class IndAnswerMaker extends HumanAnswerMaker<String, Conll, DataFragment
         ParseNode<Conll> foundNode = graph.find(headQuestionToken, new ConllGraphComparator());
         //skip the fragments which doesn't contain the necessary information
         if (foundNode == null) {
+            LOG.debug("Skip sentence: {}", sentence);
             return "";
         }
+        // Np = {nouns, type: proper name}
         Set<ParseNode<Conll>> dependentNodes = AnswerMakerTools.buildChain2Feats(foundNode, "Np.*");
-        return AnswerMakerTools.prepareAnswer(dependentNodes);
+//        LOG.info("Dependent nodes: {}", dependentNodes.toString());
+        LOG.info("Dependent nodes:");
+        dependentNodes.forEach(n -> LOG.info(n.getValue().getForm()));
+        LOG.info("________________");
+        return AnswerMakerTools.prepareAnswer(dependentNodes, true);
     }
 }

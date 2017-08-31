@@ -173,19 +173,27 @@ public class AnswerMakerTools {
         return false;
     }
 
-    /**
-     * Prepare answer string.
-     * Dependent nodes are sorting by an id and concat by a space.
-     *
-     * @param dependentNodes the set of unordered dependent nodes
-     * @return the answer string
-     */
     public static String prepareAnswer(Set<ParseNode<Conll>> dependentNodes) {
+        return prepareAnswer(dependentNodes, false);
+    }
+
+
+        /**
+         * Prepare answer string.
+         * Dependent nodes are sorting by an id and concat by a space.
+         *
+         * @param dependentNodes the set of unordered dependent nodes
+         * @return the answer string
+         */
+    public static String prepareAnswer(Set<ParseNode<Conll>> dependentNodes, boolean isLemma) {
         StringBuilder sb = new StringBuilder();
         dependentNodes.stream()
                 .map(ParseNode::getValue)
                 .sorted(Comparator.comparingInt(Conll::getId))
-                .forEach(c -> sb.append(c.getForm()).append(" "));
+                .forEach(c -> {
+                    String val = isLemma ? c.getLemma() : c.getForm();
+                    sb.append(val).append(" ");
+                });
         return sb.toString();
     }
 
