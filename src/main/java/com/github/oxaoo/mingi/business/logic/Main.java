@@ -31,9 +31,11 @@ public class Main {
 //        Set<String> answers = qasEngine.answer("В каком году затонул Титаник?", new SearchEngine<>(new WebSearchEngine())); //date
 //        Set<String> answers = qasEngine.answer("Какая аббревиатура у тринитротолуол?", new SearchEngine<>(new WebSearchEngine())); //abbreviation
 //        Set<String> answers = qasEngine.answer("Что значит слово лол?", new SearchEngine<>(new WebSearchEngine())); //abbreviation
-//        Set<String> answers = qasEngine.answer("Кто был первым в космосе?", new SearchEngine<>(new WebSearchEngine())); //ind
-        Set<String> answers = qasEngine.answer("В каком регионе России находится крупнейший буддистский храм?", new SearchEngine<>(new WebSearchEngine())); //state
-//        Set<String> answers = qasEngine.answer("В каком году Медведев стал презедентом?");
+        Set<String> answers = qasEngine.answer("Кто был первым в космосе?", new SearchEngine<>(new WebSearchEngine())); //ind
+//        Set<String> answers = qasEngine.answer("Кто открыл Америку?", new SearchEngine<>(new WebSearchEngine())); //ind
+//        Set<String> answers = qasEngine.answer("Кто первым переплыл Тихий океан?", new SearchEngine<>(new WebSearchEngine())); //ind
+//        Set<String> answers = qasEngine.answer("В каком регионе России находится крупнейший буддистский храм?", new SearchEngine<>(new WebSearchEngine())); //state
+//        Set<String> answers = qasEngine.answer("В каком году Медведев стал презедентом?", new SearchEngine<>(new WebSearchEngine()));
 //        Set<String> answers = qasEngine.answer("Какое событие произошло в Санкт-Петербурге третьего апреля?", new SearchEngine<>(new WebSearchEngine())); //event
         LOG.info("List of answers:");
         answers.forEach(LOG::info);

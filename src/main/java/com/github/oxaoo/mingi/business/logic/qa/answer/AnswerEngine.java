@@ -30,20 +30,30 @@ public class AnswerEngine {
     private final static int DEFAULT_THREAD_POOL_SIZE = 10;
     private final ExecutorService executor;
     private final RussianParser parser;
+    private final AnswerArbiter answerArbiter;
 
     public AnswerEngine(RussianParser parser) {
         this.parser = parser;
         this.executor = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
+        this.answerArbiter = new AnswerArbiter();
     }
 
     public AnswerEngine(RussianParser parser, int threadPoolSize) {
         this.parser = parser;
         this.executor = Executors.newFixedThreadPool(threadPoolSize);
+        this.answerArbiter = new AnswerArbiter();
     }
 
     public AnswerEngine(RussianParser parser, ExecutorService executor) {
         this.parser = parser;
         this.executor = executor;
+        this.answerArbiter = new AnswerArbiter();
+    }
+
+    public AnswerEngine(ExecutorService executor, RussianParser parser, AnswerArbiter answerArbiter) {
+        this.executor = executor;
+        this.parser = parser;
+        this.answerArbiter = answerArbiter;
     }
 
     public Set<String> make(List<Conll> questionTokens,
@@ -82,11 +92,12 @@ public class AnswerEngine {
         }
         answerContext.setParser(this.parser);
         List<Callable<String>> answerTasks = answerContext.runAnswerMaker(questionTokens, dataFragments);
-        return this.answerExecutor(answerTasks);
+        List<String> answers = this.answerExecutor(answerTasks);
+        return this.answerArbiter.rank(answers);
     }
 
 
-    public Set<String> answerExecutor(List<Callable<String>> answerTasks) {
+    public List<String> answerExecutor(List<Callable<String>> answerTasks) {
         try {
             return executor.invokeAll(answerTasks).stream().map(t -> {
                 try {
@@ -95,16 +106,10 @@ public class AnswerEngine {
                     LOG.error("Exception during answering. Cause: {}", e.getMessage());
                     return "";
                 }
-            }).filter(s -> {
-                if (!s.isEmpty()) {
-                    LOG.info(">>: Answer >>: {}", s);
-                    return true;
-                }
-                else return false;
-            }).collect(Collectors.toSet());
+            }).filter(s -> !s.isEmpty()).collect(Collectors.toList());
         } catch (InterruptedException e) {
             LOG.error("Exception during invoke concurrent tasks of answering. Cause: {}", e.getMessage());
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
     }
 
