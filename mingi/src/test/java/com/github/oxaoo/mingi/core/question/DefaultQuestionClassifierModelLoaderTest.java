@@ -1,11 +1,11 @@
 package com.github.oxaoo.mingi.core.question;
 
-import com.github.oxaoo.mingi.core.question.training.SvmEngine;
+import com.github.oxaoo.mingi.core.question.training.svm.SvmEngine;
+import com.github.oxaoo.mingi.core.question.training.svm.SvmModel;
 import com.github.oxaoo.mingi.exceptions.BuildModelException;
 import com.github.oxaoo.mingi.exceptions.FindSvmModelException;
 import com.github.oxaoo.mingi.exceptions.LoadQuestionClassifierModelException;
 import com.github.oxaoo.mingi.exceptions.SaveSvmModelException;
-import libsvm.svm_model;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -52,20 +52,20 @@ public class DefaultQuestionClassifierModelLoaderTest {
         when(this.svmEngine.findModel(anyString())).thenThrow(new FindSvmModelException());
         this.modelLoader.load(QAS_HOME_PROPERTY + QUESTION_CLASSIFIER_MODEL_PATH_PROPERTY);
         verify(this.svmEngine).findModel(anyString());
-        verify(this.svmEngine).saveModel(any(svm_model.class), anyString());
+        verify(this.svmEngine).saveModel(any(SvmModel.class), anyString());
     }
 
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     public void buildTest() throws BuildModelException, SaveSvmModelException {
         this.modelLoader.build(QAS_HOME_PROPERTY + QUESTION_CLASSIFIER_MODEL_PATH_PROPERTY);
-        verify(this.svmEngine).saveModel(any(svm_model.class), anyString());
+        verify(this.svmEngine).saveModel(any(SvmModel.class), anyString());
     }
 
     @Test(expected = BuildModelException.class)
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     public void buildSaveModelExceptionTest() throws BuildModelException, SaveSvmModelException {
-        doThrow(new SaveSvmModelException()).when(this.svmEngine).saveModel(any(svm_model.class), anyString());
+        doThrow(new SaveSvmModelException()).when(this.svmEngine).saveModel(any(SvmModel.class), anyString());
         this.modelLoader.build(QAS_HOME_PROPERTY + QUESTION_CLASSIFIER_MODEL_PATH_PROPERTY);
     }
 }

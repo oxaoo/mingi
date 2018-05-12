@@ -29,6 +29,14 @@
             <version>${mp4ru.version}</version>
         </dependency>
 
+        <!--Lib SVM for learning-->
+        <dependency>
+            <groupId>tw.edu.ntu.csie</groupId>
+            <artifactId>libsvm</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+
         <!--Fuzzy Search String-->
         <dependency>
             <groupId>me.xdrop</groupId>

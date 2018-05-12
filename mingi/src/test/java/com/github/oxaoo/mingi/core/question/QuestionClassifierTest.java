@@ -1,13 +1,13 @@
 package com.github.oxaoo.mingi.core.question;
 
-import com.github.oxaoo.mingi.core.question.training.SvmEngine;
 import com.github.oxaoo.mingi.core.question.training.QuestionModel;
+import com.github.oxaoo.mingi.core.question.training.svm.SvmEngine;
+import com.github.oxaoo.mingi.core.question.training.svm.SvmModel;
 import com.github.oxaoo.mingi.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
-import libsvm.svm_model;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,7 +35,7 @@ public class QuestionClassifierTest {
     @Mock
     private SvmEngine svmEngine;
     @Mock
-    private svm_model svmModel;
+    private SvmModel svmModel;
 
     /**
      * Classify test.

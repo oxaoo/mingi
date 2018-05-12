@@ -1,7 +1,8 @@
 package com.github.oxaoo.mingi.core.question;
 
-import com.github.oxaoo.mingi.core.question.training.SvmEngine;
 import com.github.oxaoo.mingi.core.question.training.TrainerQuestionClassifier;
+import com.github.oxaoo.mingi.core.question.training.svm.SvmEngine;
+import com.github.oxaoo.mingi.core.question.training.svm.SvmModel;
 import com.github.oxaoo.mingi.exceptions.BuildModelException;
 import com.github.oxaoo.mingi.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.mingi.exceptions.FindSvmModelException;
@@ -13,7 +14,6 @@ import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.exceptions.ReadInputTextException;
 import com.github.oxaoo.mp4ru.exceptions.ResourceResolverException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
-import libsvm.svm_model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +38,7 @@ public class DefaultQuestionClassifierModelLoader implements QuestionClassifierM
     private final SvmEngine svmEngine;
 
     @Override
-    public svm_model load(final String qasHome) throws LoadQuestionClassifierModelException {
+    public SvmModel load(final String qasHome) throws LoadQuestionClassifierModelException {
         /*final String modelPath;
         try {
             modelPath = this.applyToHome(qasHome);
@@ -61,12 +61,12 @@ public class DefaultQuestionClassifierModelLoader implements QuestionClassifierM
     }
 
     @Override
-    public svm_model build(final String qasHome) throws BuildModelException {
+    public SvmModel build(final String qasHome) throws BuildModelException {
         LOG.info("Building the question classifier model...");
         try {
             //todo make trainer as field
             final TrainerQuestionClassifier trainer = new TrainerQuestionClassifier(qasHome, this.parser, this.svmEngine);
-            final svm_model model = trainer.build();
+            final SvmModel model = trainer.build();
             final String absoluteModelPath;
             try {
                 absoluteModelPath = this.applyToHome(qasHome);

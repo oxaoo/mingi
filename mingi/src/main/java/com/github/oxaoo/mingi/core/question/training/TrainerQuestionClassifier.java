@@ -1,6 +1,8 @@
 package com.github.oxaoo.mingi.core.question.training;
 
 import com.github.oxaoo.mingi.core.question.QuestionDomain;
+import com.github.oxaoo.mingi.core.question.training.svm.SvmEngine;
+import com.github.oxaoo.mingi.core.question.training.svm.SvmModel;
 import com.github.oxaoo.mingi.exceptions.FailedQuestionTokenMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
@@ -8,7 +10,6 @@ import com.github.oxaoo.mp4ru.exceptions.ReadInputTextException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
 import com.google.gson.GsonBuilder;
-import libsvm.svm_model;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,36 +49,36 @@ public class TrainerQuestionClassifier {
         this.testDomainsQuestionsPath = normalizedHome + DEFAULT_TEST_QUESTION_DOMAINS_FILE_NAME;
     }
 
-    public svm_model build() throws ReadInputTextException,
+    public SvmModel build() throws ReadInputTextException,
             FailedParsingException,
             FailedConllMapException,
             FailedQuestionTokenMapException {
 
-        svm_model trainModel = this.train();
-        this.test(trainModel);
-        return trainModel;
+        final SvmModel trainedModel = this.train();
+        this.test(trainedModel);
+        return trainedModel;
     }
 
-    private svm_model train() throws ReadInputTextException,
+    private SvmModel train() throws ReadInputTextException,
             FailedParsingException,
             FailedConllMapException,
             FailedQuestionTokenMapException {
-        List<QuestionModel> questionModels
+        final List<QuestionModel> questionModels
                 = this.prepareQuestionModel(this.trainQuestionsPath, this.trainDomainsQuestionsPath);
         LOG.debug("Questions model:" + new GsonBuilder().setPrettyPrinting().create().toJson(questionModels));
 
         return this.svmEngine.svmTrain(questionModels);
     }
 
-    private void test(svm_model trainModel) throws ReadInputTextException,
+    private void test(final SvmModel trainModel) throws ReadInputTextException,
             FailedParsingException,
             FailedConllMapException,
             FailedQuestionTokenMapException {
-        List<QuestionModel> questionModels
+        final List<QuestionModel> questionModels
                 = this.prepareQuestionModel(this.testQuestionsPath, this.testDomainsQuestionsPath);
         LOG.debug("Questions model:" + new GsonBuilder().setPrettyPrinting().create().toJson(questionModels));
 
-        List<QuestionDomain> evaluatedQuestionsDomains = this.svmEngine.svmEvaluate(trainModel, questionModels);
+        final List<QuestionDomain> evaluatedQuestionsDomains = this.svmEngine.svmEvaluate(trainModel, questionModels);
         this.comparison(evaluatedQuestionsDomains, questionModels);
     }
 

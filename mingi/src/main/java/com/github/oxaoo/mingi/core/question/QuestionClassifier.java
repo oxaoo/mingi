@@ -1,15 +1,15 @@
 package com.github.oxaoo.mingi.core.question;
 
-import com.github.oxaoo.mingi.exceptions.FailedQuestionTokenMapException;
-import com.github.oxaoo.mingi.exceptions.LoadQuestionClassifierModelException;
 import com.github.oxaoo.mingi.core.question.training.QuestionModel;
 import com.github.oxaoo.mingi.core.question.training.QuestionToken;
-import com.github.oxaoo.mingi.core.question.training.SvmEngine;
+import com.github.oxaoo.mingi.core.question.training.svm.SvmEngine;
+import com.github.oxaoo.mingi.core.question.training.svm.SvmModel;
+import com.github.oxaoo.mingi.exceptions.FailedQuestionTokenMapException;
+import com.github.oxaoo.mingi.exceptions.LoadQuestionClassifierModelException;
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.tagging.Conll;
-import libsvm.svm_model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -23,7 +23,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class QuestionClassifier {
-    private final svm_model model;
+    private final SvmModel model;
     private final SvmEngine svmEngine;
     private final RussianParser parser;
 

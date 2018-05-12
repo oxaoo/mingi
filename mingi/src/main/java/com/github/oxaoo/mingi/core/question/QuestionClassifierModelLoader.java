@@ -1,8 +1,8 @@
 package com.github.oxaoo.mingi.core.question;
 
+import com.github.oxaoo.mingi.core.question.training.svm.SvmModel;
 import com.github.oxaoo.mingi.exceptions.BuildModelException;
 import com.github.oxaoo.mingi.exceptions.LoadQuestionClassifierModelException;
-import libsvm.svm_model;
 
 /**
  * The interface Question classifier model loader.
@@ -18,7 +18,7 @@ public interface QuestionClassifierModelLoader {
      * @return the svm model
      * @throws LoadQuestionClassifierModelException the load question classifier model exception
      */
-    svm_model load(String qasHome) throws LoadQuestionClassifierModelException;
+    SvmModel load(String qasHome) throws LoadQuestionClassifierModelException;
 
     /**
      * Build svm model.
@@ -26,5 +26,5 @@ public interface QuestionClassifierModelLoader {
      * @return the svm model
      * @throws BuildModelException the build model exception
      */
-    svm_model build(String qasHome) throws BuildModelException;
+    SvmModel build(String qasHome) throws BuildModelException;
 }
