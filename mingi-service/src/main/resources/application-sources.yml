@@ -1,8 +1,0 @@
-sources:
-  parser:
-    commonSource: res/
-    classifierModelPath: res/russian-utf8.par
-    treeTaggerPath: res/
-    parserConfigurationPath: res/russian.mco
-  mingi:
-    questionClassifierModelPath: qas/qcm.model

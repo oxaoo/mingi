@@ -27,3 +27,4 @@ target/
 logs/
 # Exclude resources
 res/
+**/application-private.yml

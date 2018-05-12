@@ -1,18 +1,20 @@
 package com.github.oxaoo.mingi.service.configuration;
 
+import com.github.oxaoo.mingi.common.PropertyKeeper;
 import com.github.oxaoo.mingi.core.QasEngine;
-import com.github.oxaoo.mingi.exceptions.LoadQuestionClassifierModelException;
 import com.github.oxaoo.mingi.core.answer.AnswerEngine;
 import com.github.oxaoo.mingi.core.question.QuestionClassifier;
+import com.github.oxaoo.mingi.exceptions.LoadQuestionClassifierModelException;
 import com.github.oxaoo.mingi.search.engine.SearchEngine;
 import com.github.oxaoo.mingi.search.engine.web.WebSearchEngine;
 import com.github.oxaoo.mp4ru.exceptions.InitRussianParserException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.utils.RussianParserBuilder;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
 
 /**
  * @author Alexander Kuleshov
@@ -22,20 +24,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MingiConfiguration {
 
-    private SourceProperties sourceProperties;
+    private ServiceProperties properties;
+
+    @PostConstruct
+    public void initQasEngine() {
+        PropertyKeeper.put(PropertyKeeper.GOOGLE_CSE_ID_KEY, this.properties.getSearch().getId());
+        PropertyKeeper.put(PropertyKeeper.GOOGLE_API_KEY_KEY, this.properties.getSearch().getKey());
+        if (this.properties.getProxy().isEnable()) {
+            PropertyKeeper.put(PropertyKeeper.PROXY_HOST_KEY, this.properties.getProxy().getHost());
+            PropertyKeeper.put(PropertyKeeper.PROXY_PORT_KEY, this.properties.getProxy().getPort());
+        }
+    }
 
     @Bean
     public QasEngine qasEngineProvider() throws InitRussianParserException, LoadQuestionClassifierModelException {
-        final RussianParser parser;
-        if (StringUtils.isNotBlank(this.sourceProperties.getParser().getCommonSource())) {
-            parser = RussianParserBuilder.build(this.sourceProperties.getParser().getCommonSource());
-        } else {
-            parser = RussianParserBuilder.build(
-                    this.sourceProperties.getParser().getClassifierModelPath(),
-                    this.sourceProperties.getParser().getTreeTaggerPath(),
-                    this.sourceProperties.getParser().getParserConfigurationPath());
-        }
-        final QuestionClassifier questionClassifier = new QuestionClassifier(parser, this.sourceProperties.getMingi().getQuestionClassifierModelPath());
+        final RussianParser parser = RussianParserBuilder.build(this.properties.getHome().getParser());
+        final QuestionClassifier questionClassifier = new QuestionClassifier(parser, this.properties.getHome().getMingi());
         final AnswerEngine answerEngine = new AnswerEngine(parser);
         return new QasEngine(parser, questionClassifier, answerEngine);
     }
@@ -46,7 +50,7 @@ public class MingiConfiguration {
     }
 
     @Autowired
-    public void setSourceProperties(final SourceProperties sourceProperties) {
-        this.sourceProperties = sourceProperties;
+    public void setProperties(final ServiceProperties properties) {
+        this.properties = properties;
     }
 }
