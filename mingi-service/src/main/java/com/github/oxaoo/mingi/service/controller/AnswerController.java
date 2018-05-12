@@ -1,13 +1,10 @@
 package com.github.oxaoo.mingi.service.controller;
 
-import com.github.oxaoo.mingi.business.logic.core.QasEngine;
-import com.github.oxaoo.mingi.business.logic.exceptions.FailedQuestionTokenMapException;
-import com.github.oxaoo.mingi.business.logic.search.engine.SearchEngine;
-import com.github.oxaoo.mingi.business.logic.search.engine.web.WebSearchEngine;
-import com.github.oxaoo.mingi.business.logic.search.engine.web.WebSearchUnit;
+import com.github.oxaoo.mingi.core.QasEngine;
+import com.github.oxaoo.mingi.exceptions.FailedQuestionTokenMapException;
+import com.github.oxaoo.mingi.search.engine.SearchEngine;
 import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
-import com.google.api.services.customsearch.model.Result;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Set;
 
 /**

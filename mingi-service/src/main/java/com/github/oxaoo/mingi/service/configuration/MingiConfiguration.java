@@ -1,11 +1,11 @@
 package com.github.oxaoo.mingi.service.configuration;
 
-import com.github.oxaoo.mingi.business.logic.core.QasEngine;
-import com.github.oxaoo.mingi.business.logic.exceptions.LoadQuestionClassifierModelException;
-import com.github.oxaoo.mingi.business.logic.qa.answer.AnswerEngine;
-import com.github.oxaoo.mingi.business.logic.qa.question.QuestionClassifier;
-import com.github.oxaoo.mingi.business.logic.search.engine.SearchEngine;
-import com.github.oxaoo.mingi.business.logic.search.engine.web.WebSearchEngine;
+import com.github.oxaoo.mingi.core.QasEngine;
+import com.github.oxaoo.mingi.exceptions.LoadQuestionClassifierModelException;
+import com.github.oxaoo.mingi.core.answer.AnswerEngine;
+import com.github.oxaoo.mingi.core.question.QuestionClassifier;
+import com.github.oxaoo.mingi.search.engine.SearchEngine;
+import com.github.oxaoo.mingi.search.engine.web.WebSearchEngine;
 import com.github.oxaoo.mp4ru.exceptions.InitRussianParserException;
 import com.github.oxaoo.mp4ru.syntax.RussianParser;
 import com.github.oxaoo.mp4ru.syntax.utils.RussianParserBuilder;
