@@ -1,0 +1,6 @@
+server:
+  port: 5642
+
+spring:
+  profiles:
+    active: local, private

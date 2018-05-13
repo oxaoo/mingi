@@ -1,0 +1,4 @@
+config:
+  home:
+    parser: res/
+    mingi: qas/
