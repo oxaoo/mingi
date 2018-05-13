@@ -20,12 +20,10 @@ function ask() {
     console.log("Ask question: " + question);
 
     $.ajax({
-        type: "GET",
+        type: "POST",
         contentType: "application/json",
-        url: "/qas/ask",
-        data: {
-            question: question
-        },
+        url: "/ask",
+        data: JSON.stringify(question),
         dataType: "json",
         timeout: 100000,
         success: answer,
