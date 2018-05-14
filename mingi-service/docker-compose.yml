@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+  mingi-service:
+    build:
+      context: ./..
+      dockerfile: ./mingi-service/Dockerfile
+    image: oxaoo/mingi-service:0.2.0
+    container_name: mingi-service
+    hostname: mingi-service
+    ports:
+      - "5642:5642"
+      - "2002:2002"
