@@ -7,6 +7,7 @@ import com.github.oxaoo.mp4ru.exceptions.FailedConllMapException;
 import com.github.oxaoo.mp4ru.exceptions.FailedParsingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +44,7 @@ public class AnswerController {
         this.qasEngine = qasEngine;
     }
 
+    @Lazy
     @Autowired
     public void setSearchEngine(final SearchEngine<?, ?> searchEngine) {
         this.searchEngine = searchEngine;
