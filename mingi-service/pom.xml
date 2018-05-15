@@ -26,37 +26,7 @@
         <jackson.version>2.9.5</jackson.version>
     </properties>
 
-    <!--<dependencyManagement>
-        <dependencies>
-            &lt;!&ndash; Jackson &ndash;&gt;
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>-->
-
-
     <dependencies>
-        <dependency>
-            <groupId>com.github.oxaoo</groupId>
-            <artifactId>mingi</artifactId>
-            <version>0.2.0</version>
-        </dependency>
-
         <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -75,10 +45,11 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Mingi Lib -->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>com.github.oxaoo</groupId>
+            <artifactId>mingi</artifactId>
+            <version>0.2.0</version>
         </dependency>
 
         <!-- Syntax Sugar -->
@@ -86,6 +57,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Logging -->
