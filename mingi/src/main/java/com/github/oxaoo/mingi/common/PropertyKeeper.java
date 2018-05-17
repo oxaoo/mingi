@@ -31,4 +31,8 @@ public class PropertyKeeper {
         init = true;
         properties.put(key, value);
     }
+
+    public static String remove(final String key) {
+        return properties.remove(key);
+    }
 }

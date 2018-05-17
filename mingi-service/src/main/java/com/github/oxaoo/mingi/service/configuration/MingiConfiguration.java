@@ -13,8 +13,10 @@ import com.github.oxaoo.mp4ru.syntax.utils.RussianParserBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import javax.annotation.PostConstruct;
+import java.util.Objects;
 
 /**
  * @author Alexander Kuleshov
@@ -28,9 +30,11 @@ public class MingiConfiguration {
 
     @PostConstruct
     public void initQasEngine() {
-        PropertyKeeper.put(PropertyKeeper.GOOGLE_CSE_ID_KEY, this.properties.getSearch().getId());
-        PropertyKeeper.put(PropertyKeeper.GOOGLE_API_KEY_KEY, this.properties.getSearch().getKey());
-        if (this.properties.getProxy().isEnable()) {
+        if (Objects.nonNull(this.properties.getSearch())) {
+            PropertyKeeper.put(PropertyKeeper.GOOGLE_CSE_ID_KEY, this.properties.getSearch().getId());
+            PropertyKeeper.put(PropertyKeeper.GOOGLE_API_KEY_KEY, this.properties.getSearch().getKey());
+        }
+        if (Objects.nonNull(this.properties.getProxy()) && this.properties.getProxy().isEnable()) {
             PropertyKeeper.put(PropertyKeeper.PROXY_HOST_KEY, this.properties.getProxy().getHost());
             PropertyKeeper.put(PropertyKeeper.PROXY_PORT_KEY, this.properties.getProxy().getPort());
         }
@@ -44,6 +48,7 @@ public class MingiConfiguration {
         return new QasEngine(parser, questionClassifier, answerEngine);
     }
 
+    @Lazy
     @Bean
     public SearchEngine searchEngineProvider() {
         return new SearchEngine<>(new WebSearchEngine());
